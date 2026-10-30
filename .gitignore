@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.env
+*.bak*
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+tools/.test-watch-data.json
+tools/api-data/
+*.db

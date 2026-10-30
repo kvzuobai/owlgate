@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OwlGate Docs</title>
+<meta name="description" content="How to use OwlGate: check, buy and sell TapeOut rigs on BNB Chain, trade Rig Bridge vouchers on X Layer, Telegram alerts, and the API for AI agents.">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0d0b;--bg2:#0e130f;--card:#111713;--line:#243028;--fg:#eef2ee;--mut:#8d9a91;--dim:#5d6a61;--eye:#2ee87a;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+:root[data-theme=light]{--bg:#f4f5f2;--bg2:#eceee9;--card:#fff;--line:#d9ded9;--fg:#0c100d;--mut:#5c6860;--dim:#8a958d;--eye:#0e9f4f}
+*{box-sizing:border-box;margin:0}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 "Inter Tight",Inter,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}html{scroll-behavior:smooth}[id]{scroll-margin-top:72px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;height:56px;padding:0 16px;gap:16px}
+.brand{text-decoration:none;font-weight:800;letter-spacing:.14em}
+.bar span{color:var(--mut)}.right{margin-left:auto;display:flex;gap:8px}
+.right a,.right button{background:none;border:1px solid var(--line);color:var(--mut);padding:6px 10px;font:12px inherit;cursor:pointer;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 64px;display:grid;grid-template-columns:200px 1fr;gap:40px}
+.toc{position:sticky;top:76px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:13px}
+.toc a{color:var(--mut);text-decoration:none;padding:4px 0}.toc a:hover{color:var(--fg)}
+main{min-width:0}
+h1{font-size:28px;font-weight:800;margin-bottom:6px}
+h2{font-size:19px;font-weight:600;margin:40px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h3{font-size:15px;font-weight:600;margin:20px 0 6px}
+p,li{color:var(--fg)}p+p{margin-top:8px}.mut{color:var(--mut)}
+ul,ol{padding-left:20px;margin:6px 0}li{margin:3px 0}
+code{font:13px var(--mono);background:var(--bg2);border:1px solid var(--line);padding:1px 5px;overflow-wrap:anywhere}
+pre{font:13px var(--mono);background:var(--bg2);border:1px solid var(--line);padding:12px;overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}th{color:var(--mut);font-weight:500}
+.note{border-left:2px solid var(--eye);padding:6px 12px;background:var(--bg2);margin:10px 0}
+@media(max-width:760px){.wrap{grid-template-columns:1fr;gap:16px}.toc{position:static;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:0 18px;scrollbar-width:none}.toc::-webkit-scrollbar{display:none}.bar span{display:none}}
+</style>
+<script>try{var th=localStorage.getItem('og-theme');if(!th)th=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=th}catch(e){}</script>
+</head><body>
+<header><div class="bar"><a class="brand" href="/">OWLGATE</a><span>Docs</span><div class="right"><button id="lg">中文</button><a href="/">Open the app →</a></div></div></header>
+
+<!-- ============ EN ============ -->
+<div class="wrap" data-l="en">
+<nav class="toc"><a href="#guide">Guide</a><a href="#start">Start</a><a href="#check">Check a rig</a><a href="#bnb">Buy and sell on BNB</a><a href="#xl">X Layer vouchers</a><a href="#referral">Referral</a><a href="#fees">Fees</a><a href="#bot">Telegram bot</a><a href="#agents">AI agents</a><a href="#safety">Safety and verification</a></nav>
+<main>
+<h1>OwlGate Docs</h1>
+<p class="mut">OwlGate is an independent trading terminal for TapeOut mining rigs.</p>
+
+<h2 id="guide">Guide: your first rig</h2>
+<ol>
+<li><b>Connect a wallet.</b> On a phone, open owlgate.xyz inside your wallet app (OKX Wallet, MetaMask, Trust or Binance Wallet). On desktop, use the browser extension. Keep some BNB for the price, the 1% fee and gas.</li>
+<li><b>Open <a href="/trade">Trade</a> and pick a CPU.</b> The header shows the floor, the best bid, the 7-day median and the volume. The order book lists every price for sale (red) and every offer (green).</li>
+<li><b>Choose a rig.</b> For mining CPUs, compare <i>BEM/day per BNB</i> in <a href="/market">Market</a>: higher means more BEM for each BNB. <i>vs recent sales</i> shows whether the price is under the usual level.</li>
+<li><b>Buy.</b> Tap a price in the order book to buy its best rig, or use Sweep to buy the 1 to 10 cheapest rigs in one transaction. The total with the fee is shown before your wallet asks you to confirm.</li>
+<li><b>Or name your price.</b> In Trade, switch to Offer and make a WBNB offer on a rig. Signing is free; WBNB leaves your wallet only if a holder accepts. The 0.75% fee is added on top.</li>
+<li><b>Track it.</b> <a href="/portfolio">Portfolio</a> shows your rigs and what they earned. <a href="/alerts">Alerts</a> pings you on Telegram when a rig you want gets cheap.</li>
+</ol>
+
+<h2 id="start">Start</h2>
+<ol><li>Open <a href="/">owlgate.xyz</a> and connect a wallet (any EIP-1193 wallet, e.g. OKX Wallet or MetaMask).</li>
+<li>BNB Chain is used for rigs and the circuit market. X Layer (chain 196) is used for Rig Bridge vouchers. The site asks your wallet to switch chain when needed.</li>
+<li>You can read everything without a wallet. A wallet is needed only to buy, sell, list or make offers.</li></ol>
+
+<h2 id="check">Check a rig</h2>
+<p>Every rig has an id (for example #17628) and a power (its share of mining weight). For each listing OwlGate shows:</p>
+<ul><li><b>BEM/day per BNB</b>: BEM mined per day for each BNB you pay, at today's mining rate and total power. Higher means more BEM for your money.</li>
+<li><b>vs recent sales</b>: the price compared with the median of recent sales of rigs with the same CPU and power.</li>
+<li><b>Payback</b> (in the check card): price divided by today's BEM value per day. It assumes today's BEM price and total power; both change every day.</li></ul>
+<p class="note">These are estimates from on-chain data, not a promise of returns. More rigs mining means fewer BEM per rig.</p>
+
+<h2 id="bnb">Buy and sell on BNB Chain</h2>
+<h3>Buy</h3>
+<p>Pick a listing in <b>Trade</b> and press Buy. The card shows price, OwlGate fee and total. Your wallet sends one transaction through the OwlGate router (<code>0x8cf613755e9b39fa1c668a1d94aa72edf512814f</code>, verified), which buys on the TapeOut circuit market and sends the rig to you.</p>
+<h3>Sell</h3>
+<p>In <b>Portfolio</b>, list a rig at your price, change the price or delist. To sell now, accept the best offer on your rig if there is one.</p>
+<h3>Offers</h3>
+<p>Make an offer in WBNB on one rig. The WBNB stays in your wallet until a holder accepts. You can cancel any time.</p>
+
+<h2 id="xl">X Layer vouchers</h2>
+<p>A voucher (contract <code>0x9cfc959cd42b2e1d39a0d850c528210e818ae520</code>, ERC-721 on X Layer) stands for one rig locked in the TapeOut Rig Bridge on BNB. The rig keeps mining on BNB; its BEM goes to whoever holds the voucher. Redeeming the voucher returns the rig (fee in OKB). The voucher contract is upgradeable by TapeOut (UUPS proxy).</p>
+<table><tr><th>Action</th><th>What happens</th></tr>
+<tr><td>List</td><td>Sign a Seaport order with your price in OKB. Free to sign. One-time approval of that voucher.</td></tr>
+<tr><td>Buy</td><td>One transaction; you pay the listed price in OKB.</td></tr>
+<tr><td>Offer</td><td>Offer WOKB on one voucher. The site wraps OKB to WOKB if needed. WOKB stays in your wallet until accepted.</td></tr>
+<tr><td>Any voucher</td><td>A collection offer: any holder can accept it.</td></tr>
+<tr><td>Sell now</td><td>Accept the best offer (single or any voucher) on a voucher you hold.</td></tr>
+<tr><td>Cancel</td><td>Cancel one order or all your X Layer orders on chain.</td></tr></table>
+<p>Each ask also shows <b>BEM/OKB</b>: BEM per day for each OKB you pay. Expiry is 1, 3 or 7 days. Price 0.01 to 500 OKB.</p>
+
+<h2 id="referral">Referral</h2>
+<p>Share <code>owlgate.xyz/?r=YOUR_CODE</code>: Portfolio shows your short link, a 6-character code tied to your wallet. Old links with the full wallet address still work. When someone opens OwlGate from your link and buys or sweeps rigs on BNB Chain within 30 days, you earn <b>20% of the OwlGate fee</b> on those buys. Group admins and KOLs we invite directly earn <b>40% for their first 90 days</b>.</p>
+<ul><li>The first link a visitor opens counts for 30 days.</li><li>Buys from your own wallet do not count.</li><li>Every buy is checked on-chain (the router's fee for that transaction). Payouts are automatic: every day at 00:00 UTC, in BNB, to the referring wallet, once the pending balance reaches 0.002 BNB. Portfolio shows your referred buys, earned, paid and pending amounts.</li></ul>
+
+<h2 id="fees">Fees</h2>
+<table><tr><th>Where</th><th>Fee</th><th>Who pays</th></tr>
+<tr><td>BNB: buy through the router</td><td>Shown in the buy card before you sign (read from the router contract; currently 1%)</td><td>Buyer, on top of the price</td></tr>
+<tr><td>BNB offers, X Layer list / offer / any voucher</td><td>0.75%</td><td>Seller, out of the price</td></tr></table>
+<p>Every order pays the 0.75% fee, from the first one. Fees go to <code>0x58f341ebf80ab52d7650750119e8641cfbc8c018</code>.</p>
+
+<h2 id="bot">Telegram bot</h2>
+<p><a href="https://t.me/owlgate_bot" target="_blank" rel="noopener">@owlgate_bot</a> sends alerts with a link; you always decide and sign yourself. The bot never asks for keys or seed phrases.</p>
+<table><tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>/check 17628</code></td><td>Payback estimate for one rig (free)</td></tr>
+<tr><td><code>/listings</code></td><td>Cheapest rigs for sale now</td></tr>
+<tr><td><code>/snipe add behemoth 60 0.5 p50</code></td><td>Alert for new BNB listings: payback ≤ 60 days, price ≤ 0.5 BNB, power ≥ 50 (any mix)</td></tr>
+<tr><td><code>/snipe xl 60 2 p50</code></td><td>The same for X Layer vouchers, price in OKB</td></tr>
+<tr><td><code>/snipe list</code> · <code>/snipe del 1</code></td><td>Your rules (max 5)</td></tr>
+<tr><td><code>/watch 0x…</code></td><td>Daily digest of a wallet; <code>/trades on</code> for its buys and sells</td></tr>
+<tr><td><code>/dealalert behemoth 60</code></td><td>Alert for listings under your payback days</td></tr>
+<tr><td><code>/trial</code> · <code>/pay</code></td><td>Paid instant alerts: 24 h trial after wallet proof, then pay in BEM</td></tr></table>
+
+<h2 id="agents">AI agents</h2>
+<p>Agents can read the X Layer voucher market and get <b>unsigned</b> transactions. Your agent wallet signs within its own limits; OwlGate never signs or holds funds. The machine-readable version is <a href="/llms.txt">/llms.txt</a>.</p>
+<h3>Read (GET, JSON, no key)</h3>
+<ul><li><code>https://api.owlgate.xyz/xl/market</code>: every voucher, its rig, BEM/day, ask, best offer, payback estimate, prices and fee terms.</li>
+<li><code>https://api.owlgate.xyz/bids?chain=196</code>: open signed orders.</li>
+<li><code>https://api.owlgate.xyz/config.json</code>: if <code>bidsEnabled</code> is false, do not trade.</li></ul>
+<h3>Act (GET, returns steps)</h3>
+<pre>GET /xl/tx/buy?hash=ORDER_HASH&amp;from=0xYOU
+GET /xl/tx/sell?v=VOUCHER_ID&amp;from=0xYOU
+GET /xl/order/build?kind=list|offer|coll&amp;from=0xYOU&amp;v=ID&amp;price=1.5&amp;days=1|3|7
+GET /xl/tx/cancel?hash=ORDER_HASH&amp;from=0xYOU   (or &amp;all=1)</pre>
+<p>The answer is <code>{chainId:196, from, steps, summary}</code>. Run the steps in order: <code>tx</code> = send it, <code>sign</code> = <code>eth_signTypedData_v4</code>, <code>post</code> = POST the body with your signature. Fills are simulated from your wallet first; HTTP 409 means it would revert, so do not send.</p>
+<h3>OKX Agentic Wallet</h3>
+<p>Agents running <a href="https://web3.okx.com/onchainos/dev-docs/home/install-your-agentic-wallet" target="_blank" rel="noopener">OKX Onchain OS</a> can install the OwlGate skill: save <a href="/skills/owlgate/SKILL.md">/skills/owlgate/SKILL.md</a> into the agent's skills folder. Then ask in plain words, e.g. "show the rig voucher market" or "make a 0.5 OKB collection offer for 3 days". Every transaction and signature goes through the Agentic Wallet's own confirmation.</p>
+<div class="note">Example: an agent watches <code>/xl/market</code>, picks the voucher with the most BEM/day per OKB under its budget, calls <code>/xl/tx/buy</code>, checks <code>summary.payOkb</code>, then signs and sends the one transaction.</div>
+
+<h2 id="safety">Safety and verification</h2>
+<ul><li>OwlGate never asks for a private key or seed phrase. Anyone who does is not us.</li>
+<li>Check what your wallet shows before you sign: contract, amount, chain.</li>
+<li>Approvals are exact: one rig or voucher at a time, and WOKB / WBNB only up to your open offers.</li>
+<li>Contracts: router <code>0x8cf6…814f</code> (BNB, verified), Seaport 1.6 <code>0x0000000000000068f116a894984e2db1123eb395</code>, voucher <code>0x9cfc…e520</code> (X Layer), WOKB <code>0xe538…9b2b</code>.</li>
+<li>OwlGate is independent and not official TapeOut. Test with small amounts first.</li></ul>
+</main></div>
+
+<!-- ============ ZH ============ -->
+<div class="wrap" data-l="zh" hidden>
+<nav class="toc"><a href="#zguide">使用指南</a><a href="#zstart">开始</a><a href="#zcheck">查询矿机</a><a href="#zbnb">在 BNB 买卖</a><a href="#zxl">X Layer 凭证</a><a href="#zreferral">推荐奖励</a><a href="#zfees">手续费</a><a href="#zbot">Telegram 机器人</a><a href="#zagents">AI 代理</a><a href="#zsafety">安全与验证</a></nav>
+<main>
+<h1>OwlGate 文档</h1>
+<p class="mut">OwlGate 是面向 TapeOut 矿机的独立交易终端。不持有私钥和资金：每一步都是你在自己的钱包里确认的交易或签名。只提供数据与估算，不构成建议。</p>
+
+<h2 id="zguide">使用指南：买入第一台矿机</h2>
+<ol>
+<li><b>连接钱包。</b>手机上请在钱包 App（OKX Wallet、MetaMask、Trust 或 Binance Wallet）内打开 owlgate.xyz；电脑上使用浏览器插件。请预留 BNB 用于价格、1% 手续费和 Gas。</li>
+<li><b>打开 <a href="/trade">Trade</a> 并选择 CPU。</b>顶部显示地板价、最高出价、7 日中位价和成交额。挂单簿列出所有卖价（红）和所有出价（绿）。</li>
+<li><b>挑选矿机。</b>对于挖矿 CPU，在 <a href="/market">Market</a> 比较 <i>每 BNB 每日 BEM</i>：越高代表每个 BNB 得到的 BEM 越多。<i>对比近期成交</i> 显示价格是否低于常见水平。</li>
+<li><b>买入。</b>点击挂单簿中的价格买入该价位最好的矿机，或用 Sweep 一笔交易买入最便宜的 1 到 10 台。钱包确认前会显示含手续费的总价。</li>
+<li><b>或者自己出价。</b>在 Trade 切换到 Offer，对某台矿机发出 WBNB 出价。签名免费；只有持有人接受时 WBNB 才会离开你的钱包。另加 0.75% 手续费。</li>
+<li><b>跟踪收益。</b><a href="/portfolio">Portfolio</a> 显示你的矿机和收益。<a href="/alerts">Alerts</a> 在你想要的矿机降价时通过 Telegram 提醒你。</li>
+</ol>
+
+<h2 id="zstart">开始</h2>
+<ol><li>打开 <a href="/">owlgate.xyz</a> 并连接钱包（任何 EIP-1193 钱包，如 OKX Wallet、MetaMask）。</li>
+<li>矿机和电路市场在 BNB Chain；Rig Bridge 凭证在 X Layer（链 196）。需要时网站会请钱包切换网络。</li>
+<li>不连接钱包也能查看全部数据。只有买、卖、挂单或出价时才需要钱包。</li></ol>
+
+<h2 id="zcheck">查询矿机</h2>
+<p>每台矿机有编号（如 #17628）和算力（挖矿权重份额）。每个挂单显示：</p>
+<ul><li><b>每 BNB 每天 BEM</b>：按今日挖矿速率与总算力，每支付 1 BNB 每天可得的 BEM。越高表示同样的钱得到越多 BEM。</li>
+<li><b>对比近期成交</b>：价格与相同 CPU、相同算力矿机近期成交中位数的比较。</li>
+<li><b>回本</b>（在检查卡片中）：价格除以今日每天 BEM 的价值。假设今日 BEM 价格与总算力不变，而两者每天都在变化。</li></ul>
+<p class="note">以上是基于链上数据的估算，不是收益承诺。挖矿的矿机越多，每台分到的 BEM 越少。</p>
+
+<h2 id="zbnb">在 BNB Chain 买卖</h2>
+<h3>购买</h3>
+<p>在 <b>交易</b> 中选择挂单并点击购买。卡片显示价格、OwlGate 手续费和总额。钱包发送一笔交易，经 OwlGate 路由合约（<code>0x8cf613755e9b39fa1c668a1d94aa72edf512814f</code>，已验证）在 TapeOut 电路市场购买并把矿机转给你。</p>
+<h3>出售</h3>
+<p>在 <b>资产</b> 中按你的价格挂单、改价或撤单。想立即卖出，可接受你矿机上的最高出价（如有）。</p>
+<h3>出价</h3>
+<p>用 WBNB 对一台矿机出价。WBNB 一直留在你的钱包，直到持有人接受。可随时取消。</p>
+
+<h2 id="zxl">X Layer 凭证</h2>
+<p>凭证（合约 <code>0x9cfc959cd42b2e1d39a0d850c528210e818ae520</code>，X Layer 上的 ERC-721）代表一台锁定在 BNB 上 TapeOut Rig Bridge 中的矿机。矿机继续在 BNB 挖矿，BEM 发给凭证持有人。赎回凭证可取回矿机（需支付 OKB 手续费）。凭证合约可由 TapeOut 升级（UUPS 代理）。</p>
+<table><tr><th>操作</th><th>说明</th></tr>
+<tr><td>挂单</td><td>按你的 OKB 价格签署 Seaport 订单。签名免费。需一次性授权该凭证。</td></tr>
+<tr><td>购买</td><td>一笔交易，按挂单价格支付 OKB。</td></tr>
+<tr><td>出价</td><td>用 WOKB 对一个凭证出价。需要时网站会把 OKB 换成 WOKB。WOKB 留在你的钱包直到被接受。</td></tr>
+<tr><td>任意凭证</td><td>集合出价：任何持有人都可以接受。</td></tr>
+<tr><td>立即卖出</td><td>对你持有的凭证接受最高出价（单个或任意凭证）。</td></tr>
+<tr><td>取消</td><td>在链上取消一个订单或你在 X Layer 的全部订单。</td></tr></table>
+<p>每个挂单还显示 <b>BEM/OKB</b>：每支付 1 OKB 每天可得的 BEM。有效期 1、3 或 7 天。价格 0.01 至 500 OKB。</p>
+
+<h2 id="zreferral">推荐奖励</h2>
+<p>分享 <code>owlgate.xyz/?r=你的邀请码</code>（Portfolio 中可复制，6 位邀请码绑定你的钱包；带完整钱包地址的旧链接仍然有效）。有人通过你的链接打开 OwlGate，并在 30 天内于 BNB Chain 买入或扫货矿机，你可获得这些交易 <b>OwlGate 手续费的 20%</b>。我们直接邀请的群主和 KOL 在 <b>前 90 天获得 40%</b>。</p>
+<ul><li>访客打开的第一个推荐链接有效 30 天。</li><li>自己钱包的买入不计入。</li><li>每笔买入都在链上核对（该交易的路由器手续费）。奖励自动发放：待发放达到 0.002 BNB 后，每天 00:00 UTC 以 BNB 发送到推荐钱包。Portfolio 显示你的推荐成交、已赚取、已发放和待发放金额。</li></ul>
+
+<h2 id="zfees">手续费</h2>
+<table><tr><th>场景</th><th>费率</th><th>付款方</th></tr>
+<tr><td>BNB：通过路由购买</td><td>签名前在购买卡片显示（读取路由合约；目前 1%）</td><td>买家，加在价格之上</td></tr>
+<tr><td>BNB 出价，X Layer 挂单 / 出价 / 任意凭证</td><td>0.75%</td><td>卖家，从价格中扣除</td></tr></table>
+<p>每笔订单从第一笔起收取 0.75% 手续费。手续费地址 <code>0x58f341ebf80ab52d7650750119e8641cfbc8c018</code>。</p>
+
+<h2 id="zbot">Telegram 机器人</h2>
+<p><a href="https://t.me/owlgate_bot" target="_blank" rel="noopener">@owlgate_bot</a> 发送带链接的提醒；始终由你决定并自己签名。机器人绝不会索要私钥或助记词。</p>
+<table><tr><th>命令</th><th>作用</th></tr>
+<tr><td><code>/check 17628</code></td><td>单台矿机回本估算（免费）</td></tr>
+<tr><td><code>/listings</code></td><td>当前在售最便宜的矿机</td></tr>
+<tr><td><code>/snipe add behemoth 60 0.5 p50</code></td><td>BNB 新挂单提醒：回本 ≤ 60 天、价格 ≤ 0.5 BNB、算力 ≥ 50（可任意组合）</td></tr>
+<tr><td><code>/snipe xl 60 2 p50</code></td><td>X Layer 凭证的同类提醒，价格以 OKB 计</td></tr>
+<tr><td><code>/snipe list</code> · <code>/snipe del 1</code></td><td>你的规则（最多 5 条）</td></tr>
+<tr><td><code>/watch 0x…</code></td><td>钱包每日简报；<code>/trades on</code> 查看其买卖</td></tr>
+<tr><td><code>/dealalert behemoth 60</code></td><td>低于你回本天数的挂单提醒</td></tr>
+<tr><td><code>/trial</code> · <code>/pay</code></td><td>付费即时提醒：钱包证明后试用 24 小时，之后用 BEM 付费</td></tr></table>
+
+<h2 id="zagents">AI 代理</h2>
+<p>代理可以读取 X Layer 凭证市场，并获取<b>未签名</b>的交易。由你的代理钱包在自身限额内签名；OwlGate 从不签名，也不持有资金。机器可读版本见 <a href="/llms.txt">/llms.txt</a>（英文）。</p>
+<h3>读取（GET，JSON，无需密钥）</h3>
+<ul><li><code>https://api.owlgate.xyz/xl/market</code>：全部凭证、对应矿机、每天 BEM、挂单、最高出价、回本估算、价格与手续费条款。</li>
+<li><code>https://api.owlgate.xyz/bids?chain=196</code>：未成交的已签名订单。</li>
+<li><code>https://api.owlgate.xyz/config.json</code>：若 <code>bidsEnabled</code> 为 false，请勿交易。</li></ul>
+<h3>操作（GET，返回步骤）</h3>
+<pre>GET /xl/tx/buy?hash=ORDER_HASH&amp;from=0xYOU
+GET /xl/tx/sell?v=VOUCHER_ID&amp;from=0xYOU
+GET /xl/order/build?kind=list|offer|coll&amp;from=0xYOU&amp;v=ID&amp;price=1.5&amp;days=1|3|7
+GET /xl/tx/cancel?hash=ORDER_HASH&amp;from=0xYOU   (或 &amp;all=1)</pre>
+<p>返回 <code>{chainId:196, from, steps, summary}</code>。按顺序执行：<code>tx</code> = 发送交易，<code>sign</code> = <code>eth_signTypedData_v4</code>，<code>post</code> = 带上签名 POST body。成交前会先从你的钱包模拟；HTTP 409 表示会失败，请勿发送。</p>
+<h3>OKX Agentic Wallet</h3>
+<p>使用 <a href="https://web3.okx.com/zh-hans/onchainos/dev-docs/home/install-your-agentic-wallet" target="_blank" rel="noopener">OKX Onchain OS</a> 的代理可安装 OwlGate 技能：把 <a href="/skills/owlgate/SKILL.md">/skills/owlgate/SKILL.md</a> 保存到代理的 skills 目录。然后直接说，例如“查看矿机凭证市场”或“出价 0.5 OKB 收购任意凭证，3 天有效”。每笔交易和签名都经过 Agentic Wallet 自己的确认。</p>
+<div class="note">示例：代理监控 <code>/xl/market</code>，在预算内挑选每 OKB 每天 BEM 最高的凭证，调用 <code>/xl/tx/buy</code>，核对 <code>summary.payOkb</code>，然后签名并发送这一笔交易。</div>
+
+<h2 id="zsafety">安全与验证</h2>
+<ul><li>OwlGate 绝不会索要私钥或助记词。这样做的人都不是我们。</li>
+<li>签名前核对钱包显示的合约、金额和网络。</li>
+<li>授权是精确的：一次一台矿机或一个凭证；WOKB / WBNB 授权不超过你未成交出价的总额。</li>
+<li>合约：路由 <code>0x8cf6…814f</code>（BNB，已验证），Seaport 1.6 <code>0x0000000000000068f116a894984e2db1123eb395</code>，凭证 <code>0x9cfc…e520</code>（X Layer），WOKB <code>0xe538…9b2b</code>。</li>
+<li>OwlGate 是独立工具，非 TapeOut 官方。请先用小额测试。</li></ul>
+</main></div>
+
+<script>
+(function(){var L='en';try{L=localStorage.getItem('og-lang')||''}catch(e){}if(!L)L=/^zh/i.test(navigator.language)?'zh':'en';
+function set(l){L=l;document.documentElement.lang=l==='zh'?'zh-CN':'en';document.querySelectorAll('[data-l]').forEach(function(d){d.hidden=d.dataset.l!==l});
+ document.getElementById('lg').textContent=l==='zh'?'EN':'中文';document.title=l==='zh'?'OwlGate 文档':'OwlGate Docs';try{localStorage.setItem('og-lang',l)}catch(e){}}
+set(L);document.getElementById('lg').onclick=function(){set(L==='zh'?'en':'zh')};
+// #agents etc. on the ZH page map to #zagents
+if(L==='zh'&&/^#[a-z]+$/.test(location.hash)&&document.getElementById('z'+location.hash.slice(1)))setTimeout(function(){document.getElementById('z'+location.hash.slice(1)).scrollIntoView()},0)})();
+</script>
+</body></html>

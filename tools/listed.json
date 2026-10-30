@@ -1,0 +1,7 @@
+{"_doc":"Curated OwlGate listing. One line per CPU (circuits contract). Enable = change \"on\":false to \"on\":true. chain 56=BNB (live), 196=X Layer (not wired yet, ignored). mining=false -> site shows Not mining, no BEM/payback. cert=true only for CPUs certified by the TapeOut factory. listedAt (YYYY-MM-DD) drives the 14-day Newly listed badge. Key is the address; names are display only (names on-chain are spoofed).",
+"cpus":[
+{"address":"0xb1024b89886b9a34aa4ff5f31c411d708b20a14c","chain":56,"name":"TapeOut","mining":true,"cert":true,"listedAt":"2026-09-01","on":true},
+{"address":"0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c","chain":56,"name":"Behemoth","mining":true,"cert":true,"listedAt":"2026-09-01","on":true},
+{"address":"0xc38c95899cd21522ef5db37cd6be4cb422cef58a","chain":56,"name":"TapeUP","mining":false,"cert":false,"listedAt":"2026-10-29","on":true},
+{"address":"0xcc6b5acac871bcb1f60cce29d5917266d8fb956d","chain":56,"name":"TapeAI","mining":false,"cert":false,"listedAt":"2026-10-29","on":true}
+]}

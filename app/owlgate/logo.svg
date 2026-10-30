@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <title>OwlGate</title>
+  <rect width="1000" height="1000" rx="180" fill="#0a0d0b"/>
+  <path d="M170 280 L500 490 L830 280" fill="none" stroke="#eef2ee" stroke-width="48" stroke-linejoin="miter" stroke-miterlimit="10"/>
+  <g fill="none" stroke="#eef2ee" stroke-width="50"><circle cx="330" cy="640" r="120"/><circle cx="670" cy="640" r="120"/></g>
+  <g fill="#2ee87a"><circle cx="360" cy="640" r="40"/><circle cx="700" cy="640" r="40"/></g>
+</svg>

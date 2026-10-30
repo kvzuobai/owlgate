@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OwlGate Terms and Privacy</title>
+<meta name="description" content="Terms of use and privacy notice for OwlGate, the trading terminal for TapeOut rigs on BNB Chain and X Layer.">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0d0b;--bg2:#0e130f;--line:#243028;--fg:#eef2ee;--mut:#8d9a91;--eye:#2ee87a;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+:root[data-theme=light]{--bg:#f4f5f2;--bg2:#eceee9;--line:#d9ded9;--fg:#0c100d;--mut:#5c6860;--eye:#0e9f4f}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 "Inter Tight",Inter,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:760px;margin:0 auto;display:flex;align-items:center;height:56px;padding:0 16px;gap:16px}
+.brand{text-decoration:none;font-weight:800;letter-spacing:.14em}.bar span{color:var(--mut)}
+.bar a.o{margin-left:auto;border:1px solid var(--line);color:var(--mut);padding:6px 10px;font-size:12px;text-decoration:none}
+main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:28px;font-weight:800;margin-bottom:4px}
+h2{font-size:19px;font-weight:600;margin:36px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+p+p{margin-top:8px}.mut{color:var(--mut)}ul{padding-left:20px;margin:6px 0}li{margin:3px 0}
+code{font:13px var(--mono);background:var(--bg2);border:1px solid var(--line);padding:1px 5px;overflow-wrap:anywhere}
+@media(max-width:760px){.bar span{display:none}}
+.note{border-left:2px solid var(--eye);padding:6px 12px;background:var(--bg2);margin:10px 0}
+</style>
+<script>try{var th=localStorage.getItem('og-theme');if(!th)th=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=th}catch(e){}</script>
+</head><body>
+<header><div class="bar"><a class="brand" href="/">OWLGATE</a><span>Terms and privacy</span><a class="o" href="/">Open the app →</a></div></header>
+<main>
+<h1>Terms and privacy</h1>
+<p class="mut">Last updated 27 October 2026</p>
+
+<h2 id="terms">Terms of use</h2>
+<ul>
+<li><b>What OwlGate is.</b> OwlGate (owlgate.xyz, api.owlgate.xyz and the Telegram bot @owlgate_bot) is an interface and a public API that read public blockchain data and prepare transactions for TapeOut rigs on BNB Chain and Rig Bridge vouchers on X Layer.</li>
+<li><b>No custody.</b> OwlGate never holds your funds or private keys. Every transaction is signed by your own wallet and settles on chain. OwlGate cannot reverse, cancel or refund a transaction once it is on chain.</li>
+<li><b>Not advice.</b> Prices, BEM/day, payback days and other numbers are estimates from public on-chain data. They change every block and may be wrong or delayed. Nothing on OwlGate is financial, investment or legal advice, and nothing is a promise of returns.</li>
+<li><b>Third-party contracts.</b> Rigs, vouchers and BEM are contracts by TapeOut. Orders on X Layer settle through Seaport 1.6. On BNB Chain, buys route through the OwlGate router contract to the TapeOut market. OwlGate does not control TapeOut contracts; the voucher contract can be upgraded by TapeOut.</li>
+<li><b>Fees.</b> Fees are shown before you sign: 1% on BNB Chain buys and sweeps; 0.75% on X Layer orders, paid by the seller, on every order. Network gas is paid to the network, not to OwlGate.</li>
+<li><b>Your responsibility.</b> You are responsible for checking every transaction before you sign it, for the security of your wallet, for the taxes that apply to you, and for using OwlGate only where it is legal for you.</li>
+<li><b>As is.</b> OwlGate is provided as is, without warranties. It may be unavailable, slow or contain errors. To the extent the law allows, OwlGate is not liable for losses from trades, smart contracts, wallets, networks or data errors.</li>
+<li><b>Changes.</b> These terms may change. The date at the top shows the last update.</li>
+</ul>
+
+<h2 id="privacy">Privacy</h2>
+<ul>
+<li><b>No accounts, no analytics.</b> OwlGate has no sign-up and runs no analytics or advertising trackers.</li>
+<li><b>Wallet addresses are public.</b> When you connect a wallet or look up an address, that address is sent to our API to read on-chain data. Orders you sign and post are public by design, so others can fill them.</li>
+<li><b>Server logs.</b> The API sees your IP address to apply rate limits. Requests pass through Cloudflare, which processes them under its own privacy policy.</li>
+<li><b>Your browser.</b> The site stores your language, theme, a market cache and your last visit time in your browser's local storage. It never leaves your device. Clear site data to remove it.</li>
+<li><b>Telegram bot.</b> If you use @owlgate_bot, it stores your Telegram chat id, the wallets and alert limits you set, and the on-chain payment transactions you submit for paid features, only to run the features you asked for. Send <code>/unwatch</code> to remove a wallet or <code>/off</code> to stop alerts.</li>
+<li><b>No sale of data.</b> OwlGate does not sell or share personal data.</li>
+</ul>
+
+<h2 id="contact">Contact</h2>
+<p>Email <a href="mailto:hello@owlgate.xyz">hello@owlgate.xyz</a> · X <a href="https://x.com/owlgatecli" target="_blank" rel="noopener">@owlgatecli</a> · Telegram <a href="https://t.me/owlgate_bot" target="_blank" rel="noopener">@owlgate_bot</a></p>
+</main>
+</body></html>

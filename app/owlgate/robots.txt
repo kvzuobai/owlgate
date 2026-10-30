@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Agent guide: https://owlgate.xyz/llms.txt
+Sitemap: https://owlgate.xyz/sitemap.xml

@@ -1,0 +1,73 @@
+# OwlGate
+
+> OwlGate (https://owlgate.xyz) is a trading terminal for TapeOut mining rigs. On X Layer (chain 196) it runs the market for TapeOut Rig Bridge vouchers: list, buy, offer and sell on Seaport 1.6. This file tells AI agents how to read the market and get UNSIGNED transactions that your own wallet signs within its own limits.
+
+Facts, not advice. Prices and estimates change every block. Nothing here is a promise of returns.
+
+## Live snapshot
+
+Updated 2026-10-29 18:22 UTC from [https://api.owlgate.xyz/xl/market](https://api.owlgate.xyz/xl/market), rewritten every 5 minutes. For newer numbers open that link.
+
+- Most BEM per day: voucher #5, 1.3767 BEM/day, worth about $30.04/day gross (BEM $21.8182). Estimate at today's BEM price and total mining power; it changes daily.
+- These are the X Layer vouchers. Numbers like "TapeOut #17757" on other markets are BNB Chain rig IDs, not voucher numbers; use this list for X Layer.
+- Prices: BEM $21.8182 (BEM pool on BNB Chain (OwlGate chart)); OKB $113.18 (Uniswap v3 USDT0/WOKB 0.05% on X Layer, 30 min TWAP).
+- Vouchers: 15; listed for sale: 0; best collection offer: none.
+
+| Voucher | Power | BEM/day | USD/day (gross) | Ask | Best offer |
+|---|---|---|---|---|---|
+| #5 | 306 | 1.3767 | $30.04 | none | none |
+| #4 | 107 | 0.4814 | $10.50 | none | none |
+| #12 | 72 | 0.3239 | $7.07 | none | none |
+| #9 | 67 | 0.3014 | $6.58 | none | none |
+| #10 | 64 | 0.2879 | $6.28 | none | none |
+| #11 | 52 | 0.234 | $5.10 | none | none |
+| #6 | 50 | 0.225 | $4.91 | none | none |
+| #7 | 48 | 0.216 | $4.71 | none | none |
+| #8 | 47 | 0.2115 | $4.61 | none | none |
+| #17 | 40 | 0.18 | $3.93 | none | none |
+
+## What a voucher is
+
+- Contract `0x9cfc959cd42b2e1d39a0d850c528210e818ae520` on X Layer ("TapeOut Rig", ERC-721). It is an ERC1967 UUPS proxy: TapeOut can upgrade it.
+- Each voucher stands for one rig locked in the TapeOut Rig Bridge on BNB Chain. The rig keeps mining BEM on BNB; rewards go to the voucher holder. Redeeming returns the rig (fee in OKB, see `redeemFeeOkb`).
+
+## Market data (GET, JSON, no key)
+
+Open this link to answer "which voucher mines the most BEM per day, and what is it worth in USD": [https://api.owlgate.xyz/xl/market](https://api.owlgate.xyz/xl/market). The field `top` gives the answer directly: `voucher`, `bemPerDay`, `usdPerDay` (= bemPerDay x `prices.bemUsd`, gross, before any cost). `vouchers` is sorted by `bemPerDay`, highest first.
+
+
+- [Market](https://api.owlgate.xyz/xl/market): every voucher with its rig (power, mining), `bemPerDay`, `usdPerDay`, `unclaimedBem`, cheapest `ask` (OKB), `bestOffer` (WOKB), `paybackDays` (estimate), top collection offers, OKB and BEM USD prices with their sources, fee terms.
+- [Order book](https://api.owlgate.xyz/bids?chain=196): every open signed order (kind `list` | `offer` | `coll`), with the full Seaport order and signature.
+- [Your orders](https://api.owlgate.xyz/bids?offerer=0xYOUR_WALLET): all chains; X Layer orders have `chain: 196`.
+- [Config](https://api.owlgate.xyz/config.json): `bidsEnabled`, fee terms, contract addresses. If `bidsEnabled` is false, do not trade.
+
+## Transactions (GET, returns steps, never signs)
+
+Every answer is `{chainId: 196, from, ready, blockers, steps: [...], summary}`. The order builder always returns the full steps so you can explain them. If `ready` is false, `blockers` says in plain words what is missing (for example not enough OKB to wrap): tell the user, and do not send anything until a new build returns `ready: true`. Run the steps in order:
+- `{kind: "tx", to, data, value}`: send this transaction from `from` on chain 196 (value in wei, hex).
+- `{kind: "sign", typedData}`: sign with `eth_signTypedData_v4` (EIP-712, Seaport 1.6 domain, chainId 196). Signing is free.
+- `{kind: "post", url, body}`: POST `body` with `signature` set to the signature from the sign step.
+
+Fills are simulated with `eth_call` from your wallet before we answer. HTTP 409 means it would revert: do not send. Every 4xx answer has an `error` field with the reason; quote it to the user.
+
+- Buy a listing: `GET https://api.owlgate.xyz/xl/tx/buy?hash=ORDER_HASH&from=0xYOU`. One tx, value = price in OKB.
+- Sell a voucher you hold into the best offer: `GET https://api.owlgate.xyz/xl/tx/sell?v=VOUCHER_ID&from=0xYOU` (optional `&hash=` to pick an offer). Steps: approve this one voucher (only if needed), then accept. When an approval step is present, simulate the accept step yourself after the approval. A collection-offer accept must be sent within 1 hour.
+- List, offer, or offer on any voucher: `GET https://api.owlgate.xyz/xl/order/build?kind=list|offer|coll&from=0xYOU&v=VOUCHER_ID&price=1.5&days=1|3|7` (`v` not needed for `coll`). Steps: approve or wrap OKB to WOKB if needed, sign, post.
+- [Example you can open as is: offer 0.01 OKB on any voucher, 1 day](https://api.owlgate.xyz/xl/order/build?kind=coll&from=0x000000000000000000000000000000000000dEaD&price=0.01&days=1). The `from` here is a sample address that nobody can sign for; it only shows the steps. Put your own address in `from` to get steps for your wallet.
+- Cancel: `GET https://api.owlgate.xyz/xl/tx/cancel?hash=ORDER_HASH&from=0xYOU`, or `&all=1` to cancel every order you signed on X Layer.
+
+## Terms
+
+- Settlement: Seaport 1.6 `0x0000000000000068f116a894984e2db1123eb395`. Listings are paid in native OKB. Offers use WOKB `0xe538905cf8410324e03a5a23c1c177a474d59b2b` and stay in the bidder's wallet until a holder accepts.
+- Fee: 0.75% to `0x58f341ebf80ab52d7650750119e8641cfbc8c018`, paid by the seller out of the price. Every order pays it, from the first one. Price range 0.01 to 500 OKB. Expiry 1, 3 or 7 days.
+- Approvals are exact: one voucher at a time, and WOKB only up to the sum of your open offers.
+- Rate limit per IP. Read endpoints are cached up to 15 to 60 seconds.
+
+## OKX Agentic Wallet
+
+Agents on OKX Onchain OS (`onchainos` CLI) can install the OwlGate skill, which maps every step above to `onchainos wallet contract-call` / `sign-message --type eip712`: [SKILL.md](https://owlgate.xyz/skills/owlgate/SKILL.md). Save it as `skills/owlgate/SKILL.md` in the agent's skills folder.
+
+## Optional
+
+- [Site](https://owlgate.xyz/xl): the same market for people.
+- [Telegram bot](https://t.me/owlgate_bot): alerts.

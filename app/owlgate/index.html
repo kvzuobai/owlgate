@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OwlGate</title>
+<meta name="description" content="Trade TapeOut mining rigs on BNB Chain: live prices, one-tap buy, floor sweep."><meta property="og:type" content="website"><meta property="og:url" content="https://owlgate.xyz/"><meta property="og:title" content="OwlGate · TapeOut rig market"><meta property="og:description" content="Trade TapeOut mining rigs on BNB Chain: live prices, one-tap buy, floor sweep."><meta property="og:image" content="https://owlgate.xyz/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://owlgate.xyz/og.png"><meta name="theme-color" content="#0a0d0b">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Guide for AI agents"><link rel="icon" type="image/png" href="favicon-64.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0d0b;--bg2:#0e130f;--card:#111713;--card2:#18201a;--line:#243028;--fg:#eef2ee;--mut:#8d9a91;--dim:#5d6a61;--acc:#eef2ee;--eye:#2ee87a;--up:#2ee87a;--dn:#ff6b6b;--ink:#0a0d0b;--hdr:rgba(10,13,11,.9);--glow:rgba(46,232,122,.45);--flash:rgba(46,232,122,.22);--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+:root[data-theme=light]{--bg:#f4f5f2;--bg2:#eceee9;--card:#fff;--card2:#eef1ec;--line:#d9ded9;--fg:#0c100d;--mut:#5c6860;--dim:#8a958d;--acc:#0c100d;--eye:#0e9f4f;--up:#0e9f4f;--dn:#d93f3f;--ink:#fff;--hdr:rgba(244,245,242,.9);--glow:rgba(14,159,79,.3);--flash:rgba(14,159,79,.15)}
+.owl{color:var(--fg)}
+*{box-sizing:border-box;margin:0}[hidden]{display:none!important}
+html{scrollbar-color:var(--line) var(--bg)}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 "Inter Tight",Inter,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}button{font-family:inherit}
+.mono{font-family:var(--mono)}
+/* owl mark */
+.owl{display:block;aspect-ratio:1}
+:root[data-theme=light] .owl{filter:invert(1)} /* white owl -> black owl on light theme, same size (was a padded black tile that shrank it) */
+
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes glow{0%,100%{opacity:.25}50%{opacity:.75}}
+/* top */
+header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;display:flex;align-items:center;height:60px;padding:0 16px;gap:28px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand .owl{width:34px;transition:transform .3s}.brand:hover .owl{transform:scale(1.08)}
+.brand b{font-weight:800;font-size:17px;letter-spacing:.14em}
+nav{display:flex;gap:4px}
+nav a{padding:8px 12px;color:var(--mut);text-decoration:none;font-weight:500;position:relative}
+nav a:hover{color:var(--fg)}nav a.soon{cursor:default;opacity:.55}nav a.soon:hover{color:var(--mut)}nav sup{font-size:9px;margin-left:3px;color:var(--eye);letter-spacing:.04em}html{scroll-behavior:smooth}section[id]{scroll-margin-top:72px}nav a.on{color:var(--fg)}
+nav a.on:after{content:"";position:absolute;left:12px;right:12px;bottom:-11px;height:2px;background:var(--eye)}
+.right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.lang{background:none;border:1px solid var(--line);color:var(--mut);padding:7px 10px;cursor:pointer;font-size:12px}
+.wallet{border:0;background:var(--acc);color:var(--ink);padding:9px 16px;font-weight:600;cursor:pointer}
+.wallet.on{background:var(--card2);color:var(--fg);border:1px solid var(--line);font-family:var(--mono);font-size:13px}
+.wallet.on:before{content:"";display:inline-block;width:7px;height:7px;background:var(--up);margin-right:8px;vertical-align:1px}
+/* status strip */
+.strip{border-bottom:1px solid var(--line);background:var(--bg2)}
+.strip div{max-width:1240px;margin:0 auto;padding:0 16px;display:flex;gap:0;overflow-x:auto;font:12px var(--mono);color:var(--mut)}
+.strip span{padding:9px 16px 9px 0;margin-right:16px;border-right:1px solid var(--line);white-space:nowrap}
+.strip span:last-child{border:0}.strip b{color:var(--fg);font-weight:600;margin-left:6px}
+.strip i{font-style:normal}.strip a{text-decoration:none}.strip em{font-style:normal;color:var(--fg);border:1px solid var(--line);padding:2px 6px;margin-right:12px;font-size:11px;letter-spacing:.06em}.strip a:hover em{border-color:var(--eye)}.strip .ch{padding-left:4px}
+.live:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--up);margin-right:7px;vertical-align:1px;animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.3}}
+main.pfv>section:not(#pf){display:none}
+.pfbar{display:flex;gap:8px;margin-bottom:14px}.pfbar input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:11px 12px;font:14px var(--mono)}.pfbar input:focus{outline:0;border-color:var(--eye)}.pfbar .go{padding:0 22px}
+.lf{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}.lf select,.lf input{background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:11px 12px;font:600 14px var(--mono);min-width:0}.lf select{flex:1 1 160px}.lf input{flex:0 1 140px}.lf input:focus,.lf select:focus{outline:0;border-color:var(--eye)}
+.qb{border:1px solid var(--line);display:flex;flex-direction:column}.qb .qr{flex:1}.qr{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border-bottom:1px solid var(--line)}.qr>div{min-width:0}.qr small{display:block;font:11px var(--mono);color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.qr b{display:block;font:600 16px var(--mono);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qr b .dl{margin-left:8px}.qr .go{padding:12px 0;width:190px;flex:none;white-space:nowrap;font-size:13px}.hl{color:var(--fg);font-weight:600;font-size:13px;padding:14px 16px;margin-top:auto}.hlr{display:flex;justify-content:space-between;align-items:center;margin-top:auto}.hlr .hl{margin-top:0}.ta{color:var(--mut);font-size:13px;padding:14px 16px;text-decoration:none}.ta:hover{color:var(--eye)}.dl{color:var(--up);font-weight:600}.dz{color:var(--dim)}
+.two.one{grid-template-columns:1fr}.two.one>div:first-child{border-right:0}.tw .tbl{border:0;border-top:1px solid var(--line)}.tw .lf{padding:12px 12px 0}.tw .more{margin:12px auto}
+.lsc{display:none}#lsT td .buy{padding:5px 0;width:64px}#lsT td:last-child{text-align:right}.more{display:block;margin:12px auto 0;background:none;border:1px solid var(--line);color:var(--mut);padding:9px 22px;font:600 13px var(--mono);cursor:pointer}
+@media(min-width:961px){.kpis.pfk{grid-template-columns:repeat(4,minmax(0,1fr))}.kpis.pfk div:nth-child(n){border-bottom:0;border-right:1px solid var(--line)}.kpis.pfk div:last-child{border-right:0}}
+#pf .hint{margin-top:12px}#pfB td:last-child{text-align:right}.tbl tr:not(.sr)>td:last-child{white-space:nowrap}.tbl tr:not(.sr)>td:last-child>.buy{display:block;width:100%;min-width:64px;padding:5px 10px;white-space:nowrap}.tbl tr:not(.sr)>td:last-child>.buy+.buy{margin-top:6px}.tbl tr:not(.sr)>td:last-child>.buy.kv{display:flex}.kv{display:flex;align-items:center;justify-content:space-between;gap:8px}.kv .p{flex:1;text-align:right}.qr .go.kv{padding:12px 16px}.qr .sub{display:block;margin-top:6px;font:12px var(--mono);color:var(--mut);white-space:normal;line-height:1.5}.qr .sub .dl{margin-left:0}#pfB .lsd{display:block;font:11px var(--mono);color:var(--acc)}.sr td{background:var(--bg);text-align:left!important}@media(max-width:760px){#pf th:nth-child(6),#pf td:nth-child(6){display:none}}.sf{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sf input{flex:0 1 140px;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:9px 10px;font:600 14px var(--mono)}.sf input:focus{outline:0;border-color:var(--eye)}.sf .go{padding:10px 18px;font-size:13px}.sf .more{margin:0;padding:9px 14px}.sr .hint{margin:8px 0 0}.sw{color:var(--acc)}
+.slv{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;border:1px solid var(--line);padding:10px 14px;margin-bottom:18px;font:12px var(--mono);color:var(--mut)}.slv b{color:var(--fg);font-weight:600}.slv button{margin-left:auto;background:none;border:0;color:var(--mut);font-size:16px;cursor:pointer}
+#bmR{padding:14px 16px;display:grid;gap:9px}#bmR .row b{font-weight:600}#bmR .up{color:var(--up)}#bmR .sw{color:var(--acc)}.bmb{display:flex;gap:8px;padding:0 16px 16px}.bmb .go{flex:1;padding:13px}.bmb .more{margin:0}#pfE{margin-top:12px}#pfE b{color:var(--fg);font-weight:600}
+.alg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line)}.alg>div{padding:16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px}.alg>div:last-child{border-right:0}.alg b{font-size:15px}.alg p{color:var(--mut);font-size:13px;margin:0}.alg code{font:600 13px var(--mono);color:var(--eye);margin-top:auto} /* commands sit on one line across the cards */
+.alc{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px}.alc .go{padding:12px 22px;text-decoration:none}.alc .hint{margin:0}.fw{margin-left:8px;font:600 11px var(--mono);color:var(--eye);text-decoration:none;border:1px solid var(--line);padding:2px 6px}.fw:hover{border-color:var(--eye)}
+.dd{position:relative;min-width:0;text-transform:none;letter-spacing:0}.dd>button{width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:11px 34px 11px 12px;font:600 14px var(--mono);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.dd>button:after{content:"";position:absolute;right:13px;top:50%;width:7px;height:7px;border-right:1.5px solid var(--mut);border-bottom:1.5px solid var(--mut);transform:translateY(-70%) rotate(45deg);transition:transform .15s}
+.dd.open>button,.dd>button:focus-visible{outline:0;border-color:var(--eye)}.dd.open>button:after{transform:translateY(-25%) rotate(-135deg)}
+.dd ul{position:absolute;left:0;right:0;top:100%;margin:0;padding:4px 0;list-style:none;background:var(--card);border:1px solid var(--eye);border-top:0;z-index:6;max-height:300px;overflow:auto;display:none}.dd.open ul{display:block}
+.dd li{padding:12px;font:600 14px var(--mono);color:var(--mut);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dd li:hover,.dd li.k{background:var(--bg);color:var(--fg)}.dd li.on{color:var(--eye)}
+@media(max-width:960px){.bar{flex-wrap:wrap;height:auto;row-gap:0;column-gap:10px;padding-top:10px}.right{padding-bottom:10px}header nav{display:flex;order:3;width:calc(100% + 32px);margin:0 -16px;border-top:1px solid var(--line)}nav a{flex:1 0 auto;white-space:nowrap;text-align:center;padding:12px 10px;font-size:14px}header nav{overflow-x:auto;scrollbar-width:none}header nav::-webkit-scrollbar{display:none}header nav a.on:after{left:20%;right:20%;bottom:0}section[id]{scroll-margin-top:112px}header #lang,#thm{display:inline-block}.alg{grid-template-columns:1fr}.alg>div{border-right:0;border-bottom:1px solid var(--line)}.alg>div:last-child{border-bottom:0}}
+.opm{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:12px;font:12px var(--mono);color:var(--mut)}.opm .fw{margin-left:0}#op1,#op2{white-space:normal;overflow:visible}#op1 u,#op2 u{display:block;margin:6px 0 0;font-size:11px;white-space:normal}@media(max-width:460px){#opT th:nth-child(4),#opT td:nth-child(4){display:table-cell}#opT th:nth-child(3),#opT td:nth-child(3){display:none}}.opk i{display:block;font:11px var(--mono);font-style:normal;color:var(--mut);margin-top:6px;min-height:14px}.opk i.up{color:var(--up)}.opk i.dn{color:var(--acc)}.opn{margin:12px 0}#opB td:nth-child(2){white-space:normal}
+.pfc{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:14px}.pfc .hint{margin:0}.pfc .go{padding:12px 22px}.on1{color:var(--up)}#pf .lv{color:var(--up);font-variant-numeric:tabular-nums}.off1{color:var(--dim)}
+main{max-width:1240px;margin:0 auto;padding:28px 16px 48px;display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
+/* section head */
+.sh{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+.sh h2{font-size:22px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.sh h2:before{content:"";width:8px;height:8px;background:var(--eye);box-shadow:0 0 10px var(--eye)}
+.sh p{color:var(--mut);font-size:12px;text-align:right;max-width:360px}
+/* hero */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;padding:8px 0}
+.hero h1{font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--eye)}
+.hero p{color:var(--mut);margin-top:12px;font-size:15px;max-width:520px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line)}
+.kpis div{padding:16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpis div:nth-child(2n){border-right:0}.kpis div:nth-last-child(-n+2){border-bottom:0}
+.kpis small{display:block;font:11px var(--mono);color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.kpis b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 28px var(--mono);margin-top:6px}.kpis b u{font-size:13px;color:var(--mut);text-decoration:none;margin-left:5px;font-weight:400}
+/* movers grid: shared borders */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.mv{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px;display:grid;gap:10px;cursor:pointer;position:relative;background:var(--bg);transition:background .2s}
+.mv:hover{background:var(--card)}.mv.sel{background:var(--card)}.mv.sel:before{content:"";position:absolute;left:-1px;top:-1px;right:-1px;height:2px;background:var(--eye)}
+.mv .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mv .nm{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt{display:block;font:500 11px var(--mono);font-style:normal;color:var(--mut);margin-top:2px}.mt.on{color:var(--up)}.nw{display:inline-block;vertical-align:1px;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--up);color:var(--ink);font:700 9px/15px var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase}
+.chg{font:600 12px var(--mono);padding:2px 6px}
+.tg{color:var(--mut);font-size:13px;margin-top:4px;font-weight:400}
+.strip b:empty,.pulse b:empty{display:inline-block;width:44px;height:.85em;background:var(--line);vertical-align:-1px;animation:skl 1s ease-in-out infinite alternate}@keyframes skl{to{opacity:.4}}
+.pulse{border-bottom:1px solid var(--line)}.pulse>div{max-width:1240px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:10px 28px;flex-wrap:wrap;color:var(--mut);font-size:14px}
+.pulse{position:relative;overflow:hidden}.pulse.hit:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--flash) 40%,var(--glow) 50%,var(--flash) 60%,transparent);animation:sweep 1.1s ease-out forwards;pointer-events:none}@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.ls{margin-left:auto;display:flex;align-items:center;gap:10px;font:600 14px var(--mono);color:var(--fg)}.ls em{font-style:normal;font-size:11px;letter-spacing:.08em;color:var(--ink);background:var(--up);padding:3px 7px}.ls u{text-decoration:none;color:var(--up)}@media(max-width:640px){.pulse>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px;padding:12px 16px}.pulse>div>span:not(.ls){display:flex;flex-direction:column;justify-content:space-between;min-width:0}.pulse i{font:500 10px var(--mono);text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pulse b{font-size:17px}.ls{grid-column:1/-1;margin-left:0;min-width:0;font-size:12px}.ls a{min-width:0;overflow:hidden;white-space:nowrap}}
+.ls a{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.ls .vf{font-style:normal;color:var(--mut);transition:color .15s,transform .15s}.ls a:hover .vf{color:var(--up);transform:translate(2px,-2px)}.ls a:hover{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.ls em.c{background:none;color:var(--up);border:1px solid var(--up)}#pBem{position:relative}.fl{position:absolute;left:0;top:-4px;font:600 13px var(--mono);color:var(--up);pointer-events:none;animation:flup 1.6s ease-out forwards}@keyframes flup{0%{opacity:0;transform:translateY(6px)}20%{opacity:1}100%{opacity:0;transform:translateY(-22px)}}
+.ls.in{animation:slin .6s cubic-bezier(.2,1.4,.4,1)}@keyframes slin{from{opacity:0;transform:translateX(40px)}}
+@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.18);color:var(--up)}100%{transform:scale(1)}}.bump{display:inline-block;animation:bump .7s ease}
+.xpd{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 var(--glow);animation:pdr 2s infinite}@keyframes pdr{0%{box-shadow:0 0 0 0 var(--glow)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}.pulse b{font:600 20px var(--mono);color:var(--fg)}.pulse b#pBem{color:var(--up)}.pulse i{font-style:normal;margin-right:6px}
+@keyframes hoot{0%,100%{transform:rotate(0) scale(1)}15%{transform:rotate(-16deg) scale(1.3)}35%{transform:rotate(12deg) scale(1.3)}55%{transform:rotate(-6deg) scale(1.2)}}
+@keyframes look{0%,100%{transform:rotate(0)}30%{transform:rotate(-14deg)}70%{transform:rotate(14deg)}}
+.owl.hoot{animation:hoot 1.3s ease;filter:drop-shadow(0 0 10px var(--glow))}
+#load .owl{animation:look 1.6s ease-in-out infinite}
+.mv .buy.empty{background:none;border:1px dashed var(--line);color:var(--mut);cursor:pointer}.mv .buy.empty:hover{color:var(--fg);border-color:var(--eye)}.chg.u{color:var(--up);background:rgba(74,222,128,.1)}.chg.d{color:var(--dn);background:rgba(248,113,113,.1)}.chg.z{color:var(--mut)}
+.mv .px{font:600 26px var(--mono);letter-spacing:-.02em}.mv .px u{font-size:12px;color:var(--mut);text-decoration:none;font-weight:400;margin-left:4px}
+.mv .sp{width:100%;height:40px;display:block;overflow:visible}
+.mv .meta{display:flex;justify-content:space-between;color:var(--mut);font:12px var(--mono)}
+.buy{border:1px solid var(--acc);background:none;color:var(--acc);padding:9px;font-weight:600;cursor:pointer;transition:.15s}
+.buy:hover{background:var(--acc);color:var(--ink)}
+.mv .buy:disabled{border-color:transparent}
+.buy:disabled{border-color:var(--line);color:var(--dim);background:none;cursor:default}
+/* chart + sweep */
+.two{display:grid;grid-template-columns:1.6fr 1fr;border:1px solid var(--line)}
+.two>div:first-child{border-right:1px solid var(--line)}
+.ph{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line)}
+.ph b{font-size:15px}.ph span{font:12px var(--mono);color:var(--mut)}
+#chart{display:block;width:100%;height:260px;cursor:crosshair}
+#chart .ln{fill:none;stroke:var(--eye);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px var(--glow))}
+#chart .dt{fill:var(--acc);opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;animation:pop .55s cubic-bezier(.3,1.8,.5,1) forwards}
+#chart .ar{fill:url(#gr)}
+#chart .last{fill:var(--eye)}#chart .ring{fill:none;stroke:var(--eye);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:ring 1.8s ease-out infinite}
+#chart .cx{stroke:var(--mut);stroke-dasharray:3 3;transition:opacity .15s}#chart .cd{fill:var(--eye);stroke:var(--bg);stroke-width:2;transition:opacity .15s}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(3.4);opacity:0}}
+.two>div:first-child{position:relative}
+.tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--eye);padding:6px 10px;font:12px var(--mono);white-space:nowrap;transform:translate(-50%,calc(-100% - 12px));z-index:2}.tip b{color:var(--eye)}
+.sp .sl{fill:none;stroke:var(--eye);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.grid:not(.quiet) .sp{animation:rev 1.2s .25s cubic-bezier(.45,0,.2,1) both}@keyframes rev{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+.sp .sa{opacity:0;animation:fade .8s .9s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grid:not(.quiet) .mv{animation:card .5s both}.grid:not(.quiet) .mv:nth-child(2){animation-delay:.05s}.grid:not(.quiet) .mv:nth-child(3){animation-delay:.1s}.grid:not(.quiet) .mv:nth-child(4){animation-delay:.15s}.grid:not(.quiet) .mv:nth-child(5){animation-delay:.2s}.grid:not(.quiet) .mv:nth-child(6){animation-delay:.25s}.grid:not(.quiet) .mv:nth-child(7){animation-delay:.3s}.grid:not(.quiet) .mv:nth-child(8){animation-delay:.35s}
+@keyframes card{from{opacity:0;transform:translateY(10px)}}
+.grid.quiet .sp .sa{animation:none;opacity:1}
+tr.new td{animation:flash 2.4s ease-out}@keyframes flash{from{background:var(--flash)}to{background:transparent}}
+#chart .ax{fill:var(--dim);font:10px var(--mono)}#chart .gl{stroke:var(--line);stroke-dasharray:2 4}
+@keyframes pop{to{opacity:.55;transform:scale(1)}}@keyframes fade{to{opacity:1}}
+.sw{padding:16px;display:grid;gap:14px}
+.sw label{color:var(--mut);font:11px var(--mono);text-transform:uppercase;letter-spacing:.06em;display:grid;gap:8px}
+.sw select{background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:11px;font:600 14px var(--mono);width:100%}
+.qs{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line)}
+.qs button{background:none;border:0;border-right:1px solid var(--line);color:var(--mut);padding:10px;font:600 14px var(--mono);cursor:pointer}
+.qs button:last-child{border:0}
+.qs.q3{grid-template-columns:repeat(3,1fr)}.qs.q2{grid-template-columns:repeat(2,1fr)}
+.sw input{background:var(--bg);border:1px solid var(--line);color:var(--fg);padding:11px;font:600 14px var(--mono);width:100%}
+.sw input:focus{outline:0;border-color:var(--eye)}.qs button.on{background:var(--card2);color:var(--eye)}
+.rows{border-top:1px dashed var(--line);padding-top:12px;display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;font:13px var(--mono)}.row span{color:var(--mut)}.row.t{font-size:16px}.row.t b{color:var(--eye)}.row b.lo{color:var(--dn)}
+.go{background:var(--eye);color:var(--ink);border:0;padding:14px;font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.go:disabled{opacity:.4;cursor:default}
+#tCon{background:var(--acc);text-transform:none;letter-spacing:0;font-weight:600} /* Connect looks the same everywhere (header .wallet); green stays for buy actions */
+.hint{color:var(--dim);font-size:12px}.hint.opn{color:var(--mut);font-size:13px}.hint.opn b,.hint.opn a{color:var(--fg)}
+/* tape */
+table{width:100%;border-collapse:collapse;font:13px var(--mono)}
+th{color:var(--dim);font-weight:400;text-align:left;padding:9px 16px;border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+td{padding:9px 16px;border-bottom:1px solid var(--line)}tr:last-child td{border:0}
+body.boot tbody tr{animation:rise .4s both}@keyframes rise{from{opacity:0;transform:translateY(4px)}}
+.n{text-align:right}.tbl{border:1px solid var(--line);overflow-x:auto}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line)}
+.flow div{padding:18px 16px;border-right:1px solid var(--line);display:grid;gap:6px}.flow div:last-child{border:0}
+.flow em{font:600 12px var(--mono);color:var(--eye);font-style:normal}.flow b{font-size:16px}.flow span{color:var(--mut);font-size:13px}
+footer{border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+footer div{max-width:1240px;margin:0 auto;padding:18px 16px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* modal + toast */
+.mask{position:fixed;inset:0;background:rgba(3,5,10,.75);display:grid;place-items:center;z-index:20;padding:16px}
+.modal{background:var(--card);border:1px solid var(--line);width:100%;max-width:380px}
+.modal .ph button{background:none;border:0;color:var(--mut);font-size:18px;cursor:pointer}
+.wl{display:grid}
+.wl button{display:flex;align-items:center;gap:12px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);padding:14px 16px;font-size:15px;cursor:pointer;text-align:left}
+.wl button:hover{background:var(--card2)}.wl img{width:28px;height:28px}
+.wl .ph2{width:28px;height:28px;background:var(--card2);display:grid;place-items:center;font-size:13px}
+.modal p{padding:14px 16px;color:var(--mut);font-size:13px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--card2);border:1px solid var(--eye);color:var(--fg);padding:11px 16px;font-weight:500;opacity:0;transition:.2s;pointer-events:none;max-width:92vw;z-index:30}
+.toast.on{opacity:1;pointer-events:auto}.toast{width:max-content}.toast .lang{display:inline-block}.toast b{white-space:nowrap}.toast a{color:var(--eye)}
+#load{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:40;transition:opacity .5s}
+#load .owl{width:min(180px,45vw)}#load.out{opacity:0;pointer-events:none}
+@media(max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}.hero h1{font-size:34px}.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:minmax(0,1fr)}.two>div:first-child{border-right:0;border-bottom:1px solid var(--line)}.flow{grid-template-columns:1fr 1fr}.flow div:nth-child(2){border-right:0}.flow div:nth-child(-n+2){border-bottom:1px solid var(--line)}nav{display:none}.sh p{display:none}}
+@media(max-width:460px){.qr .go{width:132px;font-size:12px}.tbl th:nth-child(4),.tbl td:nth-child(4){display:none}#lsT th:nth-child(4),#lsT td:nth-child(4){display:table-cell}#lsT th:nth-child(1),#lsT td:nth-child(1),#lsT th:nth-child(3),#lsT td:nth-child(3),#lsT th:nth-child(6),#lsT td:nth-child(6){display:none}#lsT td{white-space:nowrap}.lsc{display:inline}#pf th:nth-child(3),#pf td:nth-child(3),#pf th:nth-child(6),#pf td:nth-child(6){display:none}#pf td{white-space:nowrap}#pf th:nth-child(5),#pf td:nth-child(5){display:none}#pf .sr td{display:table-cell;white-space:normal}.tbl th,.tbl td{padding:9px 10px}.grid{grid-template-columns:1fr}.lang{display:none}.right .lang{padding:7px 8px}.right .wallet{padding:9px 11px}.kpis b{font-size:22px}}
+@media(max-width:400px){.brand{gap:7px}.brand .owl{width:28px}.brand b{font-size:14px;letter-spacing:.1em}.right .lang{padding:7px 6px}.right .wallet{padding:9px 9px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#chart .dt{opacity:.55;transform:none}.sp{clip-path:none}.sp .sa{opacity:1}}
+
+/* trade view (/trade): exchange layout, one CPU */
+main.tvv>section:not(#tv),main.tvv>.slv{display:none}
+.tvh{display:flex;flex-wrap:wrap;align-items:center;gap:14px 32px;border:1px solid var(--line);border-bottom:0;padding:14px 16px;background:var(--card)}
+.tvh select{font:800 18px "Inter Tight",sans-serif;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:6px 10px}
+.tvs{display:flex;flex-wrap:wrap;gap:10px 0}.tvs span{display:flex;flex-direction:column;gap:3px;padding:0 24px}.tvs span:first-child{padding-left:0}.tvs span+span{border-left:1px solid var(--line)}.tvs i{font:500 10px var(--mono);font-style:normal;color:var(--mut);letter-spacing:.06em}.tvs b{font:600 15px var(--mono)}
+.tvg{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr);grid-template-areas:"c b o" "t b o";border:1px solid var(--line)}
+.tvg>div{min-width:0;padding:14px 16px;border-right:1px solid var(--line)}
+.tvc{grid-area:c;border-bottom:1px solid var(--line)}.tvb{grid-area:b}.tvo{grid-area:o;border-right:0!important}.tvr{grid-area:t}
+.tvc>div{padding:0}.tvo .ph{padding-left:0;padding-right:0}
+.ob{font:12px var(--mono)}.obh,.obr{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:3px 6px}.obh{color:var(--dim);font-size:10px;letter-spacing:.04em}
+.obr{position:relative}.obr span{position:relative}.obr span:last-child,.obh span:last-child{text-align:right;color:var(--mut)}
+.obr i{position:absolute;top:0;bottom:0;right:0;opacity:.09}#tvC .ph{display:none}#tvC{padding-top:8px}.obh span:nth-child(2),.obr span:nth-child(2){text-align:center;min-width:40px}.obs:empty{padding:0;margin:4px 0;border-bottom:0}.obr.a i{background:var(--dn)}.obr.b i{background:var(--up)}
+.obr.a span:first-child{color:var(--dn)}.obr.b span:first-child{color:var(--up)}.obr.a{cursor:pointer}.obr.a:hover{background:var(--card2)}
+.obs{margin:6px 0;padding:6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font:600 12px var(--mono);text-align:center;color:var(--mut)}
+.tvx,.tvt{display:flex;border:1px solid var(--line);margin-bottom:12px}.tvx button,.tvt button{flex:1;padding:9px;background:none;border:0;color:var(--mut);font:600 13px "Inter Tight",sans-serif;cursor:pointer}
+.tvx button.on,.tvt button.on{background:var(--card2);color:var(--fg);box-shadow:inset 0 -2px var(--eye)}.tvt{display:none}
+#tCon{width:100%;margin-bottom:12px}.tvbar{display:none}
+.pfr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:12px 0;padding:12px 16px;border:1px solid var(--line);font:500 12px var(--mono);color:var(--mut)}.pfr code{color:var(--fg);word-break:break-all}.pfr a{margin-left:auto;color:var(--eye);text-decoration:none}.pfrs{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;padding-top:10px;border-top:1px solid var(--line)}.pfrs span{display:flex;flex-direction:column}.pfrs i{font-style:normal;font-size:10px;letter-spacing:.06em;color:var(--dim)}.pfrs b{font:600 14px var(--mono);color:var(--fg)}.pfrs b.g{color:var(--up)}.pfrs p{grid-column:1/-1;margin:0}.pfrs p a{margin:0}.pfrs p.pfp{padding:8px 12px;border-left:2px solid var(--up);background:var(--bg);color:var(--fg)}.pfrs p.pfp a{color:var(--up)}
+.tvh .gd{margin-left:auto;font:500 12px var(--mono);color:var(--mut);text-decoration:none}.tvh .gd:hover{color:var(--fg)}
+.tva{width:100%;padding-top:12px;border-top:1px solid var(--line);font:500 12px/1.6 var(--mono);color:var(--mut)}.tva:before{content:"";display:inline-block;margin-right:8px;vertical-align:1px;width:7px;height:7px;border-radius:50%;background:var(--eye);box-shadow:0 0 8px var(--eye);animation:pulse 1.6s infinite}.tva b{color:var(--fg)}
+.tvh.fl{animation:tvf 1.6s ease-out}@keyframes tvf{0%{background:var(--flash)}}
+#tvC{position:relative}.rg{position:absolute;right:16px;top:12px;z-index:2;display:flex;border:1px solid var(--line)}.rg button{background:none;border:0;color:var(--mut);font:600 11px var(--mono);padding:5px 10px;cursor:pointer}.rg button.on{background:var(--card2);color:var(--fg)}.rg button:disabled{opacity:.35;cursor:not-allowed}
+#chart .fl,#chart .bd{stroke-dasharray:4 4;stroke-width:1}#chart .fl{stroke:var(--dn)}#chart .bd{stroke:var(--up)}#chart .flt,#chart .bdt{font:10px var(--mono)}#chart .flt{fill:var(--dn)}#chart .bdt{fill:var(--up)}
+@media(max-width:960px){.tvg{grid-template-columns:minmax(0,1fr);grid-template-areas:"c" "b" "t" "o"}.tvg>div{border-right:0;border-bottom:1px solid var(--line)}.tvt{display:flex;margin:0;border-top:0}
+ #tv[data-p=c] .tvg>[data-p]:not([data-p=c]),#tv[data-p=b] .tvg>[data-p]:not([data-p=b]),#tv[data-p=t] .tvg>[data-p]:not([data-p=t]){display:none}
+ main.tvv~.tvbar.cn{display:none}main.tvv{padding-bottom:72px}main.tvv~.tvbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:12px;padding:10px 16px;background:var(--hdr);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+ .tvbar span{flex:1;font:600 13px var(--mono)}#tCon{display:none}.tvh{padding:12px}.tvh select{width:100%}.tvs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 0;width:100%}.tvs span{padding:0 10px}.tvs span:nth-child(3n+1){padding-left:0;border-left:0}.tvbar .go{width:auto;padding:10px 18px;margin:0}}
+</style></head><body class="boot">
+<template id="owlT"><img class="owl" src="owl-logo.png" alt="" aria-hidden="true"></template>
+<div id="load"></div>
+<header>
+  <div class="bar">
+    <a class="brand" href="/" id="brand" aria-label="OwlGate home"><b>OWLGATE</b></a>
+    <nav><a href="trade" data-i>Trade</a><a class="on" href="market" data-i>Market</a><a href="pool" data-i>Pool</a><a href="xl">X Layer</a><a href="portfolio" data-i>Portfolio</a><a href="alerts" data-i>Alerts</a><a href="/docs" data-i>Docs</a></nav>
+    <div class="right"><button class="lang" id="thm" aria-label="Light / dark">◐</button><button class="lang" id="lang">中文</button><button class="wallet" id="wal">Connect wallet</button></div>
+  </div>
+</header>
+<div class="strip"><div>
+  <span class="live" data-i>LIVE</span><b id="kB" hidden></b><span><i>BEM</i><b id="kBem"></b></span><span class="ch"><em>BNB CHAIN</em><i data-i>SALES 24H</i><b id="kS"></b></span><span><i data-i>VOLUME 24H</i><b id="kV"></b></span><span><i data-i>LISTED</i><b id="kL"></b></span><span><i data-i>FEE</i><b id="kF"></b></span><span class="ch"><a href="xl"><em>X LAYER</em></a><i data-i>RIGS</i><b id="kXr"></b></span><span><i data-i>LISTED</i><b id="kXl"></b></span><span><i data-i>FEE</i><b id="kXf"></b></span>
+</div></div>
+<div class="pulse"><div><span title="BEM total supply on BNB Chain. BEM is minted when a miner claims."><i data-i>BEM mined</i><b id="pBem"></b></span><span><i data-i>BEM / day</i><b id="pRate"></b></span><span title="Mining rigs (TapeOut, Behemoth) listed for sale on BNB Chain."><i data-i>Rigs for sale</i><b id="pRigs"></b></span><span class="ls" id="pSale"></span></div></div>
+<main>
+  <section id="pf" hidden>
+    <div class="sh"><div><h2 data-i>Portfolio</h2><p class="tg" data-i>What your rigs earned while you were away.</p></div></div>
+    <div class="pfbar"><input id="pfA" spellcheck="false" autocomplete="off"><button class="lang" id="pfMe" data-i>My wallet</button><button class="go" id="pfGo" data-i>Load</button></div>
+    <div class="kpis pfk" id="pfK" hidden>
+      <div><small data-i>Rigs · mining</small><b id="pk1">—</b></div>
+      <div><small data-i>Est. value · by power</small><b id="pk2">—</b></div>
+      <div><small data-i>Unclaimed BEM</small><b id="pk3">—</b></div>
+      <div><small data-i>Earned · 24h</small><b id="pk4">—</b></div>
+    </div>
+    <p class="hint" id="pfE" hidden></p>
+    <p class="hint" id="pfMsg"></p>
+    <div class="pfr" id="pfRef" hidden><span data-i>Your referral link</span><code id="pfRL"></code><button class="more" id="pfRC" data-i>Copy</button><a href="/docs#referral" data-i>How it works →</a><div class="pfrs" id="pfRS"></div></div>
+    <div class="tbl" id="pfT" hidden><table><thead><tr><th data-i>CPU</th><th data-i>Rig</th><th data-i>Status</th><th class="n" data-i>Power</th><th class="n" data-i>Unclaimed BEM</th><th class="n" data-i>24h BEM</th><th class="n" data-i>Est. value · BNB</th><th class="n" title="Cheapest listing of the same CPU with similar power (±20%)" data-i>Floor · same power</th><th class="n" data-i>Best offer</th><th></th></tr></thead><tbody id="pfB"></tbody></table></div>
+    <div class="tbl pfx" id="pfX" hidden><table><thead><tr><th data-i>X Layer voucher</th><th data-i>Rig on BNB</th><th class="n" data-i>Power</th><th class="n" data-i>Unclaimed BEM</th><th class="n" data-i>Ask · OKB</th><th class="n" data-i>Best offer</th><th></th></tr></thead><tbody id="pfXB"></tbody></table></div>
+    <div class="pfc"><button class="go" id="pfC" hidden></button><p class="hint"><a id="pfF" href="https://t.me/owlgate_bot" target="_blank" rel="noopener" data-i>Daily digest of this wallet in Telegram →</a> · <a href="https://tapeout.net" target="_blank" rel="noopener" data-i>Register rigs and mine on tapeout.net →</a></p></div>
+  </section>
+  <section id="tv" hidden data-p="c">
+    <div class="tvh"><select id="tCp" aria-label="CPU"></select><div class="tvs"><span><i data-i>FLOOR · MINING</i><b id="tF">—</b></span><span><i data-i>BEST BID</i><b id="tB">—</b></span><span><i data-i>MEDIAN · 7D</i><b id="tL">—</b></span><span><i data-i>VOLUME · 7D</i><b id="tV">—</b></span><span><i data-i>SALES · 7D</i><b id="tN">—</b></span></div><a class="gd" href="/docs#guide" data-i>New here? Guide →</a><p class="tva" id="tAct"></p></div>
+    <div class="tvt" id="tvTabs"><button data-p="c" class="on" data-i>Chart</button><button data-p="b" data-i>Book</button><button data-p="t" data-i>Trades</button></div>
+    <div class="tvg">
+      <div class="tvc" data-p="c" id="tvC"><div class="rg" id="tRg"><button data-d="1" class="on">24H</button><button data-d="7">7D</button></div></div>
+      <div class="tvb" data-p="b"><div class="ph"><b data-i>Order book</b><span id="tBs">—</span></div><div class="ob" id="tOb"></div></div>
+      <div class="tvo" id="tvO"><button class="go" id="tCon" data-i>Connect wallet</button><div class="tvx" id="tvx"><button data-k="buy" class="on" data-i>Buy</button><button data-k="off" id="tOfK" hidden data-i>Offer</button></div><div id="tvBuy"></div><div id="tvOff" hidden></div></div>
+      <div class="tvr" data-p="t"><div class="ph"><b data-i>Recent trades</b></div><div class="tbl"><table><thead><tr><th data-i>Time</th><th data-i>Rig</th><th data-i>Buyer</th><th class="n" data-i>Price · BNB</th></tr></thead><tbody id="tTr"></tbody></table></div></div>
+    </div>
+    <div id="tvOf"></div>
+  </section>
+  <div class="slv" id="nb" hidden><span><b data-i>NEW</b></span><span data-i>TapeCode-Test1 now trades on OwlGate</span><span data-i>Offer on any NFT or list yours · fee 0.75%</span><span><a href="xl#xc" id="nbA" data-i>Open X Layer →</a></span><button aria-label="Close">×</button></div>
+  <div class="slv" id="slv" hidden></div>
+  <section class="hero" id="top">
+    <div class="qb"><div class="qr"><div><small data-i>Cheapest</small><b id="hC">—</b></div><button class="go" id="hBuy" disabled>…</button></div><div class="qr" id="hDeal" hidden></div><div class="hlr"><a class="hl" href="market" data-i>All listings →</a><a class="ta" href="https://t.me/owlgate_bot?start=og_deal" target="_blank" rel="noopener" title="Telegram"><span data-i>Deal alerts</span> ↗</a></div></div>
+    <div class="kpis">
+      <div><small data-i>Cheapest rig</small><b id="h1">…<u>BNB</u></b></div>
+      <div><small data-i>Top CPU · 24h</small><b id="h2">…</b></div>
+      <div><small data-i>Sales · 7d</small><b id="h3">…</b></div>
+      <div><small data-i>Volume · 7d</small><b id="h4">…<u>BNB</u></b></div>
+    </div>
+  </section>
+
+  <section id="lst">
+    <div class="sh"><div><h2 data-i>All listings</h2><p class="tg" data-i>Every rig for sale, ranked by what it earns per BNB.</p></div><p data-i>Prices before the OwlGate fee.</p></div>
+    <div class="two tw">
+      <div>
+        <div class="lf"><select id="lCp"></select><input id="lMax" type="number" min="0" step="any" inputmode="decimal"><select id="lSo"><option value="d" data-i>Best deal</option><option value="p" data-i>Cheapest</option><option value="w" data-i>Most power</option><option value="u" data-i>Best price per power</option><option value="y" data-i>Most BEM per BNB</option></select></div>
+        <div class="tbl" id="lsT"><table><thead><tr><th data-i>CPU</th><th data-i>Rig</th><th class="n" data-i>Power</th><th class="n" data-i>Price · BNB</th><th class="n" data-i>vs recent sales</th><th class="n" data-i>BEM/day per BNB</th><th></th></tr></thead><tbody id="lsB"></tbody></table></div>
+        <button class="more" id="lMore" hidden data-i>Show more</button>
+      </div>
+      <div>
+        <div class="ph"><b data-i>Sweep floor</b><span id="sFeeL">—</span></div>
+        <div class="sw">
+          <label><i data-i style="font-style:normal">CPU</i><select id="sCp"></select></label>
+          <label><i data-i style="font-style:normal">Rigs</i><div class="qs" id="qs"><button data-n="1">1</button><button data-n="3" class="on">3</button><button data-n="5">5</button><button data-n="10">10</button></div></label>
+          <div class="rows">
+            <div class="row"><span data-i>Cheapest</span><b id="sLo">—</b></div>
+            <div class="row"><span data-i>Highest in sweep</span><b id="sHi">—</b></div>
+            <div class="row"><span data-i>Fee</span><b id="sFee">—</b></div>
+            <div class="row t"><span data-i>Total</span><b id="sTot">—</b></div>
+            <div class="row" id="sBalR" hidden><span data-i>Wallet</span><b id="sBal">—</b></div>
+          </div>
+          <button class="go" id="sGo">Sweep</button>
+          <p class="hint" id="sHint" data-i>Cheapest first, one wallet confirmation per rig. Stops if one fails.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="of" hidden>
+    <div class="sh"><div><h2 data-i>Offers</h2><p class="tg" data-i>Name your price. A seller can fill it in one click.</p></div><p data-i>WBNB offers on any rig, settled on Seaport 1.6. Your WBNB stays in your wallet until a holder accepts.</p></div>
+    <p class="hint opn" data-i>The 0.75% OwlGate fee is added to every offer automatically and shown before you sign.</p>
+    <div class="two tw">
+      <div>
+        <div class="ph"><b data-i>Best offers</b><span id="ofN">—</span></div>
+        <div class="tbl"><table><thead><tr><th data-i>CPU</th><th data-i>Rig</th><th class="n" data-i>Best · WBNB</th><th class="n" data-i>Offers</th></tr></thead><tbody id="ofB"></tbody></table></div>
+        <div class="ph"><b data-i>Your offers</b><button class="more" id="ofAll" hidden data-i>Cancel all</button></div>
+        <div class="tbl"><table><thead><tr><th data-i>Rig</th><th class="n" data-i>WBNB</th><th data-i>Status</th><th></th></tr></thead><tbody id="ofM"></tbody></table></div>
+      </div>
+      <div>
+        <div class="ph"><b data-i>Make an offer</b><span id="oF">—</span></div>
+        <div class="sw">
+          <label><i data-i style="font-style:normal">CPU</i><select id="oCp"><option value="0xb1024b89886b9a34aa4ff5f31c411d708b20a14c">TapeOut</option><option value="0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c">Behemoth</option></select></label>
+          <label><i data-i style="font-style:normal">Rig id</i><input id="oId" inputmode="numeric" placeholder="17628"></label>
+          <label><i data-i style="font-style:normal">Price · WBNB</i><input id="oPx" inputmode="decimal" placeholder="0.5"></label>
+          <label><i data-i style="font-style:normal">Expires</i><div class="qs q3" id="oEx"><button data-d="1" class="on">1d</button><button data-d="3">3d</button><button data-d="7">7d</button></div></label>
+          <div class="rows">
+            <div class="row"><span data-i>You pay if accepted</span><b id="oP">—</b></div>
+            <div class="row"><span data-i>Seller receives</span><b id="oS">—</b></div>
+            <div class="row" id="oBalR" hidden><span data-i>Wallet</span><b id="oBal">—</b></div>
+          </div>
+          <button class="go" id="oGo" data-i>Make offer</button>
+          <p class="hint" id="oH" data-i>Signing is free. Up to 3 wallet steps the first time: wrap BNB to WBNB, approve the exact amount, sign.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rigs">
+    <div class="sh"><div><h2 data-i>Movers</h2><p class="tg" data-i>Where the BNB moved today. Mining rigs first.</p></div></div>
+    <div class="grid" id="mv"><p class="hint" style="padding:16px" data-i>Loading…</p></div>
+  </section>
+
+
+  <section>
+    <div class="sh"><div><h2 data-i>Market</h2><p class="tg" data-i>Seven days of sales, one CPU at a time.</p></div></div>
+    <div class="two one">
+      <div><div class="ph"><b id="cN">—</b><span id="cS">—</span></div><svg id="chart" viewBox="0 0 800 260"></svg><div id="tip" class="tip" hidden></div></div>
+    </div>
+  </section>
+
+  <section id="op">
+    <div class="sh"><h2 data-i>Official pool</h2></div>
+    <div class="opm"><a href="https://bscscan.com/address/0x8232b40d5b375db47504e56082b11d8d016b22bb" target="_blank" rel="noopener">0x8232…22bb</a><span data-i>TapeOut official mining pool · collection wallet</span><a class="fw" href="https://t.me/owlgate_bot?start=w_0x8232b40d5b375db47504e56082b11d8d016b22bb" target="_blank" rel="noopener" data-i>Follow</a></div>
+    <div class="kpis opk">
+      <div><small data-i>TapeOut transistors</small><b id="op1">…</b><i id="op1d"></i></div>
+      <div><small data-i>Behemoth transistors</small><b id="op2">…</b><i id="op2d"></i></div>
+      <div><small data-i>Rigs built · mining</small><b id="op3">…</b><i id="op3d"></i></div>
+      <div><small data-i>Mining · BEM/day</small><b id="op4">…</b><i id="op4d"></i></div>
+    </div>
+    <p class="hint opn" data-i>From the TapeOut announcement: collection has closed; the pool platform is in audit (Salus). After launch each transistor sent gets 1 receipt (by processor and type), mining income can be claimed any time and receipts can be traded. Operator fee 5% of profit, half of it buys back and burns BEM. Rigs the pool builds show up here live.</p>
+    <div class="tbl" id="opT"><table><thead><tr><th data-i>Time</th><th data-i>Action</th><th data-i>Counterparty</th><th class="n" data-i>Amount</th></tr></thead><tbody id="opB"><tr><td colspan="4" class="hint" data-i>Loading…</td></tr></tbody></table></div>
+  </section>
+
+  <section id="xl">
+    <div class="sh"><div><h2 data-i>X Layer rigs</h2><p class="tg" data-i>Bridged rigs, finally with a price.</p></div></div>
+    <div class="opm"><a href="https://www.oklink.com/xlayer/address/0x9cfc959cd42b2e1d39a0d850c528210e818ae520" target="_blank" rel="noopener">0x9cfc…e520</a><span data-i>TapeOut Rig Bridge vouchers on X Layer</span></div>
+    <div class="kpis opk">
+      <div><small data-i>Vouchers</small><b id="xl1">…</b><i></i></div>
+      <div><small data-i>Total power</small><b id="xl2">…</b><i></i></div>
+      <div><small data-i>Mining · BEM/day</small><b id="xl3">…</b><i></i></div>
+      <div><small data-i>Unclaimed BEM</small><b id="xl4">…</b><i id="xl4d"></i></div>
+    </div>
+    <p class="hint opn" data-i>Each voucher stands for one rig locked in the TapeOut Rig Bridge on BNB. The rig keeps mining on BNB and its BEM is sent to whoever holds the voucher on X Layer. Redeeming the voucher returns the rig. The voucher contract is upgradeable by TapeOut (UUPS proxy).</p>
+    <p class="hint opn"><b data-i>AI agents</b> · <span data-i>read the market and get unsigned transactions your own wallet signs:</span> <a href="/docs#agents" data-i>Agent guide</a> · <a href="/llms.txt" target="_blank" rel="noopener">llms.txt</a> · <a href="https://api.owlgate.xyz/xl/market" target="_blank" rel="noopener">/xl/market</a></p>
+    <div class="tbl"><table><thead><tr><th data-i>Voucher</th><th data-i>Rig on BNB</th><th class="n" data-i>Power</th><th class="n" data-i>BEM/day</th><th class="n" data-i>Unclaimed BEM</th><th data-i>Holder</th><th class="n" data-i>Ask · OKB</th><th class="n" data-i>Best offer</th><th></th></tr></thead><tbody id="xlB"><tr><td colspan="9" class="hint" data-i>Loading…</td></tr></tbody></table></div>
+    <div class="two tw" id="xm" hidden>
+      <div>
+        <div class="ph"><b id="xmCt">Best offer on any voucher</b><span id="xmC">—</span></div>
+        <div class="ph"><b data-i>Your X Layer orders</b><button class="more" id="xmAll" hidden data-i>Cancel all</button></div>
+        <div class="tbl"><table><thead><tr><th data-i>Order</th><th class="n" data-i>OKB</th><th data-i>Status</th><th></th></tr></thead><tbody id="xmM"></tbody></table></div>
+      </div>
+      <div>
+        <div class="ph"><b id="xmTt">Trade vouchers</b><span id="xmF">—</span></div>
+        <div class="sw">
+          <label><i data-i style="font-style:normal">Collection</i><div class="qs q2" id="xmT"><button data-t="vo" class="on" data-i>Voucher</button><button data-t="tc">TapeCode-Test1</button></div></label>
+          <label><i data-i style="font-style:normal">Order</i><div class="qs q3" id="xmK"><button data-k="offer" class="on" data-i>Offer</button><button data-k="coll" id="xmKc">Any voucher</button><button data-k="list" data-i>List</button></div></label>
+          <label id="xmIdL"><i id="xmIdT" style="font-style:normal">Voucher #</i><input id="xmId" inputmode="numeric" placeholder="1"></label>
+          <label><i data-i style="font-style:normal">Price · OKB</i><input id="xmPx" inputmode="decimal" placeholder="1"></label>
+          <label><i data-i style="font-style:normal">Expires</i><div class="qs q3" id="xmEx"><button data-d="1" class="on">1d</button><button data-d="3">3d</button><button data-d="7">7d</button></div></label>
+          <div class="rows">
+            <div class="row"><span id="xmPL">—</span><b id="xmP">—</b></div>
+            <div class="row"><span id="xmSL">—</span><b id="xmS">—</b></div>
+            <div class="row" id="xmBalR" hidden><span data-i>Wallet</span><b id="xmBal">—</b></div>
+          </div>
+          <button class="go" id="xmGo" data-i>Place order</button>
+          <p class="hint" id="xmH"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="xc">
+    <div class="sh"><div><h2>TapeCode-Test1</h2><p class="tg" data-i>X Layer collection, traded on the OKX NFT market.</p></div></div>
+    <div class="opm"><a href="https://www.oklink.com/xlayer/address/0x0e91460d6823c711643e650a9a4c0cc21de41614" target="_blank" rel="noopener">0x0e91…1614</a><span data-i>Prices from OKX, refreshed every minute</span></div>
+    <div class="kpis opk">
+      <div><small data-i>Floor</small><b id="xc1">…</b><i></i></div>
+      <div><small data-i>Best offer</small><b id="xc2">…</b><i></i></div>
+      <div><small data-i>Sales · 7d</small><b id="xc3">…</b><i></i></div>
+      <div><small data-i>Volume · 7d</small><b id="xc4">…</b><i id="xc4d"></i></div>
+    </div>
+    <div class="opm" id="xcO" hidden><span id="xcOt">—</span><button class="buy" data-cp="coll:" data-i>Make offer</button><button class="buy" data-cp="list:" data-i>List</button></div>
+    <div class="tbl" id="xcY" hidden><table><thead><tr><th data-i>Your NFTs</th><th class="n" data-i>OKX ask</th><th class="n" data-i>Best offer</th><th></th></tr></thead><tbody id="xcYB"></tbody></table></div>
+    <div class="tbl"><table><thead><tr><th data-i>NFT</th><th data-i>Holder</th><th class="n" data-i>Ask · OKB</th><th class="n" data-i>Last sale</th><th></th></tr></thead><tbody id="xcB"><tr><td colspan="5" class="hint" data-i>Loading…</td></tr></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="sh"><div><h2 data-i>Live trades</h2><p class="tg" data-i>Every sale, as it lands on chain.</p></div></div>
+    <div class="tbl"><table><thead><tr><th data-i>Time</th><th data-i>CPU</th><th data-i>Rig</th><th data-i>Buyer</th><th class="n" data-i>Price · BNB</th></tr></thead><tbody id="tape"></tbody></table></div>
+  </section>
+
+  <section id="al">
+    <div class="sh"><div><h2 data-i>Alerts</h2><p class="tg" data-i>Let the owl watch. You get the ping.</p></div></div>
+    <div class="alg">
+      <div><b data-i>Follow any wallet</b><p data-i>Whales included. Daily or weekly digest in Telegram: rigs, mining state, BEM earned. Up to 3 wallets, free.</p><code>/watch 0x…</code></div>
+      <div><b data-i>Deal alert</b><p data-i>A message when a rig is listed with payback under your limit. Free, at most 4 per hour.</p><code>/dealalert</code></div>
+      <div><b data-i>Check a rig</b><p data-i>Payback estimate for any rig id.</p><code>/check 17628</code></div>
+    </div>
+    <div class="alc"><a class="go" href="https://t.me/owlgate_bot?start=og" target="_blank" rel="noopener" data-i>Open the Telegram bot</a><p class="hint" data-i>Tip: tap Follow next to a buyer in Live trades, or on your Portfolio, to start with that wallet.</p></div>
+  </section>
+</main>
+<div class="tvbar" id="tvBar"><span id="tBarP">—</span><button class="go" id="tBarGo" data-i>Buy floor</button></div>
+<footer><div><span>OwlGate · owlgate.xyz · <a href="/llms.txt" target="_blank" rel="noopener" data-i>For AI agents</a> · <a href="/terms" data-i>Terms and privacy</a></span><span><i data-i style="font-style:normal">Buys route through</i> <a href="https://bscscan.com/address/0x8cf613755e9b39fa1c668a1d94aa72edf512814f" target="_blank" rel="noopener">0x8cf6…814f</a> <i data-i style="font-style:normal">(verified) to the TapeOut circuit market.</i></span></div></footer>
+
+<div class="mask" id="wm" hidden><div class="modal">
+  <div class="ph"><b data-i>Connect wallet</b><button id="wmX" aria-label="Close">×</button></div>
+  <div class="wl" id="wl"></div>
+  <p id="wmP"></p>
+</div></div>
+<div class="mask" id="bm" hidden><div class="modal">
+  <div class="ph"><b id="bmT"></b><button id="bmX" aria-label="Close">×</button></div>
+  <div id="bmR"></div>
+  <p id="bmP"></p>
+  <div class="bmb"><button class="more" id="bmN" data-i>Cancel</button><button class="go" id="bmY" data-i>Confirm in wallet</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+let API='https://api.owlgate.xyz';const RPC='https://bsc-dataseed.bnbchain.org',ROUTER='0x8cf613755e9b39fa1c668a1d94aa72edf512814f',SWEEP='0xa1fc1bba8c75baef5aaf7ee37a816938d810607d',MINING='0x7e2e0dc66a3bd9103e69b766afa62d9f7b697b46',SITE='owlgate.xyz',$=id=>document.getElementById(id);
+// ---------- i18n: EN + 简体中文 (key = English text) ----------
+const ZH={"Referred buys":"推荐成交","Earned":"已赚取","Paid":"已发放","Pending":"待发放","Your rate":"你的比例","until {0}":"至 {0}","Paid automatically every day at 00:00 UTC once pending reaches {0} BNB.":"待发放达到 {0} BNB 后，每天 00:00 UTC 自动发放。","Last payout":"最近发放","Your referral link":"你的推荐链接","How it works →":"规则说明 →","New here? Guide →":"新手？使用指南 →","Last sale {0} ago":"最近成交 {0}前","{0} sales in 24h":"24h {0} 笔成交","Floor":"地板价","FLOOR · MINING":"地板价 · 挖矿中","Best bid":"最高出价","24H AGO":"24 小时前","MEDIAN · 7D":"7 日中位价","VOLUME · 7D":"7 日成交额","{0} sales":"{0} 笔","Rigs":"矿机","Total":"累计","LAST":"最新","FLOOR":"地板价","BEST BID":"最高出价","SALES · 7D":"7 日成交","VOL · 7D":"7 日成交额","Chart":"图表","Book":"挂单簿","Trades":"成交","Order book":"挂单簿","Buy":"买入","Offer":"出价","Recent trades":"最近成交","Buy floor":"买地板价","No rigs listed":"暂无挂单","No offers yet":"暂无出价","No sales in 7 days":"7 天内无成交","Spread":"价差","Spread {0} BNB":"价差 {0} BNB","{0} asks · {1} bids":"{0} 卖单 · {1} 买单","Floor {0} BNB":"地板价 {0} BNB","offers":"笔出价","Wallet":"钱包","Deal alerts":"低价提醒","Updating prices… try again in a moment":"正在更新价格…请稍后再试","Pool":"矿池","Official pool":"官方矿池","TapeOut official mining pool · collection wallet":"TapeOut 官方矿池 · 接收地址","TapeOut transistors":"TapeOut 晶体管","Behemoth transistors":"Behemoth 晶体管","Rigs built · mining":"已组矿机 · 挖矿中","Mining · BEM/day":"挖矿 · BEM/天","From the TapeOut announcement: collection has closed; the pool platform is in audit (Salus). After launch each transistor sent gets 1 receipt (by processor and type), mining income can be claimed any time and receipts can be traded. Operator fee 5% of profit, half of it buys back and burns BEM. Rigs the pool builds show up here live.":"据 TapeOut 公告：接收期已结束，矿池平台代码正在 Salus 审计。上线后按转入数量发放收益凭证（1 个晶体管 1 张，按处理器和晶体管类型区分），挖矿收益可随时领取，凭证可在市场转让。运营方收取总利润 5%，其中一半用于回购并销毁 BEM。矿池组好的矿机会在这里实时显示。","Action":"操作","Counterparty":"对方地址","Amount":"数量","Received":"收到","Sent":"转出","Rig in":"矿机转入","Rig out":"矿机转出","since your last visit":"（较上次访问）","No rigs yet":"尚未组矿机","Unclaimed BEM":"未领取 BEM","No pool transfers in the last 3 days":"最近 3 天没有矿池转账","Alerts":"提醒","Docs":"文档","AI agents":"AI 代理","read the market and get unsigned transactions your own wallet signs:":"读取市场并获取由你自己的钱包签名的未签名交易：","Agent guide":"代理指南","Follow any wallet":"关注任意钱包","Whales included. Daily or weekly digest in Telegram: rigs, mining state, BEM earned. Up to 3 wallets, free.":"包括巨鲸。在 Telegram 中每日或每周推送简报：矿机、挖矿状态、已赚 BEM。最多 3 个钱包，免费。","Deal alert":"捡漏提醒","A message when a rig is listed with payback under your limit. Free, at most 4 per hour.":"当有矿机挂单且回本天数低于你设定的上限时通知你。免费，每小时最多 4 条。","Check a rig":"查询矿机","Payback estimate for any rig id.":"估算任意矿机编号的回本时间。","Open the Telegram bot":"打开 Telegram 机器人","Tip: tap Follow next to a buyer in Live trades, or on your Portfolio, to start with that wallet.":"提示：在实时成交中点击买家旁的“关注”，或在资产页中，即可直接关注该钱包。","Follow":"关注","Follow this wallet in Telegram":"在 Telegram 中关注此钱包","Daily digest of this wallet in Telegram →":"在 Telegram 接收此钱包的每日简报 →","Payback":"回本","BEM/day per BNB":"每 BNB 每天 BEM","{0} BEM/day per BNB":"每 BNB 每天 {0} BEM","Most BEM per BNB":"每 BNB 产出最多","BEM per day for each OKB you pay, at today's mining rate and total power. Changes daily.":"按今日挖矿速率与总算力，每支付 1 OKB 每天可得的 BEM。每天变化。","BEM per day for each BNB you pay, at today's mining rate and total power. Changes daily.":"按今日挖矿速率与总算力，每支付 1 BNB 每天可得的 BEM。每天变化。","d":"天","day":"天","days":"天","payback ≈{0} d":"回本 ≈{0} 天","Price":"价格","OwlGate fee":"OwlGate 手续费","Total":"合计","Median per power, {0} sales":"按算力折算中位价（{0} 笔）","Median of {0} sales, same power":"同算力 {0} 笔成交中位价","vs median":"与中位价相比","Mining now":"挖矿中","Estimate at today's BEM price and total mining power; both change every day.":"按今日 BEM 价格和全网算力估算，两者每天都会变化。","Confirm in wallet":"在钱包中确认","fee {0} BNB":"手续费 {0} BNB","{0} BNB under the median":"低于中位价 {0} BNB","Mining ≈ {0} BEM/day":"挖矿 ≈ {0} BEM/天","pays back the est. value in ≈ {0} days":"约 {0} 天收回估值","Via OwlGate: {0} rigs · fees {1} BNB · bought {2} BNB under the median":"经 OwlGate：{0} 台矿机 · 手续费 {1} BNB · 低于中位价 {2} BNB","Since your visit {0} ago":"距上次访问 {0}","{0} new listings":"{0} 个新挂单","{0} under the median":"{0} 个低于中位价","{0} sales":"{0} 笔成交","Unclaimed BEM {0}":"未领取 BEM {0}","Listed":"已挂单","Edit":"修改","Sell":"出售","Update price":"改价","List":"挂单","Delist":"下架","Cancel":"取消","Reference {0} BNB":"参考价 {0} BNB","Keep the approval until it sells; the rig stays in your wallet and keeps mining.":"售出前请保留授权；矿机留在你的钱包中并继续挖矿。","You receive {0} BNB after the 1% CMKT fee":"扣除 1% CMKT 手续费后到手 {0} BNB","Too high: max {0} BNB":"价格过高：最高 {0} BNB","{0}x the reference price":"为参考价的 {0} 倍","Enter a price in BNB":"请输入 BNB 价格","Approve CMKT for {0} (step 1 of 2)":"授权 CMKT 出售 {0}（第 1/2 步）","List {0} at {1} BNB":"以 {1} BNB 挂单 {0}","(step 2 of 2)":"（第 2/2 步）","Delisted ":"已下架 ","Listed ":"已挂单 ","Trade":"交易","Rigs":"矿机","Tapeout":"流片","Mining":"挖矿","Portfolio":"资产","0x… wallet address":"0x… 钱包地址","My wallet":"我的钱包","Load":"查询","Rigs · mining":"矿机 · 挖矿中","Est. value · by power":"估值 · 按算力","Unclaimed BEM":"未领取 BEM","Earned · 24h":"24h 收益","Status":"状态","Power":"算力","24h BEM":"24h BEM","Est. value · BNB":"估值 · BNB","Mining now":"挖矿中","Idle":"未挖矿","claimed":"已领取","Register rigs and mine on tapeout.net →":"前往 tapeout.net 注册矿机与挖矿 →","Claim all · {0} BEM":"全部领取 · {0} BEM","Connect the wallet that holds these rigs":"请连接持有这些矿机的钱包","Claimed {0} BEM":"已领取 {0} BEM","Claim {0} BEM":"领取 {0} BEM","Loading…":"加载中…","Not a wallet address":"不是有效的钱包地址","No rigs in this wallet":"该钱包没有矿机","Server busy, retrying…":"服务器繁忙，正在重试…","Showing first {0} of {1} rigs":"仅显示前 {0} 台，共 {1} 台","Connect a wallet or paste an address.":"连接钱包或粘贴地址。","Updated {0} ago":"{0} 前更新","Soon":"即将上线","Light / dark":"浅色 / 深色","Connect wallet":"连接钱包","LIVE":"实时","BNB CHAIN":"BNB 链","SALES 24H":"24H 成交","VOLUME 24H":"24H 成交额","LISTED":"在售","FEE":"手续费","See every rig.<br><em>Buy the one you want</em> in one tap.":"看清每一台矿机。<br><em>想要哪台</em>，一键买下。","Live TapeOut market on BNB Chain. Rigs from every CPU, floor sweeps, and the full path from rig to BEM.":"BNB 链上的 TapeOut 实时市场。覆盖所有 CPU 的矿机、一键扫地板，从矿机到 BEM 全流程一站完成。","Cheapest rig":"最低价矿机","Top CPU · 24h":"24h 热门 CPU","Sales · 7d":"7 日成交","Volume · 7d":"7 日成交额","Movers":"涨跌榜","24h median sale, size-adjusted, vs the 24h before. Tap a card for its chart.":"24h 成交中位价（按矿机规格折算）对比前 24h。点击卡片查看图表。","Market":"市场","Every dot is one rig sold in the last 7 days.":"每个点代表过去 7 天售出的一台矿机。","Live trades":"实时成交","Latest sales on the TapeOut circuit market.":"TapeOut 电路市场最新成交。","Rig to BEM":"从矿机到 BEM","The whole path on one site.":"全流程，一站完成。","Sweep floor":"扫地板","CPU":"CPU","Cheapest":"最低价","Highest in sweep":"本次最高价","Fee":"手续费","Total":"合计","Cheapest first, one wallet confirmation for the whole sweep. Sold rigs are skipped and refunded.":"从最低价开始，整次扫地板只需在钱包确认一次。已售出的矿机自动跳过并退款。","Cheapest first, one wallet confirmation per rig. Stops if one fails.":"从最低价开始，每台矿机在钱包确认一次。任一笔失败即停止。","Time":"时间","Rig":"矿机","Buyer":"买家","Price · BNB":"价格 · BNB","Buy":"买入","Rigs from every CPU, or sweep the floor.":"所有 CPU 的矿机，或一键扫地板。","Burn transistors, mint the circuit.":"销毁晶体管，铸造电路。","Mine":"挖矿","Register the rig and start earning.":"注册矿机，开始收益。","Claim":"领取","Claim BEM, sell or hold.":"领取 BEM，卖出或持有。","Buys route through":"买入经由","(verified) to the TapeOut circuit market.":"（已验证）路由至 TapeOut 电路市场。","fee {0}%":"手续费 {0}%","paused":"已暂停","Browser wallet":"浏览器钱包","Pick the wallet that holds your BNB.":"选择持有 BNB 的钱包。","No wallet in this browser. On phone, open {0} inside your wallet app:":"当前浏览器没有钱包。手机上请在钱包 App 内打开 {0}：","Binance Wallet: open the Binance app → Wallet → Discover, paste {0}.":"币安钱包：打开币安 App → 钱包 → 发现，粘贴 {0}。","Cancelled":"已取消","Wallet error: ":"钱包错误：","Switch your wallet to BNB Chain to trade":"请将钱包切换到 BNB 链后交易","Connected ":"已连接 ","Not enough BNB: need {0} BNB":"BNB 不足：需要 {0} BNB","Confirm in wallet · ":"请在钱包中确认 · ","Failed: ":"失败：","view tx":"查看交易","Pending… ":"确认中… ","Reverted: listing gone or price changed · ":"交易回滚：挂单已下架或价格变动 · ","Not confirmed yet · ":"尚未确认 · ","Bought ":"已买入 ","Data unavailable: ":"数据暂不可用：","{0} listed":"{0} 台在售","NEW":"新","RIGS":"矿机","What your rigs earned while you were away.":"你不在时，你的矿机赚了多少。","Every rig for sale, ranked by what it earns per BNB.":"所有在售矿机，按每 BNB 的产出排序。","Name your price. A seller can fill it in one click.":"你出价，卖家一键成交。","Where the BNB moved today. Mining rigs first.":"今天 BNB 流向哪里。挖矿机优先。","Seven days of sales, one CPU at a time.":"近 7 天成交，逐个 CPU 查看。","Bridged rigs, finally with a price.":"跨链矿机，终于有了价格。","Every sale, as it lands on chain.":"每笔成交，上链即显示。","Let the owl watch. You get the ping.":"让猫头鹰盯盘，你只管收提醒。","BEM mined":"已挖出 BEM","CLAIMED":"已领取","BRIDGED":"已跨链","REDEEMED":"已赎回","X Layer voucher #{0}":"X Layer 凭证 #{0}","Verify on OKLink":"在 OKLink 上核实","Verify on BscScan":"在 BscScan 上核实","{0} wallets":"{0} 个钱包","BEM / day":"BEM / 天","Rigs for sale":"在售矿机","Nothing listed · alert me":"暂无挂单 · 提醒我","SOLD":"成交","Mines BEM":"可挖 BEM","Certified by TapeOut":"TapeOut 官方认证","Newly listed":"新上线","Not mining":"不挖矿","BNB last":"BNB 最新","{0} sales 24h":"24h {0} 笔","Buy floor · {0} BNB":"买地板价 · {0} BNB","No listing":"暂无挂单","{0} sales · median {1} BNB":"{0} 笔成交 · 中位价 {1} BNB","Not enough sales yet":"成交不足","Not enough sales in 24h":"24 小时内成交不足","7D AGO":"7 天前","NOW":"现在","Sweep {0} rig":"扫 {0} 台","Sweep {0} rigs":"扫 {0} 台","Swept {0}/{1} rigs":"已扫 {0}/{1} 台","Sweep":"扫地板","All listings →":"全部在售 →","Buy · {0} BNB":"买入 · {0} BNB","{0} power":"算力 {0}","{0} sales of rigs above 10 power, median per power scaled to this rig: {1} BNB":"{0} 笔算力 10 以上矿机成交，按单位算力中位价折算到本机：{1} BNB","vs recent sales":"对比近期成交","Median of {0} sales, same CPU and power: {1} BNB":"同 CPU 同算力 {0} 笔成交中位价：{1} BNB","Best deal":"最划算","All listings":"全部在售","Prices before the OwlGate fee.":"价格未含 OwlGate 手续费。","Most power":"算力最高","Best price per power":"单位算力最便宜","Show more":"显示更多","All CPUs":"全部 CPU","Max BNB":"最高 BNB","No rigs match":"没有符合条件的矿机"};
+let LANG='en';try{LANG=localStorage.getItem('og-lang')||''}catch(e){}if(!LANG)LANG=/^zh/i.test(navigator.language)?'zh':'en';
+// funnel (D1): counts only, no cookie / IP / wallet. ?s=<channel> tags the visit; ?me=1 once = founder opt-out (?me=0 undo)
+const EVS=(()=>{try{const q=new URLSearchParams(location.search),m=q.get('me');if(m!==null)m==='0'?localStorage.removeItem('og-me'):localStorage.setItem('og-me','1');if(localStorage.getItem('og-me'))return null;let s=(q.get('s')||'').toLowerCase();if(/^[a-z0-9_]{1,36}$/.test(s))sessionStorage.setItem('og-s',s);else s=sessionStorage.getItem('og-s')||'direct';return 'og_'+s}catch(e){return 'og_direct'}})();
+// referral (founder 2026-10-29): ?r=<wallet>, first touch kept 30 days. A buy/sweep tx sent with it is logged; tools/ref-payout.js checks it on-chain and pays 20% of the fee (40% for invited partners, first 90 days)
+let REF=(()=>{try{const r=(new URLSearchParams(location.search).get('r')||'').toLowerCase(),o=JSON.parse(localStorage.getItem('og-ref')||'null');if(o&&Date.now()-o.t<30*864e5)return o.r;if(/^0x[0-9a-f]{40}$/.test(r)){localStorage.setItem('og-ref',JSON.stringify({r,t:Date.now()}));return r}if(/^[a-z0-9]{6,12}$/.test(r))fetch(API+'/ref/code?c='+r).then(x=>x.ok?x.json():null).then(j=>{if(j&&/^0x[0-9a-f]{40}$/.test(j.wallet)){REF=j.wallet;try{localStorage.setItem('og-ref',JSON.stringify({r:REF,t:Date.now()}))}catch(e){}}}).catch(()=>{})}catch(e){}return null})();
+// referrer dashboard in Portfolio: verified buys, earned, paid, pending (tools/ref-pay.js pays automatically every day)
+const refStats=async()=>{const a=ACC&&ACC.toLowerCase();if(!a)return;try{const s=await(await fetch(API+'/ref/stats?r='+a)).json();if(!ACC||ACC.toLowerCase()!==a)return;const z=v=>String(parseFloat((+v||0).toFixed(5))),c=(k,v,g)=>`<span><i>${t(k)}</i><b${g?' class="g"':''}>${v}</b></span>`;
+  $('pfRS').innerHTML=c('Referred buys',s.buys)+c('Earned',z(s.earned)+' BNB',1)+c('Paid',z(s.paid)+' BNB')+c('Pending',z(s.pending)+' BNB')+c('Your rate',s.rate+'%'+(s.partnerUntil&&s.rate===40?' · '+t('until {0}',s.partnerUntil):''))+`<p>${t('Paid automatically every day at 00:00 UTC once pending reaches {0} BNB.',s.min)}${s.last?' '+t('Last payout')+` <a href="https://bscscan.com/tx/${s.last.tx}" target="_blank" rel="noopener">${z(+s.last.amt/1e18)} BNB</a>`:''}</p>`+(s.rate<40?`<p class="pfp">${t('Running a community or channel? Partner rate 40%: DM {0} on Telegram or {1}.','<a href="https://t.me/kvzuobai" target="_blank" rel="noopener">@kvzuobai</a>','<a href="https://x.com/kvzuobai" target="_blank" rel="noopener">X</a>')}</p>`:'')}catch(e){}};
+const refTx=h=>{if(REF&&ACC&&REF!==ACC.toLowerCase())try{fetch(API+'/ref?r='+REF+'&tx='+h,{keepalive:true}).catch(()=>{})}catch(_){}};
+// clean paths (owlgate.xyz/xl) instead of #xl; nginx serves index.html for any path. BASE keeps local /app/owlgate/ working
+const RT={trade:'tv',market:'lst',movers:'rigs',offers:'of',pool:'op',xl:'xl',portfolio:'pf',alerts:'al'},RS=Object.fromEntries(Object.entries(RT).map(([k,v])=>[v,k]));
+if(/^\/[a-z]+\/$/.test(location.pathname))location.replace(location.pathname.slice(0,-1)+location.search+location.hash);
+const BASE=location.pathname.replace(/[^/]*$/,''),SEC=()=>RT[location.pathname.split('/').pop()]||'',goPath=id=>history.replaceState(null,'',BASE+RS[id]+location.search);
+{const m=location.hash.match(/^#(lst|rigs|of|op|xl|pf|al)$/);if(m)goPath(m[1])} // old #xl links
+const ev=(e,x='')=>{if(EVS)try{fetch(API+'/ev?s='+EVS+'&e='+e+x,{keepalive:true}).catch(()=>{})}catch(_){}};
+const t=(k,...a)=>{let s=(LANG==='zh'&&ZH[k])||k;a.forEach((v,i)=>s=s.replace('{'+i+'}',v));return s};
+function applyLang(){document.documentElement.lang=LANG==='zh'?'zh-CN':'en';
+  document.querySelectorAll('[data-i]').forEach(el=>{if(el.dataset.en===undefined)el.dataset.en=el.innerHTML;el.innerHTML=t(el.dataset.en)});
+  $('lang').textContent=LANG==='zh'?'EN':'中文';$('thm').title=$('thm').ariaLabel=t('Light / dark');$('pfA').placeholder=t('0x… wallet address');$('lMax').placeholder=t('Max BNB')}
+
+const BEH='0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c';
+const owl=()=>$('owlT').content.firstElementChild.cloneNode(true);
+$('load').append(owl());setTimeout(()=>$('load').classList.add('out'),1500); // never block the page on a slow API; sections fill in when data lands
+$('brand').prepend(owl());
+const j=u=>fetch(u).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
+// reference price from 7d sales of the same CPU: same vw:uw (>=3 sales), or for one-kind power>10 the median BNB per power of such sales (>=5) x power
+// vw and uw are separate powers the market prices differently; a sale's power is read from the rig after the sale (0:0 = new owner not mining yet = unknown)
+const kv=(...a)=>a.map((v,i)=>`<span${i===a.length-2&&a.length>2?' class="p"':''}>${v}</span>`).join(''); // label | value [| tail]: used in every button that carries a number
+const pwr=x=>(x.vw||0)+(x.uw||0),ref=x=>{const v=x.vw||0,u=x.uw||0;if(!v&&!u)return null;const a=SW[x.cp]&&SW[x.cp][v+':'+u];if(a&&a.length>=3)return{v:med(a),n:a.length};
+  const b=SB[x.cp]&&(u===0&&v>10?SB[x.cp].v:v===0&&u>10?SB[x.cp].u:null);return b&&b.length>=5?{v:med(b)*(v||u),n:b.length,k:1}:null},
+  fair=x=>{const r=ref(x);return r?r.v:null},deal=x=>{const r=ref(x);return r?(1-x.px/r.v)*100:null};
+const f=(x,d=4)=>x>=100?x.toFixed(1):x>=1?x.toFixed(3):x.toFixed(d);
+const med=a=>{if(!a.length)return 0;const s=[...a].sort((p,q)=>p-q),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+const ago=s=>s<60?Math.round(s)+'s':s<3600?Math.round(s/60)+'m':s<86400?Math.round(s/3600)+'h':Math.round(s/86400)+'d';
+const W=n=>BigInt(n).toString(16).padStart(64,'0'),bnb=w=>Number(w)/1e18;
+let toastT;const toast=(m,ms=2600)=>{const t=$('toast');t.innerHTML=m;t.classList.add('on');clearTimeout(toastT);if(ms)toastT=setTimeout(()=>t.classList.remove('on'),ms)};
+let HB=null,BEMP=0,PF=null,SW={},SB={},LST={},NM={},CI=null,sweepN=3,BPS=100n,SEL=null,MV=[];
+const sh=a=>a.slice(0,6)+'…'+a.slice(-4),dup={};
+// curated listing comes from the API (/listings.listed, from tools/listed.json); this fallback is the two certified mining CPUs. Names are spoofable: everything is keyed by address, only cert CPUs show a bare name
+const TO='0xb1024b89886b9a34aa4ff5f31c411d708b20a14c';let LIST={};
+const setListed=a=>{LIST={};for(const c of a)LIST[c.cp]=c};setListed([{cp:TO,name:'TapeOut',mining:true,cert:true},{cp:BEH,name:'Behemoth',mining:true,cert:true}]);
+const isMine=cp=>LIST[cp]?LIST[cp].mining:BCP.includes(cp),isLive=x=>!isMine(x.cp)||x.act,isNew=cp=>{const c=LIST[cp],d=c&&c.at?Date.parse(c.at):NaN;return d==d&&Date.now()-d<14*864e5};
+const nm0=cp=>LIST[cp]&&LIST[cp].name||(cp===BEH?'Behemoth':NM[cp])||sh(cp),name=cp=>LIST[cp]&&LIST[cp].cert?nm0(cp):nm0(cp)===sh(cp)?sh(cp):nm0(cp)+' ·'+cp.slice(-4);
+const cost=x=>{const p=BigInt(x.pxWei);return p+p*BPS/10000n};
+
+// ---------- wallet: EIP-6963 list + injected fallback + open-in-wallet links on mobile ----------
+let ETH=null,ACC=null;const P6963=new Map();
+addEventListener('eip6963:announceProvider',e=>P6963.set(e.detail.info.uuid,e.detail));
+const ask6963=()=>dispatchEvent(new Event('eip6963:requestProvider'));ask6963();
+const rpcRd=(to,data)=>fetch(RPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to,data},'latest']})}).then(r=>r.json()).then(r=>r.result);
+async function loadFee(){try{BPS=BigInt(await rpcRd(ROUTER,'0xe868ce52'+W(ACC||0)));$('kF').textContent=(Number(BPS)/100)+'%';$('sFeeL').textContent=t('fee {0}%',Number(BPS)/100);
+  if(await rpcRd(ROUTER,'0x5c975abb')!=='0x'+'0'.repeat(64)){$('kF').textContent=t('paused');$('sGo').disabled=true}}catch(e){}renderMovers();sweep()}
+let pick=null;
+function chooser(){return new Promise(res=>{pick=res;ask6963();
+  setTimeout(()=>{const L=[...P6963.values()],wl=$('wl');
+    let h=L.map((p,i)=>`<button data-i="${i}"><img src="${p.info.icon}" alt="">${p.info.name}</button>`).join('');
+    if(!L.length&&window.ethereum)h=`<button data-inj="1"><span class="ph2">◆</span>${t('Browser wallet')}</button>`;
+    const u=encodeURIComponent('https://'+SITE+location.pathname.replace(/^\/app\/owlgate/,''));
+    $('wmP').innerHTML=h?t('Pick the wallet that holds your BNB.'):t('No wallet in this browser. On phone, open {0} inside your wallet app:',SITE)+`<br><br>
+      <a href="okx://wallet/dapp/url?dappUrl=${u}">OKX Wallet</a> · <a href="https://metamask.app.link/dapp/${SITE}">MetaMask</a> · <a href="https://link.trustwallet.com/open_url?coin_id=20000714&url=${u}">Trust</a><br>${t("Binance Wallet: open the Binance app → Wallet → Discover, paste {0}.",SITE)}`;
+    wl.innerHTML=h;wl.onclick=e=>{const b=e.target.closest('button');if(!b)return;$('wm').hidden=true;res(b.dataset.inj?window.ethereum:L[+b.dataset.i].provider)};
+    $('wm').hidden=false},250)})}
+$('wmX').onclick=$('wm').onclick=e=>{if(e.target===$('wm')||e.target===$('wmX')){$('wm').hidden=true;pick&&pick(null)}};
+async function connect(sw=bsc){ // sw = chain switch to run after connecting (X Layer market passes xlc)
+  const p=await chooser();if(!p)return false;ETH=p;
+  try{[ACC]=await ETH.request({method:'eth_requestAccounts'})}catch(e){toast(e.code===4001?t('Cancelled'):t('Wallet error: ')+(e.message||e));return false}
+  ev('w');if(!await sw())return false;
+  ETH.on&&ETH.on('accountsChanged',a=>{ACC=a[0]||null;wal();loadFee();if(XL.on)xmLoad();pfAcc()});
+  wal();await loadFee();toast(t('Connected ')+sh(ACC));if(bidOn())bdMine().then(ofDraw);if(XL.on)xmLoad();pfAcc();return true}
+async function bsc(){const c=await ETH.request({method:'eth_chainId'});if(c==='0x38')return true;
+  try{await ETH.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x38'}]});return true}catch(e){
+    if(e.code===4902||(e.data&&e.data.originalError&&e.data.originalError.code===4902)){try{await ETH.request({method:'wallet_addEthereumChain',params:[{chainId:'0x38',chainName:'BNB Smart Chain',nativeCurrency:{name:'BNB',symbol:'BNB',decimals:18},rpcUrls:[RPC],blockExplorerUrls:['https://bscscan.com']}]});return true}catch(_){}}
+    toast(t('Switch your wallet to BNB Chain to trade'));return false}}
+const wal=()=>{const b=$('wal');b.textContent=ACC?sh(ACC):t('Connect wallet');b.classList.toggle('on',!!ACC);$('pfRef').hidden=!ACC;if(ACC){const a=ACC.toLowerCase();$('pfRL').textContent='owlgate.xyz/?r='+a;fetch(API+'/ref/code?a='+a).then(x=>x.ok?x.json():null).then(j=>{if(j&&j.wallet===a&&ACC&&ACC.toLowerCase()===a)$('pfRL').textContent='owlgate.xyz/?r='+j.code}).catch(()=>{});refStats()}pfRender();bals();tvRender()};
+// wallet balances under the trade boxes: BNB under Sweep (red when below the sweep total), BNB + WBNB under Make an offer, OKB + WOKB under the X Layer form. On connect / account change, every 20 s
+let WB=null,SWT=null;
+async function bals(){const a=ACC;$('sBalR').hidden=$('oBalR').hidden=$('xmBalR').hidden=!a;if(!a){WB=null;return}
+  try{const[v,w]=await Promise.all([rpcQ('eth_getBalance',[a,'latest']),rpcQ('eth_call',[{to:BID.wb,data:'0x70a08231'+W(a)},'latest'])]);if(a===ACC){WB=BigInt(v);balS();$('oBal').textContent=f(bnb(WB))+' BNB · '+f(bnb(BigInt(w)))+' WBNB'}}catch(e){}
+  try{const[o,w]=await Promise.all([xr('eth_getBalance',[a,'latest']),xq(XM.wo,'0x70a08231'+W(a))]);if(a===ACC)$('xmBal').textContent=f(bnb(BigInt(o)))+' OKB · '+f(bnb(BigInt(w)))+' WOKB'}catch(e){}}
+function balS(){if(WB==null)return;const b=$('sBal');b.textContent=f(bnb(WB))+' BNB';b.classList.toggle('lo',SWT!=null&&WB<SWT)}
+setInterval(()=>{if(ACC&&!document.hidden)bals()},20000);
+$('wal').onclick=()=>ACC?openPf():connect();
+async function receipt(h){for(let i=0;i<60;i++){const r=await ETH.request({method:'eth_getTransactionReceipt',params:[h]});if(r)return r;await new Promise(s=>setTimeout(s,2000))}return null}
+// deep link from Telegram /snipe alerts: #buy=<tid>&c=<0 TapeOut|1 Behemoth> -> toast with a Buy button for that listing (a tap, so wallets allow the popup)
+const DLC=['0xb1024b89886b9a34aa4ff5f31c411d708b20a14c','0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c'];
+function dlBuy(){const m=location.hash.match(/^#(?:buy|k)=(\d{1,9})(?:&c=([01]))?/);if(!m||SEC()==='xl')return; // #k = bot /check links; on /xl #buy=<voucher> is handled by xlDl
+  history.replaceState(null,'',location.pathname);
+  const cp=m[2]!=null?DLC[+m[2]]:null,x=Object.values(LST).flat().find(y=>String(y.tid)===m[1]&&(!cp||y.cp===cp));
+  if(!x){toast(t('Rig #{0} is no longer listed',m[1]),6000);return}
+  toast(`${name(x.cp)} #${x.tid} · <b>${f(x.px)} BNB</b> · ${t('power')} ${pwr(x)} <button class="buy" id="dlB">${t('Buy')}</button> <button class="lang" id="dlX">✕</button>`,0);
+  $('dlB').onclick=()=>{$('toast').classList.remove('on');buyOne(x)};$('dlX').onclick=()=>$('toast').classList.remove('on')}
+// wallet proof for the bot's 24 h trial: #v=<nonce>&t=<telegram id>&x=<expiry unix s>. personal_sign only (no tx, no gas); the signature goes back
+// to the bot as a pasted /verify line, never to a server. The message must stay byte-equal to trialMsg in the bot.
+(()=>{const h=new URLSearchParams(location.hash.slice(1)),v=h.get('v'),tg=h.get('t'),x=h.get('x');if(!/^[0-9a-f]{24}$/.test(v||'')||!/^\d{1,15}$/.test(tg||'')||!/^\d{10}$/.test(x||''))return;
+  const el=document.createElement('section');el.id='vf';document.querySelector('main').prepend(el);let line='',msg='';
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const draw=()=>{const exp=+x*1000<Date.now();el.innerHTML=`<div class="sh"><h2>${t('Verify your wallet for the bot trial')}</h2></div><p class="hint">${t('Sign a message to prove you own this wallet. No transaction, no fee. Then paste the line into the bot.')}</p>`+
+    (exp?`<p class="hint">${t('This link has expired. Send /trial to the bot again.')}</p>`:line?`<textarea readonly rows="3" id="vfL" style="width:100%;font:12px var(--mono)">${esc(line)}</textarea><button class="go" id="vfC">${t('Copy')}</button>`:`<button class="go" id="vfB">${t('Sign with wallet')}</button>`)+(msg?`<p class="hint">${esc(msg)}</p>`:'');
+    const b=$('vfB');if(b)b.onclick=sign;const c=$('vfC');if(c)c.onclick=()=>{$('vfL').select();try{navigator.clipboard.writeText(line)}catch(z){try{document.execCommand('copy')}catch(y){}}c.textContent=t('Copied')}};
+  const sign=async()=>{try{if(!ACC&&!await connect())return;const A=ACC.toLowerCase(),m='OwlGate trial verification\nProve you own this wallet to start the 24 h trial of paid alerts. No transaction, no fee.\nWallet: '+A+'\nTelegram: '+tg+'\nNonce: '+v+'\nExpires: '+new Date(+x*1000).toISOString().replace('.000Z','Z');
+    const hex='0x'+[...new TextEncoder().encode(m)].map(b=>b.toString(16).padStart(2,'0')).join(''),sig=await ETH.request({method:'personal_sign',params:[hex,A]});
+    if(!/^0x[0-9a-fA-F]{130}$/.test(sig))throw Error('bad signature');line='/verify '+A+' '+sig;msg=''}catch(e){msg=e.code===4001?t('Cancelled'):t('Wallet error: ')+(e.message||e)}draw()};
+  draw();scrollTo(0,0)})();
+async function buyOne(x,tag=''){
+  if(!FRESH){toast(t('Updating prices… try again in a moment'));return false}
+  if(!ACC&&!await connect())return false;
+  if(!tag)ev('a');if(!await bsc()){ev('c');return false}
+  const total=cost(x),bal=BigInt(await ETH.request({method:'eth_getBalance',params:[ACC,'latest']}));
+  if(bal<total){ev('n');toast(t('Not enough BNB: need {0} BNB',f(bnb(total))));return false}
+  if(!tag&&!await confirmBuy(x)){ev('x');return false}
+  let h;try{toast(tag+t('Confirm in wallet · ')+name(x.cp)+' #'+x.tid+' · '+f(bnb(total))+' BNB',0);
+    h=await ETH.request({method:'eth_sendTransaction',params:[{from:ACC,to:ROUTER,value:'0x'+total.toString(16),data:'0x24b6434b'+W(x.lid)+W(x.pxWei)}]})}
+  catch(e){ev(e.code===4001?'x':'f');toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return false}
+  const tx=`<a href="https://bscscan.com/tx/${h}" target="_blank" rel="noopener">${t("view tx")}</a>`;
+  ev('b');refTx(h);toast(tag+t('Pending… ')+tx,0);const r=await receipt(h);
+  if(!r||r.status!=='0x1'){toast(t(r?'Reverted: listing gone or price changed · ':'Not confirmed yet · ')+tx,7000);return false}
+  LST[x.cp]=LST[x.cp].filter(y=>y.lid!==x.lid);const u=acct([x],total);toast(tag+t('Bought ')+name(x.cp)+' #'+x.tid+' · '+t('fee {0} BNB',f(bnb(total-BigInt(x.pxWei)),5))+(u>0?' · '+t('{0} BNB under the median',f(u)):'')+' · '+tx,9000);renderMovers();sweep();return true}
+
+// ---------- data (first load + refresh every 60 s; new trades flash in) ----------
+const key=s=>s.b+':'+s.tid;let SEEN=null,DRAWN=0;
+function ingest(ci,ls){
+  CI=ci;NM=ci.nm||{};if(ls.listed&&ls.listed.length)setListed(ls.listed);
+  LST={};for(const x of ls.items)if(x.ok!==false&&x.src==='cmkt'&&x.px>0)(LST[x.cp]=LST[x.cp]||[]).push(x); // the router buys circuit-market listings only; ok=false = seller moved the rig, a buy would revert
+  for(const k in LST)LST[k].sort((p,q)=>p.px-q.px);
+  SW={};SB={};for(const s of ci.S){const v=s.w||0,u=s.u;if(u===undefined&&!v)continue; // older API rows have no uw: their power-0 sales are ambiguous
+    const uu=u||0;if(!v&&!uu)continue;const a=SW[s.cp]=SW[s.cp]||{},k=v+':'+uu;(a[k]=a[k]||[]).push(s.v);const b=SB[s.cp]=SB[s.cp]||{v:[],u:[]};if(!uu&&v>10)b.v.push(s.v/v);if(!v&&uu>10)b.u.push(s.v/uu)}
+  const day=Math.round(86400/ci.bt),s24=ci.S.filter(s=>s.b>ci.block-day);
+  $('kB').textContent=ci.block.toLocaleString('en-US');$('kS').textContent=s24.length;$('kV').textContent=f(s24.reduce((a,s)=>a+s.v,0),2)+' BNB';
+  $('kL').textContent=Object.values(LST).reduce((a,l)=>a+l.length,0);
+  const all=Object.values(LST).flat().filter(x=>isMine(x.cp)&&x.act).sort((a,b)=>a.px-b.px)[0]; /* hero = cheapest rig that mines BEM; non-mining CPUs stay in cards, listings and sweep */if(all)$('h1').innerHTML=f(all.px)+'<u>BNB</u>';HB=all;$('hBuy').disabled=!all;$('hBuy').classList.toggle('kv',!!all);$('hBuy').innerHTML=all?kv(t('Buy'),f(bnb(cost(all)))+' BNB'):t('No listing');$('hC').innerHTML=all?name(all.cp)+' #'+all.tid+' · '+(pwr(all)?t('{0} power',pwr(all)):t(isMine(all.cp)?'Idle':'Not mining'))+(deal(all)>=10?`<span class="sub"><span class="dl">−${deal(all).toFixed(0)}% ${t('vs median')}</span></span>`:''):'—';
+  const bd=Object.values(LST).flat().filter(x=>deal(x)>=10&&x!==all).sort((p,q)=>deal(q)-deal(p))[0]; // the cheapest rig is never repeated as Best deal$('hDeal').hidden=!bd;$('hDeal').innerHTML=bd?`<div><small>${t('Best deal')}</small><b title="${t('Median of {0} sales, same CPU and power: {1} BNB',ref(bd).n,f(ref(bd).v))}">${name(bd.cp)} #${bd.tid} · ${t('{0} power',pwr(bd))}<span class="sub"><span class="dl">−${deal(bd).toFixed(0)}% ${t('vs median')}</span>${yld(bd)?' · '+t('{0} BEM/day per BNB',f(yld(bd))):''}</span></b></div><button class="go kv" data-l="${bd.lid}">${kv(t('Buy'),f(bnb(cost(bd)))+' BNB')}</button>`:'';
+  $('h3').textContent=ci.S.length.toLocaleString('en-US');$('h4').innerHTML=f(ci.S.reduce((a,s)=>a+s.v,0),1)+'<u>BNB</u>';
+  const tp=[...ci.S].sort((a,b)=>b.b-a.b).slice(0,12);
+  $('tape').innerHTML=tp.map((s,i)=>`<tr class="${SEEN&&!SEEN.has(key(s))?'new':''}" style="animation-delay:${SEEN?0:i*30}ms"><td>${ago((ci.block-s.b)*ci.bt)}</td><td>${name(s.cp)}</td><td>#${s.tid}</td><td><a href="https://bscscan.com/address/${s.by}" target="_blank" rel="noopener">${sh(s.by)}</a><a class="fw" href="https://t.me/owlgate_bot?start=w_${s.by}" target="_blank" rel="noopener" title="${t('Follow this wallet in Telegram')}">${t('Follow')}</a></td><td class="n">${f(s.v)}</td></tr>`).join('');
+  const v=$('sCp').value;
+  $('sCp').innerHTML=Object.keys(LST).sort((a,b)=>LST[b].length-LST[a].length).map(cp=>`<option value="${cp}">${name(cp)} · ${t('{0} listed',LST[cp].length)}</option>`).join('');
+  if(v&&LST[v])$('sCp').value=v;
+  const fresh=SEEN?ci.S.filter(s=>!SEEN.has(key(s))).length:0;SEEN=new Set(ci.S.map(key));
+  if(fresh){const re=(el,c)=>{el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};document.querySelectorAll('.brand .owl').forEach(o=>re(o,'hoot'));re(document.querySelector('.pulse'),'hit');
+    const ns=tp[0],ps=$('pSale');ps.innerHTML=`<a href="https://bscscan.com/nft/${ns.cp}/${ns.tid}" target="_blank" rel="noopener" title="${t('Verify on BscScan')}"><em>${t('SOLD')}</em>${name(ns.cp)} #${ns.tid}<u>${f(ns.v)} BNB</u><i class="vf">↗</i></a>`;re(ps,'in');SOLD_AT=Date.now();
+    const p64=x=>'0x'+x.replace(/^0x/,'').toLowerCase().padStart(64,'0'),hb='0x'+ns.b.toString(16); // upgrade the NFT link to the sale tx: Transfer(seller -> buyer, tokenId) in the sale block
+    lrpc('eth_getLogs',[{address:ns.cp,fromBlock:hb,toBlock:hb,topics:[TT,null,p64(ns.by),p64(BigInt(ns.tid).toString(16))]}]).then(L=>{const el=$('pSale').querySelector('a');if(L&&L[0]&&el&&el.href.includes('/nft/'+ns.cp+'/'+ns.tid))el.href='https://bscscan.com/tx/'+L[0].transactionHash}).catch(()=>{});for(const k of ['kS','kV'])re($(k),'bump')}MV=[];pfRender();tvRender();slvDraw();renderMovers(!fresh&&DRAWN);if(MVTOP){$('h2').textContent=nm0(MVTOP.cp);$('h2').title=MVTOP.cp}sweep();DRAWN=1}
+let RAWL=null,ES=null,FULL=0;
+function live(){if(!window.EventSource||ES)return;ES=new EventSource(API+'/stream');
+  ES.addEventListener('delta',e=>{let d;try{d=JSON.parse(e.data)}catch(_){return}if(!RAWL||!CI)return;
+    const old=new Map(RAWL.items.map(x=>[x.lid,x])),gone=new Set([...d.removes,...d.upserts.map(x=>x.lid)]);
+    RAWL.items=RAWL.items.filter(x=>!gone.has(x.lid)).concat(d.upserts.map(x=>({...x,src:'cmkt',cost:x.px})));
+    for(const s of d.trades)if(!CI.S.some(y=>y.b===s.b&&y.tid===s.tid&&y.cp===s.cp)){const o=old.get(s.lid);CI.S.push({b:s.b,by:s.by,se:s.se,cp:s.cp,tid:s.tid,v:s.v,w:o?o.vw||0:0,u:o?o.uw||0:0})} // sale power = the listing's power
+    if(d.block>CI.block)CI.block=d.block;ingest(CI,RAWL)})
+  ES.addEventListener('head',e=>{try{const h=JSON.parse(e.data);if(CI&&h.block>CI.block){CI.block=h.block;$('kB').textContent=h.block.toLocaleString('en-US')}}catch(_){}})}
+// The VPS is far from Asian users (measured from VN: 5 s to first byte of the page, 3.5-5 s per API call). On reload, draw the last data
+// kept in this browser at once and refresh behind it; buys wait for the fresh prices (FRESH).
+let FRESH=0;
+const chApply=ch=>{const tf=ch&&ch.tf&&(ch.tf['5m']||Object.values(ch.tf)[0]);if(tf&&tf.p&&tf.p.length){BEMP=tf.p[tf.p.length-1];$('kBem').textContent='$'+BEMP.toFixed(2)}else if(!BEMP)$('kBem').textContent='—'}; // keep the last price when one refresh misses
+function bootCache(){if(FRESH)return;try{const c=JSON.parse(localStorage.getItem('og-cache')||'null');if(!c||Date.now()-c.t>864e5||!c.ci||!c.ls)return;
+  chApply(c.ch);RAWL=c.ls;ingest(c.ci,c.ls);$('load').classList.add('out')}catch(e){}}
+function boot(n){if(!n)setTimeout(bootCache,0); // ingest runs in the fetch callback, after the whole script ran (it touches state declared further down)
+  Promise.all([j(API+'/ci7d'),j(API+'/listings'),j(API+'/chart').catch(()=>({}))]).then(([ci,ls,ch])=>{
+  chApply(ch);RAWL=ls;FULL=Date.now();FRESH=1;ingest(ci,ls);setTimeout(()=>document.body.classList.remove('boot'),1500);dlBuy();try{localStorage.setItem('og-cache',JSON.stringify({t:Date.now(),ci,ls,ch}))}catch(e){}loadMR();loadFee();$('load').classList.add('out');{const s0=SEC();if(s0&&!['pf','tv','of'].includes(s0)&&$(s0)){view(false);document.querySelectorAll('nav a').forEach(x=>x.classList.toggle('on',x.getAttribute('href')===RS[s0]));const j=()=>$(s0).scrollIntoView({behavior:'instant'});j();setTimeout(j,700)}}setTimeout(()=>$('load').hidden=true,600);live();
+  setInterval(()=>{if(document.hidden||ES&&ES.readyState===1&&Date.now()-FULL<600000)return; // full refresh: every 60 s without the stream, every 10 min with it
+    Promise.all([j(API+'/ci7d'),j(API+'/listings')]).then(([c,l])=>{FULL=Date.now();if(c.block>=CI.block){RAWL=l;ingest(c,l)}}).catch(()=>{})},60000);
+}).catch(e=>{$('load').classList.add('out');if(n<6||CI){setTimeout(()=>boot(n+1),n<6?3000:15000);return} // API busy (503) is usually brief; with cached data shown, keep retrying
+  $('mv').innerHTML='<p class="hint" style="padding:16px">'+t('Data unavailable: ')+e.message+'</p>'})}
+boot(0);
+// X Layer in the status strip: vouchers live, open voucher listings, X Layer fee (runs after the whole script, bdApi/xmOk are declared below)
+async function xlKpi(){try{const[a,b]=await Promise.all([XL.j||j(API+'/xl'),bdApi('/bids?chain=196')]),n=(b.items||[]).map(xmOk).filter(x=>x&&x.st==='open'&&x.k==='list'&&x.end>Date.now()/1e3).length;
+  $('kXr').textContent=a.supply;$('kXl').textContent=n;$('kXf').textContent=(b.bidFeeBps||75)/100+'%'}catch(e){}}
+setTimeout(xlKpi,0);setInterval(()=>{if(!document.hidden)xlKpi()},60000);
+
+// BEM mined = BEM totalSupply (minted on claim). New claims = Transfer(0x0 -> miner) logs since the last poll; they bump the number and show a CLAIMED chip.
+var SOLD_AT=0;const BEMT='0x5ce033b2bfca3af30b3e8c8457deaf776a8b695a',LRPC='https://bsc-rpc.publicnode.com',TT='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+const cl={sup:null,shown:null,blk:0,q:[]},lrpc=(m,p)=>fetch(LRPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:m,params:p})}).then(r=>r.json()).then(r=>{if(r.error)throw Error(r.error.message);return r.result});
+const clDraw=v=>{cl.shown=v;$('pBem').firstChild?$('pBem').firstChild.nodeValue=Math.floor(v).toLocaleString('en-US'):$('pBem').textContent=Math.floor(v).toLocaleString('en-US')};
+function clCount(to){const a=cl.shown??to,t0=performance.now();const st=n=>{const k=Math.min(1,(n-t0)/800);clDraw(a+(to-a)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)}
+async function clPoll(){try{const hd=parseInt(await lrpc('eth_blockNumber',[]),16);
+  if(cl.sup===null||!cl.blk||hd-cl.blk>2000){cl.sup=Number(BigInt(await lrpc('eth_call',[{to:BEMT,data:'0x18160ddd'},'latest'])))/1e8;cl.blk=hd;clCount(cl.sup);return}
+  if(hd<=cl.blk)return;const L=await lrpc('eth_getLogs',[{address:BEMT,fromBlock:'0x'+(cl.blk+1).toString(16),toBlock:'0x'+hd.toString(16),topics:[TT,'0x'+'0'.repeat(64)]}]);cl.blk=hd;
+  for(const l of L){const v=Number(BigInt(l.data))/1e8;if(v>0){cl.sup+=v;cl.q.push({a:'0x'+l.topics[2].slice(26),v,tx:l.transactionHash})}}}catch(e){}}
+function clShow(){if(!cl.q.length||document.hidden)return;if(Date.now()-SOLD_AT<4000)return; // a sale on screen wins; claims wait
+  const g=cl.q.splice(0),v=g.reduce((s,x)=>s+x.v,0),w=new Set(g.map(x=>x.a)),ps=$('pSale');
+  const tx=new Set(g.map(x=>x.tx)),u=tx.size===1?'https://bscscan.com/tx/'+g[0].tx:'https://bscscan.com/token/'+BEMT+'?a='+(w.size===1?g[0].a:'0x0000000000000000000000000000000000000000'); // one tx -> the tx; one wallet -> its BEM transfers; many -> all mints
+  ps.innerHTML=`<a href="${u}" target="_blank" rel="noopener" title="${t('Verify on BscScan')}"><em class="c">${t('CLAIMED')}</em>${w.size>1?t('{0} wallets',w.size):sh(g[0].a)}<u>+${f(v,2)} BEM</u><i class="vf">↗</i></a>`;ps.classList.remove('in');void ps.offsetWidth;ps.classList.add('in');
+  const fl=document.createElement('span');fl.className='fl';fl.textContent='+'+f(v,2);$('pBem').append(fl);setTimeout(()=>fl.remove(),1700);clCount(cl.sup)}
+clPoll();setInterval(()=>{if(!document.hidden)clPoll()},12000);setInterval(clShow,4000);
+// X Layer voucher events: Transfer on the voucher contract. from 0x0 = bridged in, to 0x0 = redeemed, else a Seaport fill = sold (other moves are skipped).
+// The public RPC allows 100 blocks per getLogs and 7 req/s, so poll every 15 s and skip ahead after a long gap.
+const XRPC='https://rpc.xlayer.tech',XV='0x9cfc959cd42b2e1d39a0d850c528210e818ae520',XSP='0x0000000000000068f116a894984e2db1123eb395',Z40='0x'+'0'.repeat(40);
+const xe={blk:0,q:[]},xrpc=(m,p)=>fetch(XRPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:m,params:p})}).then(r=>r.json()).then(r=>{if(r.error)throw Error(r.error.message);return r.result});
+async function xlEv(l){const fr='0x'+l.topics[1].slice(26),to='0x'+l.topics[2].slice(26),v=parseInt(l.topics[3],16);
+  let k=fr===Z40?'BRIDGED':to===Z40?'REDEEMED':null;
+  if(!k){const tx=await xrpc('eth_getTransactionByHash',[l.transactionHash]);if(tx&&String(tx.to).toLowerCase()===XSP)k='SOLD'}
+  if(k)xe.q.push({k,v,tx:l.transactionHash})}
+async function xePoll(){try{const hd=parseInt(await xrpc('eth_blockNumber',[]),16);if(!xe.blk||hd-xe.blk>100){xe.blk=hd;return}if(hd<=xe.blk)return;
+  const L=await xrpc('eth_getLogs',[{address:XV,fromBlock:'0x'+(xe.blk+1).toString(16),toBlock:'0x'+hd.toString(16),topics:[TT]}]);xe.blk=hd;for(const l of L)await xlEv(l)}catch(e){}}
+function xeShow(){if(!xe.q.length||document.hidden||Date.now()-SOLD_AT<4000)return;const e=xe.q.shift(),ps=$('pSale'),re=(el,c)=>{el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
+  ps.innerHTML=`<a href="https://www.oklink.com/xlayer/tx/${e.tx}" target="_blank" rel="noopener" title="${t('Verify on OKLink')}"><em${e.k==='SOLD'?'':' class="c"'}>${t(e.k)}</em>${t('X Layer voucher #{0}',e.v)}<i class="vf">↗</i></a>`;
+  re(ps,'in');SOLD_AT=Date.now();re(document.querySelector('.pulse'),'hit');document.querySelectorAll('.brand .owl').forEach(o=>re(o,'hoot'));xlKpi()} // rare and worth a full hoot
+xePoll();setInterval(()=>{if(!document.hidden)xePoll()},15000);setInterval(xeShow,2000);
+setInterval(()=>{if(MR&&MR.day)$('pRate').textContent=Math.round(MR.day).toLocaleString('en-US')},2000);
+j(API+'/stats').then(x=>{if(x&&x.miningListed!=null)$('pRigs').textContent=x.miningListed.toLocaleString('en-US')}).catch(()=>{});
+
+// smooth curve through points (Catmull-Rom -> cubic Bezier)
+const smooth=p=>{const n=p.length;if(n<3)return'M'+p.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
+  const dx=[],m=[],t=[];for(let i=0;i<n-1;i++){dx[i]=p[i+1][0]-p[i][0];m[i]=(p[i+1][1]-p[i][1])/(dx[i]||1)}
+  t[0]=m[0];t[n-1]=m[n-2];for(let i=1;i<n-1;i++)t[i]=m[i-1]*m[i]<=0?0:3*(dx[i-1]+dx[i])/((2*dx[i]+dx[i-1])/m[i-1]+(dx[i]+2*dx[i-1])/m[i]);
+  let d='M'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);for(let i=0;i<n-1;i++){const h=dx[i]/3;
+    d+=' C'+(p[i][0]+h).toFixed(1)+' '+(p[i][1]+t[i]*h).toFixed(1)+' '+(p[i+1][0]-h).toFixed(1)+' '+(p[i+1][1]-t[i+1]*h).toFixed(1)+' '+p[i+1][0].toFixed(1)+' '+p[i+1][1].toFixed(1)}return d};
+// 7 daily medians, drawn as a soft curve with a fading area
+function spark(cp){const d=Math.round(86400/CI.bt),pts=[];for(let i=6;i>=0;i--){const a=CI.S.filter(s=>s.cp===cp&&s.b>CI.block-(i+1)*d&&s.b<=CI.block-i*d).map(s=>s.v);if(a.length)pts.push([6-i,med(a)])}
+  if(pts.length<2)return'<svg class="sp" viewBox="0 0 100 36"></svg>';const lo=Math.min(...pts.map(p=>p[1])),hi=Math.max(...pts.map(p=>p[1]));
+  const q=pts.map(p=>[p[0]/6*100,30-(hi>lo?(p[1]-lo)/(hi-lo):.5)*24]),c=smooth(q),id='g'+cp.slice(2,8);
+  return `<svg class="sp" viewBox="0 0 100 36" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--eye)" stop-opacity=".28"/><stop offset="1" style="stop-color:var(--eye)" stop-opacity="0"/></linearGradient></defs>
+    <path class="sa" fill="url(#${id})" d="${c} L${q[q.length-1][0]} 36 L${q[0][0]} 36 Z"/><path class="sl" vector-effect="non-scaling-stroke" d="${c}"/></svg>`}
+let MVTOP=null;
+function renderMovers(quiet){if(!CI)return;
+  if(!MV.length){const day=Math.round(86400/CI.bt),hd=CI.block,g={};
+    for(const s of CI.S){const o=g[s.cp]=g[s.cp]||{cp:s.cp,now:[],nu:[],prev:[],last:null,n7:0};o.n7++;
+      if(!o.last||s.b>o.last.b)o.last=s;const u=s.v/((s.w||0)+1);if(s.b>hd-day){o.now.push(s.v);o.nu.push(u)}else if(s.b>hd-2*day)o.prev.push(u)}
+    for(const cp in LIST)g[cp]=g[cp]||{cp,now:[],nu:[],prev:[],last:null,n7:0}; // every listed CPU always gets a card, even with no sales
+    const all=Object.values(g).map(o=>({...o,vol:o.now.reduce((a,b)=>a+b,0),chg:!o.now.length?undefined:o.prev.length?(med(o.nu)/med(o.prev)-1)*100:null}));
+    MVTOP=[...all].sort((a,b)=>b.vol-a.vol||b.n7-a.n7)[0]; // hero "Top CPU · 24h" stays the real top
+    const LK=Object.keys(LIST);MV=[...LK.map(cp=>all.find(o=>o.cp===cp)),...all.filter(o=>!LIST[o.cp]).sort((a,b)=>b.vol-a.vol||b.n7-a.n7)].slice(0,Math.max(4,LK.length));
+    if(!SEL)SEL=MV[0]&&MV[0].cp}
+  $('mv').classList.toggle('quiet',!!quiet);
+  $('mv').innerHTML=MV.map(o=>{const fl=LST[o.cp]&&LST[o.cp][0],c=o.chg===undefined?'<span class="chg z">—</span>':o.chg===null?'<span class="chg z">'+t('NEW')+'</span>':`<span class="chg ${o.chg>0.05?'u':o.chg<-0.05?'d':'z'}">${o.chg>0?'+':''}${o.chg.toFixed(1)}%</span>`;
+    return `<div class="mv${o.cp===SEL?' sel':''}" data-cp="${o.cp}"><div class="top"><span class="nm">${nm0(o.cp)}<i class="mt${isMine(o.cp)?' on':''}">${t(isMine(o.cp)?'Mines BEM':'Not mining')}</i><i class="mt${LIST[o.cp]&&LIST[o.cp].cert?' on':''}" title="${o.cp}">${LIST[o.cp]&&LIST[o.cp].cert?t('Certified by TapeOut'):sh(o.cp)}${isNew(o.cp)?'<em class="nw">'+t('Newly listed')+'</em>':''}</i></span>${c}</div>
+      <div class="px">${o.last?f(o.last.v):'—'}<u>${t("BNB last")}</u></div>${spark(o.cp)}
+      <div class="meta"><span>${t("{0} sales 24h",o.now.length)}</span><span>${f(o.vol,3)} BNB</span></div>
+      <button class="buy${fl?' kv':' empty'}" data-buy="${o.cp}">${fl?kv(t('Buy floor'),f(bnb(cost(fl)))+' BNB'):t('Nothing listed · alert me')}</button></div>`}).join('');
+  if(!quiet)chart()}
+$('mv').onclick=e=>{const b=e.target.closest('[data-buy]');if(b&&b.classList.contains('empty')){window.open('https://t.me/owlgate_bot','_blank','noopener');return}if(b&&!b.disabled){buyOne(LST[b.dataset.buy][0]);return}
+  const c=e.target.closest('.mv');if(!c)return;SEL=c.dataset.cp;document.querySelectorAll('.mv').forEach(x=>x.classList.toggle('sel',x===c));chart();
+  if(LST[SEL]){$('sCp').value=SEL;sweep()}};
+
+// ---------- chart: 7d sales of the selected CPU, log price, 6h-median curve, hover tooltip ----------
+function chart(){let dd=TV?TRG:7;const all=CI.S.filter(x=>x.cp===SEL&&x.v>0).sort((a,b)=>a.b-b.b),cut=d=>CI.block-Math.round(d*86400/CI.bt);const few=all.filter(x=>x.b>=cut(1)).length<2;if(dd<7&&few)dd=7; // 24H in Trade, falls back to 7D when a CPU sold < 2 rigs today
+  document.querySelectorAll('#tRg button').forEach(b=>{b.classList.toggle('on',+b.dataset.d===dd);if(b.dataset.d==='1'){b.disabled=few;b.title=few?t('Not enough sales in 24h'):''}});const s=all.filter(x=>x.b>=cut(dd)),svg=$('chart'),tip=$('tip');tip.hidden=true;
+  $('cN').textContent=SEL?name(SEL):'—';$('cS').textContent=t('{0} sales · median {1} BNB',s.length,f(med(s.map(x=>x.v))));
+  const W0=Math.max(300,svg.clientWidth||800),H=260,P=28;svg.setAttribute('viewBox',`0 0 ${W0} ${H}`);
+  if(s.length<2){svg.innerHTML='<text class="ax" x="24" y="130">'+t('Not enough sales yet')+'</text>';svg.onmousemove=null;return}
+  const vs=s.map(x=>x.v).sort((a,b)=>a-b),ex=TV?chFB().filter(v=>v>0):[],cap=Math.max(Math.min(vs[vs.length-1],vs[Math.floor((vs.length-1)*.9)]*1.25),...ex),b0=cut(dd),lo=Math.log(Math.min(vs[0],...ex)),hi=Math.log(cap),PT=48; // floor/bid inside the y range, else their lines sit on the axis at a wrong price
+  const X=b=>P+(b-b0)/(CI.block-b0)*(W0-2*P),Y=v=>H-P-(hi>lo?(Math.log(Math.min(v,cap))-lo)/(hi-lo):.5)*(H-P-PT);
+  const NB=28,bins=[];for(let i=0;i<NB;i++){const a=b0+(CI.block-b0)*i/NB,b=b0+(CI.block-b0)*(i+1)/NB,v=s.filter(x=>x.b>=a&&x.b<b).map(x=>x.v);if(v.length)bins.push([X((a+b)/2),Y(med(v))])}
+  const m=bins.length>1?bins:[[X(s[0].b),Y(s[0].v)],[X(s[s.length-1].b),Y(s[s.length-1].v)]],d=smooth(m);
+  const ticks=[lo,(lo+hi)/2,hi].map(l=>`<line class="gl" x1="${P}" x2="${W0-P}" y1="${Y(Math.exp(l))}" y2="${Y(Math.exp(l))}"/><text class="ax" x="${P}" y="${Y(Math.exp(l))-5}">${f(Math.exp(l))}</text>`).join('');
+  svg.innerHTML=`<defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--eye)" stop-opacity=".3"/><stop offset="1" style="stop-color:var(--eye)" stop-opacity="0"/></linearGradient>
+    <clipPath id="rv"><rect x="0" y="0" width="0" height="${H}"><animate attributeName="width" from="0" to="${W0}" dur="1.4s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".45 0 .2 1"/></rect></clipPath></defs>${ticks}${TV?chLines(W0,P,Y,Math.exp(lo)):''}
+    <g clip-path="url(#rv)"><path class="ar" d="${d} L${m[m.length-1][0]} ${H-P} L${m[0][0]} ${H-P} Z"/><path class="ln" d="${d}"/></g>
+    ${s.map((x,i)=>`<circle class="dt" cx="${X(x.b).toFixed(1)}" cy="${Y(x.v).toFixed(1)}" r="3" style="animation-delay:${(300+X(x.b)/W0*1100).toFixed(0)}ms"/>`).join('')}
+    <circle class="ring" cx="${m[m.length-1][0]}" cy="${m[m.length-1][1]}" r="4"/><circle class="last" cx="${m[m.length-1][0]}" cy="${m[m.length-1][1]}" r="4"/>
+    <line class="cx" id="cx" y1="${P}" y2="${H-P}" opacity="0"/><circle class="cd" id="cd" r="5" opacity="0"/>
+    <text class="ax" x="${P}" y="${H-8}">${t(dd===1?"24H AGO":"7D AGO")}</text><text class="ax" x="${W0-P}" y="${H-8}" text-anchor="end">${t("NOW")}</text>`;
+  svg.onmousemove=e=>{const r=svg.getBoundingClientRect(),mx=(e.clientX-r.left)/r.width*W0;let n=s[0],bd=1e9;for(const x of s){const dd=Math.abs(X(x.b)-mx);if(dd<bd){bd=dd;n=x}}
+    const cx=X(n.b),cy=Y(n.v),l=$('cx'),c=$('cd');l.setAttribute('x1',cx);l.setAttribute('x2',cx);l.setAttribute('opacity',1);c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('opacity',1);
+    tip.innerHTML=`<b>${f(n.v)} BNB</b> · ${name(n.cp)} #${n.tid} · ${ago((CI.block-n.b)*CI.bt)}`;tip.style.left=(cx/W0*r.width)+'px';tip.style.top=(cy/H*r.height+r.top-svg.parentNode.getBoundingClientRect().top)+'px';tip.hidden=false};
+  svg.onmouseleave=()=>{tip.hidden=true;$('cx').setAttribute('opacity',0);$('cd').setAttribute('opacity',0)}}
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>CI&&chart(),250)});
+
+// ---------- sweep ----------
+function sweep(){lsRender();const a=(LST[$('sCp').value]||[]).filter(isLive).slice(0,sweepN);if(!a.length){$('sGo').disabled=true;SWT=null;balS();return}
+  const p=a.reduce((s,x)=>s+BigInt(x.pxWei),0n),fee=a.reduce((s,x)=>s+BigInt(x.pxWei)*BPS/10000n,0n);
+  $('sLo').textContent=f(a[0].px)+' BNB';$('sHi').textContent=f(a[a.length-1].px)+' BNB';
+  $('sFee').textContent=f(bnb(fee),5)+' BNB';$('sTot').textContent=f(bnb(p+fee))+' BNB';SWT=p+fee;balS();$('sGo').textContent=t(a.length>1?'Sweep {0} rigs':'Sweep {0} rig',a.length);$('sGo').disabled=false}
+$('sCp').onchange=sweep;
+$('qs').onclick=e=>{const b=e.target.closest('button');if(!b)return;sweepN=+b.dataset.n;document.querySelectorAll('#qs button').forEach(x=>x.classList.toggle('on',x===b));sweep()};
+// one-tx sweep through OwlSweep (contracts/src/OwlSweep.sol); sold or repriced rigs are skipped and refunded
+async function sweepOne(a){
+  if(!FRESH){toast(t('Updating prices… try again in a moment'));return}
+  if(!ACC&&!await connect())return;ev('a');if(!await bsc()){ev('c');return}
+  const arr=v=>W(v.length)+v.map(W).join(''),ids=a.map(x=>x.lid),px=a.map(x=>x.pxWei);
+  let total;try{total=BigInt(await rpcRd(SWEEP,'0xa663aa4d'+W(32)+arr(px)))}catch(e){toast(t('Failed: ')+e.message);return}
+  const bal=BigInt(await ETH.request({method:'eth_getBalance',params:[ACC,'latest']}));
+  if(bal<total){ev('n');toast(t('Not enough BNB: need {0} BNB',f(bnb(total))));return}
+  let h;try{toast(t('Confirm in wallet · ')+t(a.length>1?'Sweep {0} rigs':'Sweep {0} rig',a.length)+' · '+f(bnb(total))+' BNB',0);
+    h=await ETH.request({method:'eth_sendTransaction',params:[{from:ACC,to:SWEEP,value:'0x'+total.toString(16),data:'0x18472860'+W(96)+W(96+32*(a.length+1))+W(1)+arr(ids)+arr(px)}]})}
+  catch(e){ev(e.code===4001?'x':'f');toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return}
+  const tx=`<a href="https://bscscan.com/tx/${h}" target="_blank" rel="noopener">${t("view tx")}</a>`;
+  ev('b');refTx(h);toast(t('Pending… ')+tx,0);const rc=await receipt(h);
+  if(!rc||rc.status!=='0x1'){toast(t(rc?'Reverted: listing gone or price changed · ':'Not confirmed yet · ')+tx,7000);return}
+  const lg=rc.logs.find(l=>l.address.toLowerCase()===SWEEP&&l.topics[0]==='0x4f2d11fb664b5f2f436d0d6acfed89a492c2f8fde20a4811da677150003332eb'),n=lg?Number(BigInt('0x'+lg.data.slice(66,130))):a.length;
+  const cp=a[0].cp,got=new Set(ids);if(n)acct(a.slice(0,n),a.slice(0,n).reduce((v,x)=>v+cost(x),0n));LST[cp]=LST[cp].filter(y=>!got.has(y.lid)); // skipped ones are gone or repriced anyway
+  toast(t('Swept {0}/{1} rigs',n,a.length)+' · '+tx,7000);renderMovers();sweep()}
+$('sGo').onclick=async()=>{const a=(LST[$('sCp').value]||[]).filter(isLive).slice(0,sweepN);$('sGo').disabled=true;let n=0;
+  if(SWEEP&&a.length>1){await sweepOne(a);sweep();return}
+  for(const x of a){if(!await buyOne(x,`${n+1}/${a.length} · `))break;n++}
+  if(n)toast(t('Swept {0}/{1} rigs',n,a.length),7000);sweep()};
+function view(m){m=m===true?'pf':m||'';const M=document.querySelector('main');M.classList.toggle('pfv',m==='pf');M.classList.toggle('tvv',m==='tv');$('pf').hidden=m!=='pf';$('tv').hidden=m!=='tv';TV=m==='tv';tvMove(TV);
+  document.querySelectorAll('nav a').forEach(x=>x.classList.toggle('on',x.getAttribute('href')===(m==='pf'?'portfolio':m==='tv'?'trade':'market')))}
+// ---------- trade view (/trade): one CPU, chart + order book (asks = listings, bids = best offer per rig) + recent trades + Buy | Offer.
+// The chart, sweep and offer blocks are moved in on enter and put back on leave, so their handlers stay untouched.
+var TV=false,TCP=null,TRG=1,TLK=null; // var: chart() may run during boot, before this line
+function chFB(){const A=(LST[SEL]||[]).filter(isLive),B=(BD.top||[]).filter(x=>x.cp===SEL);return [A.length?Math.min(...A.map(x=>x.px)):0,B.length?Math.max(...B.map(x=>x.px)):0]}
+const chLines=(W0,P,Y,v0)=>{const [fl,bb]=chFB(),ln=(v,c,l)=>{const y=Y(Math.max(v,v0)).toFixed(1);return `<line class="${c}" x1="${P}" x2="${W0-P}" y1="${y}" y2="${y}"/><text class="${c}t" x="${W0-P}" y="${y-5}" text-anchor="end">${l} ${f(v)}</text>`};return (fl?ln(fl,'fl',t('Floor')):'')+(bb?ln(bb,'bd',t('Best bid')):'')};const TVM=[],tvE=v=>String(v).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+function tvMove(on){if(on&&!TVM.length)for(const [el,to] of [[$('chart').parentNode,'tvC'],[$('sGo').closest('.two>div'),'tvBuy'],[$('oGo').closest('.two>div'),'tvOff'],[$('ofB').closest('.two>div'),'tvOf']]){const ph=document.createComment('tv');el.before(ph);TVM.push([el,ph,to])}
+  for(const [el,ph,to] of TVM)if(on)$(to).appendChild(el);else ph.after(el);if(CI)chart()}
+const tvK=k=>{document.querySelectorAll('#tvx button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));$('tvBuy').hidden=k!=='buy';$('tvOff').hidden=k!=='off'};
+function openTv(k){view('tv');$('load').classList.add('out');scrollTo(0,0);if(SEC()!=='tv')goPath('tv');if(k)tvK(k);tvRender()}
+function tvRender(){if(!TV||!CI)return;const cps=MV.length?MV.map(o=>o.cp):Object.keys(LST);if(!cps.length)return;if(!cps.includes(TCP))TCP=cps.includes(SEL)?SEL:cps[0];
+  const sel=$('tCp');sel.innerHTML=cps.map(cp=>`<option value="${cp}">${tvE(nm0(cp))}</option>`).join('');sel.value=TCP;
+  const S=CI.S.filter(x=>x.cp===TCP&&x.v>0).sort((a,b)=>b.b-a.b),A=(LST[TCP]||[]).slice().sort((p,q)=>p.px-q.px),B=(BD.top||[]).filter(x=>x.cp===TCP).sort((p,q)=>q.px-p.px);
+  $('tL').textContent=S.length?f(med(S.map(x=>x.v))):'—';const AM=A.filter(isLive);$('tF').textContent=AM.length?f(AM[0].px):'—';$('tB').textContent=B.length?f(B[0].px):'—';$('tV').textContent=f(S.reduce((s,x)=>s+x.v,0));$('tN').textContent=S.length;
+  const lv=(v,k)=>{const m=new Map();for(const x of v){const p=f(x.px),g=m.get(p)||m.set(p,{px:x.px,n:0,c:0,top:x}).get(p);g.n+=k==='b'?(x.n||1):1;g.c++;if(k==='a'&&(yld(x)||0)>(yld(g.top)||0))g.top=x}return [...m.values()].slice(0,10)},
+    a=lv(A,'a'),b=lv(B,'b'),cum=v=>{let c=0;return v.map(g=>c+=g.px*g.c)},ca=cum(a),cb=cum(b),mx=Math.max(ca[ca.length-1]||0,cb[cb.length-1]||0)||1;
+  const row=(g,c,k)=>`<div class="obr ${k}"${k==='a'?` data-l="${g.top.lid}" title="${t('Buy')} #${g.top.tid}"`:''}><i style="width:${(100*c/mx).toFixed(1)}%"></i><span>${f(g.px)}</span><span>${g.n}</span><span>${f(c)}</span></div>`;
+  $('tOb').innerHTML=`<div class="obh"><span>${t('Price · BNB')}</span><span>${t('Rigs')}</span><span>${t('Total')}</span></div>`+(a.length?a.map((g,i)=>row(g,ca[i],'a')).reverse().join(''):`<p class="hint">${t('No rigs listed')}</p>`)
+    +(A.length&&B.length?`<div class="obs">${t('Spread {0} BNB',f(A[0].px-B[0].px))}</div>`:'<div class="obs"></div>')+(b.length?b.map((g,i)=>row(g,cb[i],'b')).join(''):`<p class="hint">${t('No offers yet')}</p>`);
+  $('tBs').textContent=t('{0} asks · {1} bids',A.length,B.length);
+  const L=S[0],lk=L?L.b+':'+L.tid:null;$('tAct').innerHTML=L?t('Last sale {0} ago',ago((CI.block-L.b)*CI.bt))+' · #'+L.tid+' · <b>'+f(L.v)+' BNB</b> · '+t('{0} sales in 24h',S.filter(x=>CI.block-x.b<=86400/CI.bt).length):t('No sales in 7 days');
+  if(TLK&&lk&&lk!==TLK){const h=document.querySelector('.tvh');h.classList.remove('fl');void h.offsetWidth;h.classList.add('fl');const r=$('tTr').firstElementChild;if(r)r.classList.add('new');chart()}TLK=lk; // a new sale flashes the header and redraws the chart
+  $('tTr').innerHTML=S.length?S.slice(0,20).map(s=>`<tr><td>${ago((CI.block-s.b)*CI.bt)}</td><td>#${s.tid}</td><td><a href="https://bscscan.com/address/${s.by}" target="_blank" rel="noopener">${sh(s.by)}</a></td><td class="n">${f(s.v)}</td></tr>`).join(''):`<tr><td colspan="4" class="hint">${t('No sales in 7 days')}</td></tr>`;
+  $('tCon').hidden=!!ACC;$('tOfK').hidden=!bidOn();if(BD.ld&&!bidOn()&&!$('tvOff').hidden)tvK('buy'); // wait for /config before falling back to Buy
+  $('tBarP').textContent=AM.length?t('Floor {0} BNB',f(AM[0].px)):'—';$('tBarGo').textContent=t('Buy floor');$('tvBar').classList.toggle('cn',!ACC); // not connected: the header button is the one Connect
+  if(SEL!==TCP){SEL=TCP;chart();renderMovers(true)}
+  const sc=$('sCp');if([...sc.options].some(o=>o.value===TCP)&&sc.value!==TCP){sc.value=TCP;sweep()}
+  const oc=$('oCp');if([...oc.options].some(o=>o.value===TCP))oc.value=TCP}
+$('tCp').onchange=()=>{TCP=$('tCp').value;TLK=null;tvRender()};
+$('tRg').onclick=e=>{const b=e.target.closest('button');if(b){TRG=+b.dataset.d;chart()}};setInterval(()=>{if(TV&&!document.hidden)tvRender()},30000);
+$('tvx').onclick=e=>{const b=e.target.closest('button');if(b)tvK(b.dataset.k)};
+$('tvTabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('tv').dataset.p=b.dataset.p;document.querySelectorAll('#tvTabs button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.p==='c'&&CI)chart()};
+$('tOb').onclick=e=>{const r=e.target.closest('[data-l]');if(!r)return;const x=(LST[TCP]||[]).find(y=>String(y.lid)===r.dataset.l);if(x)buyOne(x)};
+$('tCon').onclick=()=>connect();$('tBarGo').onclick=()=>ACC?$('tvO').scrollIntoView({behavior:'smooth'}):connect();
+function openPf(){view(true);$('load').classList.add('out');scrollTo(0,0);if(SEC()!=='pf')goPath('pf');if(ACC)$('pfA').value=ACC;if($('pfA').value)pfLoad();else $('pfMsg').textContent=t('Connect a wallet or paste an address.')}
+document.addEventListener('click',e=>{const a=e.target.closest('a[href]'),id=a&&RT[a.getAttribute('href')];if(!id||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();if(id==='pf'){openPf();return}if(id==='tv'||id==='of'){openTv(id==='of'?'off':'');return}
+  view(false);document.querySelectorAll('nav a').forEach(x=>x.classList.toggle('on',x.getAttribute('href')===RS[id]));const el=$(id); // scroll even when the path is already set (a 2nd tap did nothing)
+  if(el){goPath(id);el.scrollIntoView({behavior:'smooth'})}});
+addEventListener('hashchange',()=>{const m=location.hash.match(/^#(lst|rigs|of|op|xl|pf|al)$/);if(!m)return;goPath(m[1]);if(m[1]==='pf')openPf();else if(m[1]==='of')openTv('off');else{view(false);$(m[1]).scrollIntoView({behavior:'smooth'})}});
+// ---------- portfolio: /rig = rigs held by a wallet (owner index, checked on chain), mining state, unclaimed BEM now and 1 d ago, BEM claimed in the window
+function pfAcc(){if(ACC&&!$('pf').hidden){$('pfA').value=ACC;pfLoad()}} // portfolio follows the connected wallet; no address is remembered across visits
+let pfT=0;
+async function pfLoad(retry=0){const a=$('pfA').value.trim().toLowerCase();clearTimeout(pfT);
+  if(!/^0x[0-9a-f]{40}$/.test(a)){$('pfMsg').textContent=t('Not a wallet address');return}
+
+  if(!retry){$('pfMsg').textContent=t('Loading…');$('pfK').hidden=$('pfT').hidden=true}
+  let j;try{const r=await fetch(API+'/rig?a='+a);j=await r.json();if(r.status===503&&retry<5){$('pfMsg').textContent=t('Server busy, retrying…');pfT=setTimeout(()=>pfLoad(retry+1),3000);return}if(!r.ok)throw new Error(j.error||r.status)}
+  catch(e){$('pfMsg').textContent=t('Data unavailable: ')+e.message;return}
+  if(XL.go)XL.go();PF={a,j};$('pfF').href='https://t.me/owlgate_bot?start=w_'+a;pfRender();slvDraw();
+  if(j.items.length&&!j.claimed&&retry<3)pfT=setTimeout(()=>pfLoad(retry+1),12000)} // claim totals finish in the background on the API
+// live mining: unclaimed BEM grows each second at today's rate since the API snapshot; the next load corrects it from chain
+function pfTick(){if(!PF||$('pf').hidden||document.hidden||!PF.j.items.length)return;const dt=Math.max(0,(Date.now()-PF.j.t)/864e5);let add=0,ra=0;const dg=r=>Math.min(8,Math.max(4,Math.ceil(-Math.log10(r/86400)))); // enough decimals that the last digit moves every second
+  document.querySelectorAll('#pfB td[data-lp]').forEach(e=>{const r=+e.dataset.lr;add+=r*dt;ra+=r;e.textContent=(+e.dataset.lp+r*dt).toFixed(dg(r));e.classList.add('lv')});
+  if(!add)return;const v=PF.j.items.reduce((s,x)=>s+(x.pend||0),0)+add;$('pk3').innerHTML=v.toFixed(Math.min(innerWidth<600?4:6,dg(ra)))+'<u>'+(BEMP?'≈ $'+(v*BEMP).toFixed(2):'BEM')+'</u>'}
+setInterval(pfTick,1000);
+function pfRender(){if(!PF)return;pfXDraw();const j=PF.j,it=j.items,fo=document.activeElement&&document.activeElement.id==='sPx'; // stream deltas re-render while the seller types
+  if(!it.length){$('pfMsg').textContent=t('No rigs in this wallet');$('pfK').hidden=$('pfT').hidden=$('pfE').hidden=true;return}
+  const fl=cp=>LST[cp]&&LST[cp][0]?LST[cp][0].px:null,sum=k=>it.reduce((v,x)=>v+(x[k]||0),0);
+  const est=x=>{const v=fair(x);return v!=null?v:fl(x.cp)},flp=x=>{const p=pwr(x);if(!p)return null;const m=(LST[x.cp]||[]).filter(y=>{const q=pwr(y);return q>=p*.8&&q<=p*1.25});return m.length?Math.min(...m.map(y=>y.px)):null}, // floor of rigs with power within -20%/+25%: a CPU-wide floor misleads a seller of a big rig
+    bo=x=>{const o=bidOn()&&BD.best[a0(sk(x))];return o?o.px:null};
+  const val=it.reduce((v,x)=>v+(est(x)||0),0),pend=sum('pend'),mining=it.filter(x=>x.st===1).length;
+  const exact=j.claimed&&it.every(x=>x.p1!=null),e24=exact?pend-sum('p1')+j.claimed.d1:it.reduce((v,x)=>v+(x.p1!=null&&x.pend>=x.p1?x.pend-x.p1:0),0);
+  $('pk1').innerHTML=it.length+'<u>· '+mining+'</u>';$('pk2').innerHTML=f(val,3)+'<u>BNB</u>';
+  $('pk3').innerHTML=f(pend,3)+'<u>'+(BEMP?'≈ $'+(pend*BEMP).toFixed(2):'BEM')+'</u>';$('pk4').innerHTML=(exact?'':'≥ ')+f(Math.max(0,e24),3)+'<u>BEM</u>';
+  $('pfB').innerHTML=it.map(x=>{const d=x.p1==null?'—':x.pend<x.p1?'<span class="off1">'+t('claimed')+'</span>':f(x.pend-x.p1,4),p=est(x);
+    return `<tr><td>${name(x.cp)}</td><td><a href="https://bscscan.com/nft/${x.cp}/${x.id}" target="_blank" rel="noopener">#${x.id}</a></td><td class="${x.st===1?'on1':'off1'}">${t(x.st===1?'Mining now':'Idle')}</td><td class="n">${(x.vw||0)+(x.uw||0)}</td><td class="n"${x.st===1&&x.pend!=null&&bemDay(x)?` data-lp="${x.pend}" data-lr="${bemDay(x)}"`:''}>${x.pend==null?'—':f(x.pend,4)}</td><td class="n">${d}</td><td class="n">${p==null?'—':f(p)}</td><td class="n">${flp(x)==null?'—':f(flp(x))}</td><td class="n">${bo(x)==null?'—':f(bo(x))}</td><td>${sellCell(x)}</td></tr>`+sellRow(x,p)}).join('');
+  $('pfK').hidden=$('pfT').hidden=false;pfEarn(it,val);sellHint();pfTick();if(fo){const i=$('sPx');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}}
+  const cl=it.filter(x=>x.st===1&&x.pend>0),cs=cl.reduce((v,x)=>v+x.pend,0);$('pfC').hidden=!cl.length;$('pfC').textContent=t('Claim all · {0} BEM',f(cs,4));
+  $('pfMsg').textContent=(j.capped?t('Showing first {0} of {1} rigs',it.length,j.n)+' · ':'')+t('Updated {0} ago',ago((Date.now()-j.t)/1000))}
+// ---------- dropdown for every <select>: opens inline under the field (the native picker on phones is a full-screen popup)
+function dd(sel){const w=document.createElement('div'),b=document.createElement('button'),ul=document.createElement('ul');w.className='dd';b.type='button';
+  b.setAttribute('aria-haspopup','listbox');ul.setAttribute('role','listbox');w.append(b,ul);w.style.flex=getComputedStyle(sel).flex;sel.before(w);sel.hidden=true;sel.tabIndex=-1;let k=-1;
+  const draw=()=>{const o=[...sel.options];b.textContent=o[sel.selectedIndex]?o[sel.selectedIndex].text:'—';
+    ul.innerHTML=o.map((x,i)=>`<li role="option" data-v="${i}" class="${i===sel.selectedIndex?'on':''}${i===k?' k':''}" aria-selected="${i===sel.selectedIndex}">${x.text.replace(/</g,'&lt;')}</li>`).join('')};
+  const open=v=>{document.querySelectorAll('.dd.open').forEach(x=>{if(x!==w)x.classList.remove('open')});w.classList.toggle('open',v);b.setAttribute('aria-expanded',v);k=v?sel.selectedIndex:-1;draw()};
+  const pick=i=>{if(i>=0&&i!==sel.selectedIndex){sel.selectedIndex=i;sel.dispatchEvent(new Event('change'))}open(false);b.focus()};
+  b.onclick=()=>open(!w.classList.contains('open'));ul.onclick=e=>{e.preventDefault();const li=e.target.closest('li');if(li)pick(+li.dataset.v)}; // preventDefault: inside a <label> the click would re-activate the button and reopen
+  b.onkeydown=e=>{const n=sel.options.length,on=w.classList.contains('open');
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!on){open(true);return}k=(k+(e.key==='ArrowDown'?1:n-1))%n;draw();const li=ul.children[k];if(li)li.scrollIntoView({block:'nearest'})}
+    else if((e.key==='Enter'||e.key===' ')&&on){e.preventDefault();pick(k)}else if(e.key==='Escape'&&on){e.preventDefault();open(false)}};
+  new MutationObserver(draw).observe(sel,{childList:true,subtree:true,characterData:true});
+  const sv=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value');Object.defineProperty(sel,'value',{get(){return sv.get.call(sel)},set(v){sv.set.call(sel,v);draw()}});
+  draw()}
+document.addEventListener('click',e=>{if(!e.target.closest('.dd'))document.querySelectorAll('.dd.open').forEach(x=>{x.classList.remove('open');x.firstChild.setAttribute('aria-expanded',false)})});
+['lCp','lSo','sCp','oCp'].forEach(i=>dd($(i)));
+// ---------- official pool (TapeOut announcement; collection wallet 0x8232b40d5b375db47504e56082b11d8d016b22bb): transistors (ERC1155 id 0 NAND, 1 LATCH) per processor,
+// rigs it holds (API /rig: mining state, power, pending BEM), and its transfers (logs from tapeout.net/rpc: the only RPC with CORS + log ranges).
+// Polled every 60 s once the section is near the screen. Change vs the last visit kept in this browser.
+const POOL='0x8232b40d5b375db47504e56082b11d8d016b22bb',ARC='https://tapeout.net/rpc',PTR=[['TapeOut','0xcc42ba5de07f01b472a5b14cf45abcca79eb8087'],['Behemoth','0xe2dfd802081c7a05341e20b6582b04b908e8550c']],
+  T1155=['0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62','0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb'],T721='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+  RIGC=['0xb1024b89886b9a34aa4ff5f31c411d708b20a14c','0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c'];
+let OP={to:0,ev:[],on:0,t:0},OPV=null;try{OPV=JSON.parse(localStorage.getItem('og-pool')||'null')}catch(e){}
+const arc1=(method,params)=>fetch(ARC,{method:'POST',headers:{'content-type':'text/plain'}, // text/plain = no CORS preflight (tapeout.net answers OPTIONS with 403)
+  body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}).then(r=>r.json()).then(r=>{if(r.error)throw Error(r.error.message);return r.result});
+const arc=async(method,params)=>{for(let k=0;;k++)try{return await arc1(method,params)}catch(e){if(k>=2)throw e;await new Promise(r=>setTimeout(r,1500*(k+1)))}}; // 2 retries: 48 getLogs per cold load can hit a rate limit
+const pT='0x'+POOL.slice(2).padStart(64,'0'),hb=n=>'0x'+n.toString(16);
+async function opLogs(a,b){const Q=[{address:PTR.map(x=>x[1]),topics:[T1155,null,pT]},{address:PTR.map(x=>x[1]),topics:[T1155,null,null,pT]},{address:RIGC,topics:[T721,pT]},{address:RIGC,topics:[T721,null,pT]}],out=[];
+  for(let x=a;x<=b;x+=50000){const y=Math.min(b,x+49999),R=[];for(const q of Q)R.push(await arc('eth_getLogs',[{...q,fromBlock:hb(x),toBlock:hb(y)}])); // sequential: parallel bursts get dropped by tapeout.net (no CORS on the error = "Failed to fetch")
+    for(const L of R)for(const l of L){
+    const ad=l.address.toLowerCase(),blk=parseInt(l.blockNumber,16),tx=l.transactionHash;
+    if(l.topics[0]===T721){const out_=l.topics[1]===pT,o='0x'+(out_?l.topics[2]:l.topics[1]).slice(26);out.push({b:blk,tx,k:out_?'ro':'ri',o,q:'#'+BigInt(l.topics[3]),c:name(ad)});continue}
+    const out_=l.topics[2]===pT,o='0x'+(out_?l.topics[3]:l.topics[2]).slice(26),pn=(PTR.find(x=>x[1]===ad)||['?'])[0],d=l.data.slice(2),w=i=>BigInt('0x'+(d.substr(i*64,64)||'0')),add=(id,v)=>out.push({b:blk,tx,k:out_?'to':'ti',o,q:Number(v),c:pn+' '+(id===0n?'NAND':'LATCH')});
+    if(l.topics[0]===T1155[0])add(w(0),w(1));else{const oi=Number(w(0))/32,ov=Number(w(1))/32,n=Number(w(oi));for(let j=0;j<n;j++)add(w(oi+1+j),w(ov+1+j))}}}
+  return out}
+// balances, rigs (API) and transfer logs load independently: one failing source no longer blanks the whole section
+async function opLoad(){if(OP.busy)return;OP.busy=1;try{await opLoad0()}finally{OP.busy=0}} // a slow cold load must not overlap the 60 s poll
+async function opLoad0(){if(document.hidden&&OP.t)return;let er=null;const no=e=>{er=er||e;return null};
+  const[bal,r,head]=await Promise.all([Promise.all(PTR.flatMap(([,tr])=>[0,1].map(i=>rpcRd(tr,'0x00fdd58e'+W(POOL)+W(i)).then(h=>Number(BigInt(h)))))).catch(no),
+    fetch(API+'/rig?a='+POOL).then(x=>x.ok?x.json():null).catch(()=>null),arc('eth_blockNumber',[]).then(h=>parseInt(h,16)).catch(no)]);
+  if(bal)OP.bal=bal;if(r)OP.rig=r;if(head)OP.head=head;OP.er=er; // head before the first draw: cached events need it for their age
+  // stats first (fast); transfers fill in below, newest 50k-block window first, and are cached so a revisit only fetches new blocks
+  if(OP.bal){OP.t=Date.now();opDraw()}else if(!OP.t)$('opB').innerHTML='<tr><td colspan="4" class="hint">'+t('Data unavailable: ')+String(er&&er.message).slice(0,80)+'</td></tr>';
+  if(!head)return;const lo=Math.max(OP.to+1,head-Math.round(3*86400/(CI?CI.bt:.45)));
+  OP.ld=1;try{for(let y=head;y>=lo;y-=50000){const nw=await opLogs(Math.max(lo,y-49999),y),seen=new Set(OP.ev.map(opK));
+      OP.ev=OP.ev.concat(nw.filter(e=>!seen.has(opK(e)))).sort((p,q)=>q.b-p.b).slice(0,200);if(OP.bal)opDraw()}
+    OP.to=head;OP.ld=0;try{localStorage.setItem('og-pool-ev',JSON.stringify({to:OP.to,ev:OP.ev}))}catch(e){}}catch(e){OP.er=e;OP.ld=0}
+  if(OP.bal)opDraw()}
+const opK=e=>e.tx+e.k+e.c+e.o+e.q;
+try{const c=JSON.parse(localStorage.getItem('og-pool-ev')||'null');if(c&&c.to>0&&Array.isArray(c.ev)){OP.to=c.to;OP.ev=c.ev}}catch(e){}
+function opDraw(){if(!OP.bal)return;const[b]=[OP.bal],it=OP.rig&&OP.rig.items||[],m=it.filter(x=>x.st===1),bd=m.reduce((v,x)=>v+(bemDay(x)||0),0),pe=it.reduce((v,x)=>v+(x.pend||0),0);
+  const dv=(k,v)=>{const o=OPV&&OPV[k];if(o==null||o===v||Date.now()-OPV.t<6e5)return'';const d=v-o;return `<span class="${d>0?'up':'dn'}">${d>0?'+':''}${d.toLocaleString('en-US')} ${t('since your last visit')}</span>`};
+  const cell=(i,nand,latch)=>{$('op'+i).innerHTML=(nand+latch).toLocaleString('en-US')+'<u>NAND '+nand.toLocaleString('en-US')+' · LATCH '+latch.toLocaleString('en-US')+'</u>';const d=dv('t'+i,nand+latch);$('op'+i+'d').innerHTML=d;$('op'+i+'d').className=d?(d.includes('"up"')?'up':'dn'):''};
+  cell(1,b[0],b[1]);cell(2,b[2],b[3]);
+  $('op3').innerHTML=OP.rig?it.length+'<u>· '+m.length+'</u>':'—';$('op3d').innerHTML=OP.rig&&!it.length?t('No rigs yet'):dv('r',it.length);
+  $('op4').innerHTML=m.length?f(bd,3)+'<u>BEM</u>':'—';$('op4d').textContent=it.length?t('Unclaimed BEM')+' '+f(pe,3):'';
+  const K={ti:'Received',to:'Sent',ri:'Rig in',ro:'Rig out'},bt=CI?CI.bt:.45;const hd=OP.head||(CI&&CI.block);
+  $('opB').innerHTML=OP.ev.length?OP.ev.slice(0,12).map(e=>`<tr><td>${hd?ago(Math.max(0,hd-e.b)*bt):"—"}</td><td><a href="https://bscscan.com/tx/${e.tx}" target="_blank" rel="noopener">${t(K[e.k])}</a> · ${e.c}</td><td><a href="https://bscscan.com/address/${e.o}" target="_blank" rel="noopener">${sh(e.o)}</a></td><td class="n">${typeof e.q==='number'?(e.k==='to'?'−':'+')+e.q.toLocaleString('en-US'):e.q}</td></tr>`).join('')
+    :'<tr><td colspan="4" class="hint">'+(OP.ld?t('Loading…'):OP.to?t('No pool transfers in the last 3 days'):t('Data unavailable: ')+String(OP.er&&OP.er.message||'').slice(0,80))+'</td></tr>'}
+function opSave(){if(!OP.bal)return;const o={t:Date.now(),t1:OP.bal[0]+OP.bal[1],t2:OP.bal[2]+OP.bal[3],r:OP.rig?OP.rig.items.length:null};try{localStorage.setItem('og-pool',JSON.stringify(o))}catch(e){}}
+setInterval(opSave,30000);addEventListener('pagehide',opSave);
+(()=>{const go=()=>{if(OP.on)return;OP.on=1;opLoad();setInterval(opLoad,60000)};if(!window.IntersectionObserver){go();return}
+  const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();go()}},{rootMargin:'600px'});io.observe($('op'));if(SEC()==='op')go()})();
+// ---------- X Layer rigs (spec-xlayer-market A): Rig Bridge vouchers from the API /xl (X Layer + the BNB rig behind each), loaded when the section is near
+const XL={j:null,on:0},setH=(id,h)=>{const e=$(id);if(e._h!==h)e.innerHTML=e._h=h}; // redraw only on change: no flicker on the 60s refresh
+async function xlLoad(){try{const r=await fetch(API+'/xl',{signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error(r.status);XL.j=await r.json()}catch(e){if(!XL.j){$('xlB').innerHTML='<tr><td colspan="9" class="hint">'+t('Data unavailable: ')+String(e.message).slice(0,80)+'</td></tr>';return}}xlDraw()}
+function xlDraw(){const j=XL.j;if(!j)return;const it=j.items.slice().sort((a,b)=>b.power-a.power),bd=x=>x.st===1?bemDay(x):0,X='https://www.oklink.com/xlayer/address/';
+  $('xl1').textContent=j.supply;$('xl2').textContent=it.reduce((s,x)=>s+x.power,0).toLocaleString('en-US');
+  const day=it.reduce((s,x)=>s+(bd(x)||0),0),pe=it.reduce((s,x)=>s+(x.pend||0),0);$('xl3').innerHTML=MR?f(day,3)+'<u>BEM</u>':'—';$('xl4').innerHTML=f(pe,3)+'<u>BEM</u>';
+  $('xl4d').textContent=j.redeemOkb?t('Redeem fee ≈ {0} OKB',f(j.redeemOkb,4)):'';
+  setH('xlB',it.length?it.map(x=>`<tr><td>#${x.v}</td><td>${name(x.cp)} <a href="https://bscscan.com/nft/${x.cp}/${x.id}" target="_blank" rel="noopener">#${x.id}</a>${x.st===1?'':' · '+t('not mining')}</td><td class="n">${x.power}</td><td class="n">${MR&&x.st===1?f(bd(x),3):'—'}</td><td class="n">${x.pend==null?'—':f(x.pend,3)}</td><td><a href="${X}${x.holder}" target="_blank" rel="noopener">${sh(x.holder)}</a></td>${xmCells(x)}</tr>`).join('')
+    :'<tr><td colspan="9" class="hint">'+t('No vouchers yet')+'</td></tr>');pfXDraw()}
+// portfolio: X Layer vouchers held by the loaded wallet, same ask / best offer / Sell now | List as /xl
+function pfXDraw(){const it=PF&&XL.j?XL.j.items.filter(x=>a0(x.holder)===a0(PF.a)):[];$('pfX').hidden=!it.length;if(!it.length)return;if(!PF.j.items.length)$('pfMsg').textContent='';
+  setH('pfXB',it.map(x=>`<tr><td>#${x.v}</td><td>${name(x.cp)} <a href="https://bscscan.com/nft/${x.cp}/${x.id}" target="_blank" rel="noopener">#${x.id}</a>${x.st===1?'':' · '+t('not mining')}</td><td class="n">${x.power}</td><td class="n">${x.pend==null?'—':f(x.pend,3)}</td>${xmCells(x)}</tr>`).join(''))}
+// TapeCode-Test1: OKX NFT market listings via API /xc (cheapest 24 asks + 7d stats)
+const XC={own:[]};Object.assign(ZH,{"TapeCode-Test1 now trades on OwlGate":"TapeCode-Test1 现已上线 OwlGate","Offer on any NFT or list yours · fee 0.75%":"可对任意 NFT 出价或挂单 · 手续费 0.75%","Open X Layer →":"前往 X Layer →","Any TapeCode-Test1":"任意 TapeCode-Test1","Best offer on any TapeCode-Test1":"任意 TapeCode-Test1 最高出价","Trade TapeCode-Test1":"交易 TapeCode-Test1","NFT #":"NFT 编号","Any NFT":"任意 NFT","Collection":"系列","Voucher":"凭证","Signing is free. First time: approve this NFT for Seaport (one tx), then sign. The NFT stays in your wallet until someone buys.":"签名免费。首次需授权此 NFT 给 Seaport（一笔交易），然后签名。售出前 NFT 一直留在你的钱包中。","List NFT":"挂单 NFT","Enter an NFT id":"请输入 NFT 编号","NFT not found":"未找到该 NFT","This NFT is not in your wallet":"该 NFT 不在你的钱包中","You own this NFT":"你持有该 NFT","Approve {0} for Seaport (this NFT only)":"授权 {0} 给 Seaport（仅此 NFT）","Any holder can accept it with one NFT. One NFT per offer.":"任何持有人都可用一个 NFT 接受。每个出价限一个 NFT。","Connect the wallet that holds this NFT":"请连接持有该 NFT 的钱包","any NFT":"任意 NFT","Step 1 approves this one NFT for Seaport, not your whole collection.":"第 1 步仅授权这一个 NFT 给 Seaport，而非整个系列。","On OwlGate · fee 0.75%":"OwlGate 上 · 手续费 0.75%","best offer on any NFT: {0} WOKB":"任意 NFT 最高出价：{0} WOKB","no offers yet":"暂无出价","Make offer":"出价","Your NFTs":"你的 NFT","OKX ask":"OKX 卖价","listed {0} OKB":"已挂单 {0} OKB","Sell now":"立即出售","X Layer collection, traded on the OKX NFT market.":"X Layer 系列，在 OKX NFT 市场交易。","Prices from OKX, refreshed every minute":"价格来自 OKX，每分钟刷新","Best offer":"最高出价","NFT":"NFT","Ask · OKB":"卖价 · OKB","Last sale":"上次成交","Buy on OKX":"在 OKX 买入","avg {0} OKB":"均价 {0} OKB","Nothing listed":"暂无挂单"});
+async function xcLoad(){try{const r=await fetch(API+'/xc',{signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error(r.status);XC.j=await r.json()}catch(e){if(!XC.j){$('xcB').innerHTML='<tr><td colspan="5" class="hint">'+t('Data unavailable: ')+String(e.message).slice(0,80)+'</td></tr>';return}}xcDraw();xmBest()}
+function xcDraw(){const j=XC.j;if(!j)return;const u='https://web3.okx.com/nft/asset/xlayer/'+j.contract+'/',X='https://www.oklink.com/xlayer/address/',o=v=>v==null?'—':f(v,3)+'<u>OKB</u>';
+  $('xc1').innerHTML=o(j.floor);$('xc2').innerHTML=j.bestOffer==null?'—':f(j.bestOffer,3)+'<u>'+j.bestOfferCur+'</u>';$('xc3').textContent=j.d7.sales==null?'—':j.d7.sales;$('xc4').innerHTML=o(j.d7.volume);$('xc4d').textContent=j.d7.avg?t('avg {0} OKB',f(j.d7.avg,3)):'';
+  const on=xcOn(),bk=on?XM.book.filter(x=>x.tk===XM.tc):[],og=bk.filter(x=>x.k==='list').sort((a,b)=>xmCmp(a.p,b.p)),co=bk.filter(x=>x.k==='coll').sort((a,b)=>xmCmp(b.p,a.p))[0];
+  $('xcO').hidden=!on;if(on)$('xcOt').innerHTML=t('On OwlGate · fee 0.75%')+' · '+(co?t('best offer on any NFT: {0} WOKB',f(bnb(co.p))):t('no offers yet'));
+  const yo=on&&ACC?XC.own:[];$('xcY').hidden=!yo.length;if(yo.length)setH('xcYB',yo.map(x=>{const v=String(x.id),bd=xmBid(v,ACC,XM.tc),ak=xmAsk(v,XM.tc);
+    return `<tr><td>#${v}${ak?' · '+t('listed {0} OKB',f(bnb(ak.p))):''}</td><td class="n">${x.okxAsk==null?'—':f(x.okxAsk,3)}</td><td class="n">${bd?f(bnb(bd.p))+(bd.k==='coll'?' · '+t('any'):''):'—'}</td><td>${bd?`<button class="buy" data-cs="${v}">${t('Sell now')}</button> `:''}<button class="buy" data-cp="list:${v}">${t('List')}</button></td></tr>`}).join(''));
+  const ogr=og.map(x=>`<tr><td>#${x.tid}</td><td><a href="${X}${x.off}" target="_blank" rel="noopener">${sh(x.off)}</a></td><td class="n">${f(bnb(x.p))} · OwlGate</td><td class="n">—</td><td><button class="buy" data-cb="${x.tid}">${t('Buy')}</button></td></tr>`).join('');
+  setH('xcB',ogr+(j.items.length?j.items.map(x=>`<tr><td>#${x.id}</td><td><a href="${X}${x.owner}" target="_blank" rel="noopener">${sh(x.owner)}</a></td><td class="n">${f(x.price,3)}</td><td class="n">${x.last==null?'—':f(x.last,3)}</td><td><a href="${u}${x.id}" target="_blank" rel="noopener">${t('Buy on OKX')} ↗</a></td></tr>`).join('')
+    :ogr?'':'<tr><td colspan="5" class="hint">'+t('Nothing listed')+'</td></tr>'))}
+async function xcMine(){XC.own=[];if(!ACC||!xcOn())return;try{const r=await fetch(API+'/xc?owner='+a0(ACC),{signal:AbortSignal.timeout(20000)});if(r.ok)XC.own=(await r.json()).items||[]}catch(e){}}
+const xcGo=(k,v)=>{xmSetT(true);xmSetK(k);$('xmId').value=v||'';$('xm').scrollIntoView({behavior:'smooth',block:'center'});$('xmPx').focus({preventScroll:true})};
+$('xc').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.cb)xmBusy(b,xmBuy(b.dataset.cb,XM.tc));else if(b.dataset.cs)xmBusy(b,xmSell(b.dataset.cs,XM.tc));
+  else if(b.dataset.cp){const[k,v]=b.dataset.cp.split(':');xcGo(k,v)}};
+(()=>{const go=XL.go=()=>{if(XL.on)return;XL.on=1;xlLoad();xmLoad();xcLoad();setInterval(()=>{if(!document.hidden){xlLoad();xmLoad();xcLoad()}},60000)};if(!window.IntersectionObserver){go();return}
+  const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();go()}},{rootMargin:'600px'});io.observe($('xl'));if(SEC()==='xl')setTimeout(go)})(); // after the whole script ran (the X Layer market block is defined further down)
+// ---------- journey: payback estimate, buy breakdown, OwlGate account, since last visit
+// Mining: BEM/s = rate (8 dec); 99% split by vw over total vw, 1% by uw over total uw (pro-rata, checked ±5% vs measured).
+let MR=null;
+async function loadMR(){try{const[r,v,u,pb]=await Promise.all([rpcRd(MINING,'0xf9f8bdb7'),rpcRd(MINING,'0xef6aff46'),rpcRd(MINING,'0x63967742'),rpcRd('0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae','0x0902f1ac')]);
+  const n=(h,i=0)=>Number(BigInt('0x'+h.slice(2+64*i,66+64*i)));MR={day:n(r)/1e8*86400,tv:n(v),tu:n(u),bnbUsd:n(pb,0)/n(pb,1)};if(CI)ingest(CI,RAWL)}catch(e){}}
+const bemDay=x=>!MR?null:(x.vw&&MR.tv?.99*MR.day*x.vw/MR.tv:0)+(x.uw&&MR.tu?.01*MR.day*x.uw/MR.tu:0),
+  bnbDay=x=>{const b=bemDay(x);return b&&BEMP&&MR.bnbUsd?b*BEMP/MR.bnbUsd:null},
+  pbD=x=>{const d=bnbDay(x),c=x.pxWei?bnb(cost(x)):x.px;return d>0&&c>0?Math.round(c/d):null},
+  pbTxt=x=>{const d=pbD(x);return d==null?'<span class="dz">—</span>':d+' '+t('d')},
+  // BEM per day for each BNB paid (incl. fee), at today's mining rate: the number in the listings table (payback days only in the Buy / Check card)
+  yld=x=>{const b=bemDay(x),c=x.pxWei?bnb(cost(x)):x.px;return b>0&&c>0?b/c:null},
+  yTxt=x=>{const y=yld(x);return y==null?'<span class="dz">—</span>':`<span title="${t("BEM per day for each BNB you pay, at today's mining rate and total power. Changes daily.")}">${f(y)}</span>`};
+const PBN='Estimate at today\'s BEM price and total mining power; both change every day.';
+let bmRes=null;
+function confirmBuy(x){return new Promise(res=>{bmRes=res;const p=bnb(BigInt(x.pxWei)),tot=bnb(cost(x)),r=ref(x),b=bemDay(x),d=pbD(x);
+  const row=(k,v,c='')=>`<div class="row${c}"><span>${k}</span><b>${v}</b></div>`;let h=row(t('Price'),f(p)+' BNB')+row(t('OwlGate fee')+' '+(Number(BPS)/100)+'%',f(tot-p,5)+' BNB')+row(t('Total'),f(tot)+' BNB',' t');
+  if(r){const df=r.v-p;h+=row(t(r.k?'Median per power, {0} sales':'Median of {0} sales, same power',r.n),f(r.v)+' BNB')+row(t('vs median'),`<span class="${df>0?'up':'sw'}">${df>=0?'−':'+'}${f(Math.abs(df))} BNB</span>`)}
+  if(b)h+=row(t('Mining now'),f(b,3)+' BEM/'+t('day')+(bnbDay(x)?' ≈ '+f(bnbDay(x),5)+' BNB':''))+(d?row(t('Payback'),'≈ '+d+' '+t('days')):'');
+  $('bmT').textContent=name(x.cp)+' #'+x.tid+' · '+(pwr(x)?t('{0} power',pwr(x)):t(isMine(x.cp)?'Idle':'Not mining'));$('bmR').innerHTML=h;$('bmP').textContent=b?t(PBN):'';$('bm').hidden=false;$('bmY').focus()})}
+const bmEnd=v=>{$('bm').hidden=true;if(bmRes){bmRes(v);bmRes=null}};$('bmY').onclick=()=>bmEnd(true);$('bmN').onclick=$('bmX').onclick=()=>bmEnd(false);
+$('bm').onclick=e=>{if(e.target.id==='bm')bmEnd(false)};addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('bm').hidden)bmEnd(false)});
+// what this wallet bought through OwlGate (this browser only): rigs, fees paid, BNB under the median at the time of buying
+const acctK=a=>'og-acct-'+String(a).toLowerCase(),acctGet=a=>{try{return JSON.parse(localStorage.getItem(acctK(a))||'null')}catch(e){return null}};
+function acct(xs,total){const fee=bnb(total-xs.reduce((v,x)=>v+BigInt(x.pxWei),0n)),u=xs.reduce((v,x)=>{const r=ref(x);return v+(r&&r.v>x.px?r.v-x.px:0)},0);
+  const o=acctGet(ACC)||{n:0,fee:0,u:0};o.n+=xs.length;o.fee+=fee;o.u+=u;try{localStorage.setItem(acctK(ACC),JSON.stringify(o))}catch(e){}if(PF)pfRender();return u}
+function pfEarn(it,val){const m=it.filter(x=>x.st===1),b=m.reduce((v,x)=>v+(bemDay(x)||0),0),bn=BEMP&&MR?b*BEMP/MR.bnbUsd:0,o=acctGet(PF.a),e=$('pfE'),p=[];
+  if(b>0)p.push(t('Mining ≈ {0} BEM/day',`<b>${f(b,3)}</b>`)+(bn?' ≈ '+f(bn,5)+' BNB':''));
+  if(o&&o.n)p.push(t('Via OwlGate: {0} rigs · fees {1} BNB · bought {2} BNB under the median',`<b>${o.n}</b>`,f(o.fee,5),`<b>${f(o.u)}</b>`));
+  e.innerHTML=p.join('<br>');e.hidden=!p.length}
+// since the last visit (this browser): new listings, deals among them, sales, unclaimed BEM of the saved wallet. Snapshot saved every 30 s.
+let PREV=null,slvX=0;try{PREV=JSON.parse(localStorage.getItem('og-last')||'null')}catch(e){}
+function slvSave(){if(!CI)return;const o={t:Date.now(),b:CI.block,l:Object.values(LST).flat().map(x=>x.lid)};
+  if(PF&&PF.j.items.length)o.pf={a:PF.a,p:PF.j.items.reduce((v,x)=>v+(x.pend||0),0)};else if(PREV&&PREV.pf)o.pf=PREV.pf;try{localStorage.setItem('og-last',JSON.stringify(o))}catch(e){}}
+function slvDraw(){const el=$('slv');if(!PREV||!CI||slvX||Date.now()-PREV.t<6e5){el.hidden=true;return}
+  const old=new Set(PREV.l||[]),nl=Object.values(LST).flat().filter(x=>!old.has(x.lid)),dl=nl.filter(x=>deal(x)>=10).length,sl=CI.S.filter(s=>s.b>PREV.b).length,p=[];
+  p.push(t('Since your visit {0} ago',ago((Date.now()-PREV.t)/1000)));p.push(t('{0} new listings',`<b>${nl.length}</b>`)+(dl?' · '+t('{0} under the median',`<b>${dl}</b>`):''));p.push(t('{0} sales',`<b>${sl}</b>`));
+  if(PF&&PREV.pf&&PREV.pf.a===PF.a){const d=PF.j.items.reduce((v,x)=>v+(x.pend||0),0)-PREV.pf.p;if(d>0)p.push(t('Unclaimed BEM {0}',`<b>+${f(d,4)}</b>`))}
+  el.innerHTML=p.map(x=>'<span>'+x+'</span>').join('')+'<button aria-label="Close">×</button>';el.hidden=false}
+// "NEW" strip for a newly listed collection (s61: TapeCode-Test1); closed once = gone for this browser
+{const k='og-nb-tc1';let x=0;try{x=localStorage.getItem(k)}catch(e){}$('nb').hidden=!!x;
+  $('nb').onclick=e=>{if(e.target.closest('button')){$('nb').hidden=true;try{localStorage.setItem(k,'1')}catch(_){}}else if(e.target.closest('#nbA')){e.preventDefault();view(false);goPath('xl');XL.go();setTimeout(()=>$('xc').scrollIntoView({behavior:'smooth'}),80)}}}
+$('slv').onclick=e=>{if(e.target.closest('button')){slvX=1;$('slv').hidden=true}};
+setInterval(slvSave,30000);addEventListener('pagehide',slvSave);
+// ---------- offers (P2, D42/D44, ops/inbox/p2-bids.md): Seaport 1.6 WBNB offers on ONE rig; the order book lives in the OwlGate API.
+// Dormant unless /config.json says bidsEnabled, signing not paused AND fee terms equal the constants below (the API can switch bids off, never change terms).
+// Typed data and calldata are built here (checked against ethers + Seaport.getOrderHash); API orders are used only if they
+// rebuild to exactly our template, so a bad API cannot make anyone sign or fill something else. Accept is dry-run with eth_call before the wallet opens.
+const BID={sp:'0x0000000000000068f116a894984e2db1123eb395',wb:'0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',to:'0x58f341ebf80ab52d7650750119e8641cfbc8c018',bps:75n,free:0},
+  Z32='0x'+'0'.repeat(64),AZ='0x'+'0'.repeat(40),BCP=['0xb1024b89886b9a34aa4ff5f31c411d708b20a14c','0x1f5cb4aeae1807bf60c3b9c0d8adbcc14e91f12c'];
+const a0=a=>String(a||'').toLowerCase(),BD={cfg:null,best:{},top:[],mine:[],ex:1,busy:false};
+const bidOn=()=>{const c=BD.cfg;return !!(c&&c.bidsEnabled===true&&!c.pauseSigning&&a0(c.bidFeeTo)===BID.to&&c.bidFeeBps===75&&c.freeN===BID.free)};
+const bidFee=p=>p*BID.bps/10000n;
+// minimal ABI encoder: 'w' = static word (address/uint/bytes32), 'b' = bytes, [..] = tuple, {a:T} = dynamic array of T
+const abiD=t=>t==='b'||!!(t&&t.a)||(Array.isArray(t)&&t.some(abiD)),abiS=t=>Array.isArray(t)?t.reduce((s,x)=>s+abiS(x),0):32;
+function abiE(ts,vs){let h='',tl='';const hl=ts.reduce((s,t)=>s+(abiD(t)?32:abiS(t)),0);ts.forEach((t,i)=>{const e=abiV(t,vs[i]);if(abiD(t)){h+=W(hl+tl.length/2);tl+=e}else h+=e});return h+tl}
+function abiV(t,v){if(t==='w')return W(v);if(t==='b'){const x=String(v).replace(/^0x/,'');return W(x.length/2)+x.padEnd(Math.ceil(x.length/64)*64,'0')}return Array.isArray(t)?abiE(t,v):W(v.length)+abiE(v.map(()=>t.a),v)}
+const OC=['w','w',{a:['w','w','w','w','w']},{a:['w','w','w','w','w','w']},'w','w','w','w','w','w','w'];
+const ocV=o=>[o.offerer,o.zone,o.offer.map(x=>[x.itemType,x.token,x.identifierOrCriteria,x.startAmount,x.endAmount]),o.consideration.map(x=>[x.itemType,x.token,x.identifierOrCriteria,x.startAmount,x.endAmount,x.recipient]),o.orderType,o.startTime,o.endTime,o.zoneHash,o.salt,o.conduitKey,o.counter];
+const bidCancelData=o=>'0xfd9f1e10'+abiE([{a:OC}],[[ocV(o)]]);// Seaport cancel(OrderComponents[])
+// seller accepts: fulfillBasicOrder route ERC721_TO_ERC20 (type 16); the fee is paid out of the offer, the seller needs only the NFT approval
+const bidFillData=(o,sig)=>{const c=o.consideration,r=c.slice(1).map(x=>[x.startAmount,x.recipient]);return '0xfb0f3ee1'+abiE([[...Array(16).fill('w'),{a:['w','w']},'b']],
+  [[c[0].token,c[0].identifierOrCriteria,1,o.offerer,o.zone,BID.wb,0,o.offer[0].startAmount,16,o.startTime,o.endTime,o.zoneHash,o.salt,Z32,Z32,r.length,r,sig]])};
+const bidT0={OrderComponents:[['offerer','address'],['zone','address'],['offer','OfferItem[]'],['consideration','ConsiderationItem[]'],['orderType','uint8'],['startTime','uint256'],['endTime','uint256'],['zoneHash','bytes32'],['salt','uint256'],['conduitKey','bytes32'],['counter','uint256']],
+  OfferItem:[['itemType','uint8'],['token','address'],['identifierOrCriteria','uint256'],['startAmount','uint256'],['endAmount','uint256']],
+  ConsiderationItem:[['itemType','uint8'],['token','address'],['identifierOrCriteria','uint256'],['startAmount','uint256'],['endAmount','uint256'],['recipient','address']],
+  EIP712Domain:[['name','string'],['version','string'],['chainId','uint256'],['verifyingContract','address']]};
+const bidTyped=o=>{const types={};for(const k in bidT0)types[k]=bidT0[k].map(([name,type])=>({name,type}));return{types,primaryType:'OrderComponents',domain:{name:'Seaport',version:'1.6',chainId:56,verifyingContract:BID.sp},message:o}};
+// free = one of the offerer's first BID.free offers: no fee item at all (API counts the slots); otherwise the 0.75% fee item to BID.to
+function bidMake(off,cp,tid,p,start,end,salt,counter,free){const s=String,fe=s(bidFee(p));off=a0(off);
+  const nft={itemType:'2',token:a0(cp),identifierOrCriteria:s(tid),startAmount:'1',endAmount:'1',recipient:off};
+  return{offerer:off,zone:AZ,offer:[{itemType:'1',token:BID.wb,identifierOrCriteria:'0',startAmount:s(p),endAmount:s(p)}],
+    consideration:free?[nft]:[nft,{itemType:'1',token:BID.wb,identifierOrCriteria:'0',startAmount:fe,endAmount:fe,recipient:BID.to}],
+    orderType:'0',startTime:s(start),endTime:s(end),zoneHash:Z32,salt:s(salt),conduitKey:Z32,counter:s(counter)}}
+const bidI=(x,r)=>({itemType:String(x.itemType),token:a0(x.token),identifierOrCriteria:String(x.identifierOrCriteria),startAmount:String(x.startAmount),endAmount:String(x.endAmount),...(r?{recipient:a0(x.recipient)}:{})});
+const bidNorm=o=>({offerer:a0(o.offerer),zone:a0(o.zone),offer:o.offer.map(x=>bidI(x)),consideration:o.consideration.map(x=>bidI(x,1)),orderType:String(o.orderType),startTime:String(o.startTime),endTime:String(o.endTime),zoneHash:a0(o.zoneHash),salt:String(o.salt),conduitKey:a0(o.conduitKey),counter:String(o.counter)});
+function bidOk(x){try{const o=x.order,sig=String(x.signature);if(!/^0x([0-9a-f]{128}|[0-9a-f]{130})$/i.test(sig))return null;const c=o.consideration[0],cp=a0(c.token),tid=String(c.identifierOrCriteria),off=a0(o.offerer);
+  if(!/^0x[0-9a-f]{40}$/.test(off)||off===AZ||!BCP.includes(cp)||!/^\d{1,78}$/.test(tid))return null;const p=BigInt(o.offer[0].startAmount),fr=o.consideration.length===1;
+  if(JSON.stringify(bidMake(off,cp,tid,p,BigInt(o.startTime),BigInt(o.endTime),BigInt(o.salt),BigInt(o.counter),fr))!==JSON.stringify(bidNorm(o)))return null;
+  return{o:bidMake(off,cp,tid,p,o.startTime,o.endTime,o.salt,o.counter,fr),sig,p,fee:fr?0n:bidFee(p),off,cp,tid,end:Number(o.endTime),hash:/^0x[0-9a-f]{64}$/i.test(x.hash)?a0(x.hash):'',st:String(x.status||'open'),rs:String(x.reason||'')}}catch(e){return null}}
+const wei=s=>{s=String(s).trim();if(!/^\d*\.?\d{0,18}$/.test(s)||!(parseFloat(s)>0))return null;const[i,d='']=s.split('.');return BigInt(i||0)*10n**18n+BigInt((d+'0'.repeat(18)).slice(0,18))};
+const rpcQ=(method,params)=>fetch(RPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}).then(r=>r.json()).then(r=>{if(r.error)throw Error(r.error.message);return r.result});
+const bdApi=p=>fetch(API+p,{signal:AbortSignal.timeout(15000)}).then(r=>{if(!r.ok)throw Error(r.status);return r.json()});
+const bdRef=h=>h?fetch(API+'/bids/refresh',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({hash:h})}).catch(()=>{}):null;
+async function bdLoad(){try{BD.cfg=await bdApi('/config.json')}catch(e){BD.cfg=null}BD.ld=1;
+  $('tOfK').hidden=!bidOn();if(!bidOn()){BD.best={};return}
+  try{const j=await bdApi('/bids');BD.top=(j.items||[]).map(x=>({cp:a0(x.cp),tid:String(x.tid),px:Number(x.px),n:Number(x.n)||1})).filter(x=>BCP.includes(x.cp)&&/^\d{1,78}$/.test(x.tid)&&x.px>0);
+    BD.best={};for(const x of BD.top)BD.best[x.cp+':'+x.tid]=x}catch(e){}
+  await bdMine();ofDraw();if(PF)pfRender();tvRender()}
+async function bdMine(){BD.mine=[];BD.fl=null;if(!ACC)return;const a=a0(ACC);try{const j=await bdApi('/bids?offerer='+a);BD.mine=(j.items||[]).map(bidOk).filter(x=>x&&x.off===a)}catch(e){}
+  try{const r=await bdApi('/free?wallet='+a);BD.fl=Math.max(0,Math.min(BID.free,Number(r.left)||0))}catch(e){}}
+const bdOpen=()=>BD.mine.filter(x=>x.st==='open'||x.st==='inactive');
+const bdSt=x=>x.st==='open'?t('open · {0} left',ago(Math.max(0,x.end-Date.now()/1e3))):x.st==='inactive'?t('paused: {0}',t({balance:'not enough WBNB',allowance:'approval too low',own:'you own it'}[x.rs]||'rig not available')):t({filled:'filled',cancelled:'cancelled'}[x.st]||'expired');
+function ofDraw(){if(!bidOn())return;$('ofN').textContent=t('{0} rigs',BD.top.length);
+  $('ofB').innerHTML=BD.top.length?BD.top.slice(0,20).map(x=>`<tr><td>${name(x.cp)}</td><td><a href="https://bscscan.com/nft/${x.cp}/${x.tid}" target="_blank" rel="noopener">#${x.tid}</a></td><td class="n">${f(x.px)}</td><td class="n">${x.n}</td></tr>`).join(''):`<tr><td colspan="4" class="hint">${t('No open offers yet.')}</td></tr>`;
+  const m=BD.mine.filter(x=>x.st==='open'||x.st==='inactive'||Date.now()/1e3-x.end<86400).slice(0,20);
+  $('ofM').innerHTML=!ACC?`<tr><td colspan="4" class="hint">${t('Connect a wallet to see your offers.')}</td></tr>`:m.length?m.map(x=>`<tr><td>${name(x.cp)} #${x.tid}</td><td class="n">${f(bnb(x.p))}${x.fee?'':' · '+t('free')}</td><td>${bdSt(x)}</td><td>${x.st==='open'||x.st==='inactive'?`<button class="buy" data-oc="${x.hash}">${t('Cancel')}</button>`:''}</td></tr>`).join(''):`<tr><td colspan="4" class="hint">${t('No offers yet.')}</td></tr>`;
+  $('ofAll').hidden=bdOpen().length<2;oCalc()}
+function oCalc(){const p=wei($('oPx').value),fr=BD.fl>0;$('oP').textContent=p?f(bnb(p))+' WBNB':'—';$('oS').textContent=p?f(bnb(fr?p:p-bidFee(p)))+' WBNB':'—';
+  $('oF').textContent=BID.free&&BD.fl==null?t('first {0} offers free, then 0.75%',BID.free):fr?t('free offers left: {0} of {1}',BD.fl,BID.free):t('fee 0.75% at match')}
+// same modal as the buy confirm: rows [label, value, total?] + a note; resolves true on "Confirm in wallet"
+function confirmBox(title,rows,note){return new Promise(res=>{bmRes=res;$('bmT').textContent=title;$('bmR').innerHTML=rows.map(([k,v,c])=>`<div class="row${c?' t':''}"><span>${k}</span><b>${v}</b></div>`).join('');$('bmP').innerHTML=note||'';$('bm').hidden=false;$('bmY').focus()})}
+async function bdOffer(){if(BD.busy||!bidOn())return;const cp=$('oCp').value,id=$('oId').value.trim(),p=wei($('oPx').value);
+  if(!/^\d{1,9}$/.test(id)){toast(t('Enter a rig id'));return}if(!p||p<10n**16n||p>500n*10n**18n){toast(t('Price: 0.01 to 500 WBNB'));return}
+  if(!ACC&&!await connect())return;if(!await bsc())return;BD.busy=true;const a=a0(ACC),nm=name(cp)+' #'+id;
+  try{const q=(to,d)=>rpcQ('eth_call',[{to,data:d},'latest']);
+    const[o,wb,alw,bal,ctr]=await Promise.all([q(cp,'0x6352211e'+W(id)).catch(()=>null),q(BID.wb,'0x70a08231'+W(a)),q(BID.wb,'0xdd62ed3e'+W(a)+W(BID.sp)),rpcQ('eth_getBalance',[a,'latest']),q(BID.sp,'0xf07ec373'+W(a))]); // ownerOf, WBNB balance + allowance, BNB, Seaport counter
+    if(!o||o.length<66){toast(t('Rig not found'));return}if(a0('0x'+o.slice(26,66))===a){toast(t('You own this rig'));return}
+    await bdMine();if(BD.fl==null){toast(t('Data unavailable: ')+'/free');return}
+    const fr=BD.fl>0,fee=fr?0n:bidFee(p),need=bdOpen().reduce((s,y)=>s+y.p,0n)+p,wrap=BigInt(wb)<p?p-BigInt(wb):0n,app=BigInt(alw)<need;
+    if(wrap>BigInt(bal)){toast(t('Not enough BNB: wrapping needs {0} BNB plus gas',f(bnb(wrap))));return}
+    const sW=t('Wrap {0} BNB to WBNB',f(bnb(wrap))),sA=t('Approve {0} WBNB for Seaport (exact amount, covers your open offers)',f(bnb(need))),steps=[wrap?sW:null,app?sA:null,t('Sign the offer (free)')].filter(Boolean);
+    if(!await confirmBox(t('Offer on {0}',nm),[[t('You pay if accepted'),f(bnb(p))+' WBNB'],fr?[t('Fee-free offer {0} of {1}',BID.free-BD.fl+1,BID.free),'0 WBNB']:[t('OwlGate fee 0.75%, paid from your offer'),f(bnb(fee),5)+' WBNB'],
+      [t('Seller receives'),f(bnb(p-fee))+' WBNB',1],[t('Expires in'),BD.ex+'d']],steps.map((s,i)=>(i+1)+'. '+s).join('<br>')+(fr&&BD.fl===1?'<br>'+t('This is your last fee-free offer. Next offers include the 0.75% fee.'):'')))return;
+    if(wrap&&!await sellTx(BID.wb,'0xd0e30db0',sW,wrap))return;
+    if(app&&!await sellTx(BID.wb,'0x095ea7b3'+W(BID.sp)+W(need),sA))return;
+    const blk=await rpcQ('eth_getBlockByNumber',['latest',false]),now=Math.floor(Date.now()/1e3),st=Math.min(now,parseInt(blk.timestamp,16))-60,
+      salt=BigInt('0x'+[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join('')),od=bidMake(a,cp,id,p,st,now+BD.ex*86400,salt,BigInt(ctr),fr);
+    toast(t('Confirm in wallet · ')+t('Sign the offer (free)'),0);let sig;
+    try{sig=String(await ETH.request({method:'eth_signTypedData_v4',params:[ACC,JSON.stringify(bidTyped(od))]}))}catch(e){toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return}
+    if(/^0x[0-9a-f]{130}$/i.test(sig)&&parseInt(sig.slice(-2),16)<27)sig=sig.slice(0,-2)+(parseInt(sig.slice(-2),16)+27).toString(16);// some wallets return v=0/1
+    const r=await fetch(API+'/bids',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order:od,signature:sig})}),jr=await r.json().catch(()=>({}));
+    if(!r.ok){toast(t('Offer rejected: {0}',String(jr.error||r.status).slice(0,80)),7000);return}
+    toast(t('Offer placed: {0} WBNB on {1}',f(bnb(p)),nm),7000);$('oPx').value='';await bdLoad()}
+  catch(e){toast(t('Failed: ')+String(e.message||e).slice(0,120))}finally{BD.busy=false}}
+async function bdAccept(k){const x=PF&&PF.j.items.find(y=>sk(y)===k);if(!x||!bidOn())return;
+  if(!await bsc())return;if(!mine()){toast(t('Connect the wallet that holds these rigs'));return}
+  const a=a0(ACC),cp=a0(x.cp),nm=name(x.cp)+' #'+x.id;
+  try{const j=await bdApi('/bids?cp='+cp+'&tid='+x.id),now=Date.now()/1e3;
+    const b=(j.items||[]).map(bidOk).filter(y=>y&&y.cp===cp&&y.tid===String(x.id)&&y.st==='open'&&y.end>now).sort((p,q)=>p.p<q.p?1:p.p>q.p?-1:0)[0];
+    if(!b){toast(t('This offer is gone. Refreshing.'));bdLoad();return}
+    const q=(to,d)=>rpcQ('eth_call',[{to,data:d},'latest']),[bb,ba,g,ag]=await Promise.all([q(BID.wb,'0x70a08231'+W(b.off)),q(BID.wb,'0xdd62ed3e'+W(b.off)+W(BID.sp)),q(x.cp,'0x081812fc'+W(x.id)),q(x.cp,'0xe985e9c5'+W(a)+W(BID.sp))]);
+    if(BigInt(bb)<b.p||BigInt(ba)<b.p){bdRef(b.hash);toast(t('This offer is gone. Refreshing.'));bdLoad();return}
+    const ap=BigInt('0x'+g.slice(26,66))===BigInt(BID.sp)||BigInt(ag)!==0n,rec=b.p-b.fee;
+    const rows=[[t('Offer from {0}',sh(b.off)),f(bnb(b.p))+' WBNB'],b.fee?[t('OwlGate fee 0.75%'),'−'+f(bnb(b.fee),5)+' WBNB']:[t('Fee-free offer'),'0 WBNB'],[t('You receive'),f(bnb(rec))+' WBNB',1]];
+    const note=[ap?'':t('Step 1 approves this one rig for Seaport, not your whole collection.'),myL(x)?t('Your CMKT listing of this rig stops working after that approval.'):'',t('Offer expires in {0}',ago(b.end-now))].filter(Boolean).join('<br>');
+    if(!await confirmBox(nm,rows,note))return;
+    if(!ap&&!await sellTx(x.cp,'0x095ea7b3'+W(BID.sp)+W(x.id),t('Approve {0} for Seaport (step 1 of 2)',nm)))return;
+    const data=bidFillData(b.o,b.sig);try{await rpcQ('eth_call',[{from:ACC,to:BID.sp,data},'latest'])}catch(e){bdRef(b.hash);toast(t('Dry run failed, nothing sent: ')+String(e.message||e).slice(0,80),7000);return}
+    const tx=await sellTx(BID.sp,data,t('Accept {0} WBNB for {1}',f(bnb(b.p)),nm)+(ap?'':' '+t('(step 2 of 2)')));if(!tx)return;
+    toast(t('Sold {0} · received {1} WBNB',nm,f(bnb(rec)))+' · '+tx,9000);await bdRef(b.hash);setTimeout(()=>{pfLoad();bdLoad()},4000)}
+  catch(e){toast(t('Failed: ')+String(e.message||e).slice(0,120))}}
+async function bdCancel(h){if(!ACC||!await bsc())return;const x=h?bdOpen().find(y=>y.hash===h):null;if(h&&!x)return;
+  const tx=await sellTx(BID.sp,h?bidCancelData(x.o):'0x5b34b966',h?t('Cancel offer on {0}',name(x.cp)+' #'+x.tid):t('Cancel all your offers')); // 0x5b34b966 incrementCounter: every offer signed so far becomes invalid
+  if(!tx)return;toast(t('Cancelled')+' · '+tx,7000);await Promise.all((h?[h]:bdOpen().map(y=>y.hash)).map(bdRef));bdLoad()}
+$('ofM').onclick=e=>{const b=e.target.closest('[data-oc]');if(b){b.disabled=true;bdCancel(b.dataset.oc).finally(()=>{b.disabled=false})}};
+$('ofAll').onclick=()=>bdCancel(null);$('oPx').oninput=oCalc;
+$('oGo').onclick=()=>{$('oGo').disabled=true;bdOffer().finally(()=>{$('oGo').disabled=false})};
+$('oEx').onclick=e=>{const b=e.target.closest('button');if(!b)return;BD.ex=+b.dataset.d;[...$('oEx').children].forEach(y=>y.classList.toggle('on',y===b))};
+// ---------- X Layer market (spec-xlayer-market B, fork test XLSeaportFork, API order book chain 196): Seaport 1.6 on X Layer, no contract of ours, no custody.
+// list = voucher for native OKB (buyer: fulfillBasicOrder ETH_TO_ERC721); offer = WOKB on one voucher (seller: basic ERC721_TO_ERC20);
+// coll = WOKB on any voucher (criteria 0; seller: matchAdvancedOrders with an unsigned own order, so only the voucher approval is needed).
+// Same fee terms and guards as BSC offers: API orders are used only if they rebuild to exactly our templates; every fill is dry-run first.
+const XM={vo:'0x9cfc959cd42b2e1d39a0d850c528210e818ae520',tc:'0x0e91460d6823c711643e650a9a4c0cc21de41614',tk:'0x9cfc959cd42b2e1d39a0d850c528210e818ae520',wo:'0xe538905cf8410324e03a5a23c1c177a474d59b2b',rpc:'https://rpc.xlayer.tech',ex:'https://www.oklink.com/xlayer/tx/',book:[],mine:[],fl:null,k:'offer',ed:1,busy:false};
+const xmOn=()=>bidOn()&&!!(BD.cfg.xl&&BD.cfg.xl.on&&a0(BD.cfg.xl.wokb)===XM.wo&&a0(BD.cfg.xl.voucher)===XM.vo);
+const xcOn=()=>xmOn()&&(BD.cfg.xl.tokens||[]).map(a0).includes(XM.tc); // TapeCode-Test1 on the same Seaport book (s61)
+const cn=(tk,id)=>tk===XM.tc?(id==null?t('Any TapeCode-Test1'):'TapeCode-Test1 #'+id):(id==null?t('Any voucher'):t('Voucher')+' #'+id);
+const xr=(method,params)=>fetch(XM.rpc,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}).then(r=>r.json()).then(r=>{if(r.error)throw Error(r.error.message);return r.result});
+const xq=(to,d)=>xr('eth_call',[{to,data:d},'latest']),rnd=()=>BigInt('0x'+[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join(''));
+async function xlc(){const c=await ETH.request({method:'eth_chainId'});if(c==='0xc4')return true;
+  try{await ETH.request({method:'wallet_switchEthereumChain',params:[{chainId:'0xc4'}]});return true}catch(e){
+    if(e.code===4902||(e.data&&e.data.originalError&&e.data.originalError.code===4902)){try{await ETH.request({method:'wallet_addEthereumChain',params:[{chainId:'0xc4',chainName:'X Layer',nativeCurrency:{name:'OKB',symbol:'OKB',decimals:18},rpcUrls:[XM.rpc],blockExplorerUrls:['https://www.oklink.com/xlayer']}]});return true}catch(_){}}
+    toast(t('Switch your wallet to X Layer to trade vouchers'));return false}}
+const xmTyped=o=>{const d=bidTyped(o);d.domain.chainId=196;return d};
+// the three templates (strings, lower case, same key order as bidNorm); free = no fee item
+function xmMake(k,off,tid,p,start,end,salt,counter,free,tk=XM.vo){const s=String,fe=free?0n:bidFee(p);off=a0(off);
+  const nat=(a,r)=>({itemType:'0',token:AZ,identifierOrCriteria:'0',startAmount:s(a),endAmount:s(a),recipient:r}),wo=(a,r)=>({itemType:'1',token:XM.wo,identifierOrCriteria:'0',startAmount:s(a),endAmount:s(a),...(r?{recipient:r}:{})});
+  const offer=k==='list'?[{itemType:'2',token:tk,identifierOrCriteria:s(tid),startAmount:'1',endAmount:'1'}]:[wo(p)],
+    consideration=k==='list'?[nat(p-fe,off)].concat(free?[]:[nat(fe,BID.to)]):[{itemType:k==='coll'?'4':'2',token:tk,identifierOrCriteria:k==='coll'?'0':s(tid),startAmount:'1',endAmount:'1',recipient:off}].concat(free?[]:[wo(fe,BID.to)]);
+  return{offerer:off,zone:AZ,offer,consideration,orderType:'0',startTime:s(start),endTime:s(end),zoneHash:Z32,salt:s(salt),conduitKey:Z32,counter:s(counter)}}
+function xmOk(x){try{const o=x.order,sig=String(x.signature),k=String(x.kind);if(x.chain!==196||!['list','offer','coll'].includes(k)||!/^0x([0-9a-f]{128}|[0-9a-f]{130})$/i.test(sig))return null;
+  const off=a0(o.offerer),c=o.consideration,fr=c.length===1;if(!/^0x[0-9a-f]{40}$/.test(off)||off===AZ)return null;
+  const tid=String(k==='list'?o.offer[0].identifierOrCriteria:c[0].identifierOrCriteria);if(!/^\d{1,78}$/.test(tid))return null;
+  const tk=a0(k==='list'?o.offer[0].token:c[0].token);if(tk!==XM.vo&&tk!==XM.tc)return null;
+  const p=k==='list'?BigInt(c[0].startAmount)+(fr?0n:BigInt(c[1].startAmount)):BigInt(o.offer[0].startAmount),m=xmMake(k,off,tid,p,o.startTime,o.endTime,o.salt,o.counter,fr,tk);
+  if(JSON.stringify(m)!==JSON.stringify(bidNorm(o)))return null;
+  return{o:m,sig,k,p,fee:fr?0n:bidFee(p),off,tid,tk,end:Number(o.endTime),hash:/^0x[0-9a-f]{64}$/i.test(x.hash)?a0(x.hash):'',st:String(x.status||'open'),rs:String(x.reason||'')}}catch(e){return null}}
+// fulfillBasicOrder: ty 0 = buy a listing with OKB (value = price), ty 16 = accept a WOKB offer on one voucher (fee paid out of the offer)
+const xmBasic=(o,sig,ty)=>{const c=o.consideration,f0=o.offer[0],r=c.slice(1).map(x=>[x.startAmount,x.recipient]);return '0xfb0f3ee1'+abiE([[...Array(16).fill('w'),{a:['w','w']},'b']],
+  [[c[0].token,c[0].identifierOrCriteria,c[0].startAmount,o.offerer,o.zone,f0.token,f0.identifierOrCriteria,f0.startAmount,ty,o.startTime,o.endTime,o.zoneHash,o.salt,Z32,Z32,r.length,r,sig]])};
+// matchAdvancedOrders for a collection offer: [bidder's signed order, seller's own unsigned order (voucher, no consideration)], criteria -> tid,
+// voucher -> bidder, fee out of the WOKB offer; the unspent WOKB (price - fee) goes to the recipient = seller
+const AO=[OC,'w','w','b','b'],xmPar=o=>{const v=ocV(o);v[10]=o.consideration.length;return v};
+function xmMatchData(o,sig,me,tid,st,en,salt,tk=XM.vo){const own=[me,AZ,[[2,tk,tid,1,1]],[],0,st,en,Z32,salt,Z32,0],ff=[[[[1,0]],[[0,0]]]].concat(o.consideration.length>1?[[[[0,0]],[[0,1]]]]:[]);
+  return '0xf2d12b12'+abiE([{a:AO},{a:['w','w','w','w',{a:'w'}]},{a:[{a:['w','w']},{a:['w','w']}]},'w'],[[[xmPar(o),1,1,sig,'0x'],[own,1,1,'0x','0x']],[[0,1,0,tid,[]]],ff,me])}
+async function xmLoad(){if(!BD.cfg)try{BD.cfg=await bdApi('/config.json')}catch(e){}
+  $('xm').hidden=!xmOn();if(!xmOn()){XM.book=[];xlDraw();return}
+  try{const j=await bdApi('/bids?chain=196');XM.book=(j.items||[]).map(xmOk).filter(x=>x&&x.st==='open'&&x.end>Date.now()/1e3)}catch(e){}
+  await xmMine();await xcMine();xmDraw();xlDraw();xlDl();if(XC.j)xcDraw()}
+// bot X Layer alerts link to /xl#buy=<voucher>: Buy card for the cheapest live ask, or "no longer listed" when it sold or was cancelled
+function xlDl(){const m=location.hash.match(/^#buy=(\d{1,9})/);if(!m||SEC()!=='xl')return;history.replaceState(null,'',location.pathname);
+  const v=m[1],ak=xmOn()&&xmAsk(v);if(!ak){toast(t('Voucher #{0} is no longer listed',v),6000);return}
+  toast(`${t('Voucher')} #${v} · <b>${f(bnb(ak.p))} OKB</b> <button class="buy" id="dlB">${t('Buy')}</button> <button class="lang" id="dlX">✕</button>`,0);
+  $('dlB').onclick=e=>{$('toast').classList.remove('on');xmBuy(v)};$('dlX').onclick=()=>$('toast').classList.remove('on')}
+async function xmMine(){XM.mine=[];XM.fl=null;if(!ACC)return;const a=a0(ACC);
+  try{const j=await bdApi('/bids?offerer='+a);XM.mine=(j.items||[]).map(xmOk).filter(x=>x&&x.off===a)}catch(e){}
+  try{const r=await bdApi('/free?wallet='+a);XM.fl=Math.max(0,Math.min(BID.free,Number(r.left)||0))}catch(e){}}
+const xmCmp=(a,b)=>a<b?-1:a>b?1:0;
+const xmAsk=(v,tk=XM.vo)=>XM.book.filter(x=>x.tk===tk&&x.k==='list'&&x.tid===String(v)).sort((a,b)=>xmCmp(a.p,b.p))[0];
+const xmBid=(v,h,tk=XM.vo)=>XM.book.filter(x=>x.tk===tk&&x.off!==a0(h)&&(x.k==='coll'||(x.k==='offer'&&x.tid===String(v)))).sort((a,b)=>xmCmp(b.p-b.fee,a.p-a.fee))[0]; // best for the seller = highest net
+function xmCells(x){if(!xmOn())return '<td class="n">—</td><td class="n">—</td><td></td>';const v=String(x.v),me=!!ACC&&a0(x.holder)===a0(ACC),ak=xmAsk(v),bd=xmBid(v,x.holder);
+  const btn=me?(bd?`<button class="buy" data-xs="${v}">${t('Sell now')}</button> `:'')+`<button class="buy" data-xp="list:${v}">${t('List')}</button>`
+    :ak?`<button class="buy" data-xb="${v}">${t('Buy')}</button>`:`<button class="buy" data-xp="offer:${v}">${t('Offer')}</button>`;
+  const yo=ak&&x.st===1&&bemDay(x)>0?bemDay(x)/bnb(ak.p):null; // BEM/day per OKB of the ask (same idea as BEM/day per BNB in the BNB listings)
+  return `<td class="n">${ak?f(bnb(ak.p))+(yo?` <span class="dz" title="${t('BEM per day for each OKB you pay, at today\'s mining rate and total power. Changes daily.')}">· ${f(yo)} BEM/OKB</span>`:''):'—'}</td><td class="n">${bd?f(bnb(bd.p))+(bd.k==='coll'?' · '+t('any'):''):'—'}</td><td>${btn}</td>`}
+const xmName=x=>cn(x.tk,x.k==='coll'?null:x.tid),xmOpen=()=>XM.mine.filter(x=>x.st==='open'||x.st==='inactive');
+const xmSt=x=>x.st==='open'?t('open · {0} left',ago(Math.max(0,x.end-Date.now()/1e3))):x.st==='inactive'?t('paused: {0}',t({balance:'not enough WOKB',allowance:'approval too low',own:'you own it',moved:'voucher moved',approval:'voucher not approved'}[x.rs]||'voucher not available')):t({filled:'filled',cancelled:'cancelled'}[x.st]||'expired');
+function xmDraw(){if(!xmOn())return;const m=XM.mine.filter(x=>x.st==='open'||x.st==='inactive'||Date.now()/1e3-x.end<86400).slice(0,20);
+  setH('xmM',!ACC?`<tr><td colspan="4" class="hint">${t('Connect a wallet to see your orders.')}</td></tr>`:m.length?m.map(x=>`<tr><td>${x.k==='list'?t('List'):t('Offer')} · ${xmName(x)}</td><td class="n">${f(bnb(x.p))}${x.fee?'':' · '+t('free')}</td><td>${xmSt(x)}</td><td>${x.st==='open'||x.st==='inactive'?`<button class="buy" data-xc="${x.hash}">${t('Cancel')}</button>`:''}</td></tr>`).join(''):`<tr><td colspan="4" class="hint">${t('No orders yet.')}</td></tr>`);
+  $('xmAll').hidden=xmOpen().length<2;xmBest();xmCalc()}
+// left header follows the form's collection: best OwlGate offer on any NFT of it (+ OKX best offer as a price reference for TapeCode-Test1)
+function xmBest(){const V=XM.tk===XM.vo,c=XM.book.filter(x=>x.tk===XM.tk&&x.k==='coll').sort((a,b)=>xmCmp(b.p,a.p))[0],ox=!V&&XC.j&&XC.j.bestOffer;
+  $('xmCt').textContent=V?t('Best offer on any voucher'):t('Best offer on any TapeCode-Test1');$('xmC').textContent=(c?f(bnb(c.p))+' WOKB':'—')+(ox?' · OKX '+f(ox,3)+' '+XC.j.bestOfferCur:'')}
+function xmCalc(){const k=XM.k,L=k==='list',p=wei($('xmPx').value),fr=XM.fl>0,fe=p&&!fr?bidFee(p):0n,u=L?' OKB':' WOKB',V=XM.tk===XM.vo;$('xmIdL').hidden=k==='coll';
+  $('xmTt').textContent=V?t('Trade vouchers'):t('Trade TapeCode-Test1');$('xmIdT').textContent=V?t('Voucher #'):t('NFT #');$('xmKc').textContent=V?t('Any voucher'):t('Any NFT');
+  $('xmPL').textContent=L?t('Buyer pays'):t('You pay if accepted');$('xmSL').textContent=L?t('You receive'):t('Seller receives');
+  $('xmP').textContent=p?f(bnb(p))+u:'—';$('xmS').textContent=p?f(bnb(p-fe))+u:'—';
+  $('xmF').textContent=BID.free&&XM.fl==null?t('first {0} offers free, then 0.75%',BID.free):fr?t('free orders left: {0} of {1}',XM.fl,BID.free):t('fee 0.75% at match');
+  $('xmH').textContent=L?(V?t('Signing is free. First time: approve this voucher for Seaport (one tx), then sign. The voucher stays in your wallet until someone buys.'):t('Signing is free. First time: approve this NFT for Seaport (one tx), then sign. The NFT stays in your wallet until someone buys.')):t('Signing is free. Up to 3 wallet steps the first time: wrap OKB to WOKB, approve the exact amount, sign.');
+  $('xmGo').textContent=L?(V?t('List voucher'):t('List NFT')):t('Make offer')}
+async function xmPlace(){if(XM.busy||!xmOn())return;const k=XM.k,L=k==='list',id=k==='coll'?'0':$('xmId').value.trim(),p=wei($('xmPx').value),tk=XM.tk,V=tk===XM.vo;if(!V&&!xcOn())return;
+  if(k!=='coll'&&!/^\d{1,9}$/.test(id)){toast(V?t('Enter a voucher id'):t('Enter an NFT id'));return}if(!p||p<10n**16n||p>500n*10n**18n){toast(t('Price: 0.01 to 500 OKB'));return}
+  if(!ACC&&!await connect(xlc))return;if(!await xlc())return;XM.busy=true;const a=a0(ACC),nm=cn(tk,k==='coll'?null:id);
+  try{const[o,ctr]=await Promise.all([k==='coll'?null:xq(tk,'0x6352211e'+W(id)).catch(()=>null),xq(BID.sp,'0xf07ec373'+W(a))]); // ownerOf, Seaport counter on X Layer
+    if(k!=='coll'&&(!o||o.length<66)){toast(V?t('Voucher not found'):t('NFT not found'));return}const own=k!=='coll'&&a0('0x'+o.slice(26,66))===a;
+    if(L&&!own){toast(V?t('This voucher is not in your wallet'):t('This NFT is not in your wallet'));return}if(k==='offer'&&own){toast(V?t('You own this voucher'):t('You own this NFT'));return}
+    await xmMine();if(XM.fl==null){toast(t('Data unavailable: ')+'/free');return}
+    const fr=XM.fl>0,fee=fr?0n:bidFee(p),steps=[];let wrap=0n,need=0n,app=false;
+    if(L){const[g,ag]=await Promise.all([xq(tk,'0x081812fc'+W(id)),xq(tk,'0xe985e9c5'+W(a)+W(BID.sp))]);app=!(BigInt('0x'+g.slice(26,66))===BigInt(BID.sp)||BigInt(ag)!==0n); // getApproved / isApprovedForAll
+      if(app)steps.push(V?t('Approve {0} for Seaport (this voucher only)',nm):t('Approve {0} for Seaport (this NFT only)',nm))}
+    else{const[wb,alw,bal]=await Promise.all([xq(XM.wo,'0x70a08231'+W(a)),xq(XM.wo,'0xdd62ed3e'+W(a)+W(BID.sp)),xr('eth_getBalance',[a,'latest'])]);
+      need=xmOpen().filter(y=>y.k!=='list').reduce((s,y)=>s+y.p,0n)+p;wrap=BigInt(wb)<p?p-BigInt(wb):0n;app=BigInt(alw)<need;
+      if(wrap>BigInt(bal)){toast(t('Not enough OKB: wrapping needs {0} OKB plus gas',f(bnb(wrap))));return}
+      if(wrap)steps.push(t('Wrap {0} OKB to WOKB',f(bnb(wrap))));if(app)steps.push(t('Approve {0} WOKB for Seaport (exact amount, covers your open offers)',f(bnb(need))))}
+    steps.push(t('Sign the order (free)'));const u=L?' OKB':' WOKB',fq=fr?[t('Fee-free order {0} of {1}',BID.free-XM.fl+1,BID.free),'0'+u]:[L?t('OwlGate fee 0.75%'):t('OwlGate fee 0.75%, paid from your offer'),'−'+f(bnb(fee),5)+u];
+    const rows=L?[[t('Buyer pays'),f(bnb(p))+u],fq,[t('You receive'),f(bnb(p-fee))+u,1],[t('Expires in'),XM.ed+'d']]:[[t('You pay if accepted'),f(bnb(p))+u],fq,[t('Seller receives'),f(bnb(p-fee))+u,1],[t('Expires in'),XM.ed+'d']];
+    if(!await confirmBox((L?t('List {0}',nm):t('Offer on {0}',nm))+' · X Layer',rows,steps.map((s,i)=>(i+1)+'. '+s).join('<br>')+(k==='coll'?'<br>'+(V?t('Any holder can accept it with one voucher. One voucher per offer.'):t('Any holder can accept it with one NFT. One NFT per offer.')):'')))return;
+    if(L&&app&&!await sellTx(tk,'0x095ea7b3'+W(BID.sp)+W(id),steps[0],0n,XM.ex))return;
+    if(wrap&&!await sellTx(XM.wo,'0xd0e30db0',steps[0],wrap,XM.ex))return;
+    if(!L&&app&&!await sellTx(XM.wo,'0x095ea7b3'+W(BID.sp)+W(need),steps[wrap?1:0],0n,XM.ex))return;
+    const blk=await xr('eth_getBlockByNumber',['latest',false]),now=Math.floor(Date.now()/1e3),st=Math.min(now,parseInt(blk.timestamp,16))-60,od=xmMake(k,a,id,p,st,now+XM.ed*86400,rnd(),BigInt(ctr),fr,tk);
+    toast(t('Confirm in wallet · ')+t('Sign the order (free)'),0);let sig;
+    try{sig=String(await ETH.request({method:'eth_signTypedData_v4',params:[ACC,JSON.stringify(xmTyped(od))]}))}catch(e){toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return}
+    if(/^0x[0-9a-f]{130}$/i.test(sig)&&parseInt(sig.slice(-2),16)<27)sig=sig.slice(0,-2)+(parseInt(sig.slice(-2),16)+27).toString(16);// some wallets return v=0/1
+    const r=await fetch(API+'/bids',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order:od,signature:sig,chain:196})}),jr=await r.json().catch(()=>({}));
+    if(!r.ok){toast(t('Order rejected: {0}',String(jr.error||r.status).slice(0,80)),7000);return}
+    toast(L?t('Listed {0} for {1} OKB',nm,f(bnb(p)))+(V?'. '+t('Buyers see it on OwlGate, in Telegram alerts and the agent API.'):''):t('Offer placed: {0} WOKB on {1}',f(bnb(p)),nm),9000);$('xmPx').value='';await xmLoad()}
+  catch(e){toast(t('Failed: ')+String(e.message||e).slice(0,120))}finally{XM.busy=false}}
+async function xmBuy(v,tk=XM.vo){const ak=xmOn()&&xmAsk(v,tk),V=tk===XM.vo;if(!ak)return;
+  if(!ACC&&!await connect(xlc))return;if(!await xlc())return;const a=a0(ACC),nm=cn(tk,v);if(ak.off===a){toast(t('This is your own listing'));return}
+  try{if(BigInt(await xr('eth_getBalance',[a,'latest']))<ak.p){toast(t('Not enough OKB'));return}
+    const data=xmBasic(ak.o,ak.sig,0),x=V&&XL.j&&XL.j.items.find(y=>String(y.v)===String(v));
+    const rows=[[t('Seller'),sh(ak.off)],ak.fee?[t('OwlGate fee 0.75% (paid by the seller)'),f(bnb(ak.fee),5)+' OKB']:[t('Fee-free listing'),'0 OKB']].concat(x?[[t('Rig on BNB'),name(x.cp)+' #'+x.id+' · '+x.power+' '+t('power')]]:[],[[t('You pay'),f(bnb(ak.p))+' OKB',1]]);
+    if(!await confirmBox(t('Buy {0}',nm)+' · X Layer',rows,V?t('The voucher contract is upgradeable by TapeOut (UUPS proxy).'):''))return;
+    try{await xr('eth_call',[{from:a,to:BID.sp,data,value:'0x'+ak.p.toString(16)},'latest'])}catch(e){bdRef(ak.hash);toast(t('Dry run failed, nothing sent: ')+String(e.message||e).slice(0,80),7000);setTimeout(xmLoad,1500);return}
+    const tx=await sellTx(BID.sp,data,t('Buy {0} for {1} OKB',nm,f(bnb(ak.p))),ak.p,XM.ex);if(!tx)return;
+    toast(t('Bought {0}',nm)+' · '+tx,9000);await bdRef(ak.hash);setTimeout(()=>{xlLoad();xmLoad()},4000)}
+  catch(e){toast(t('Failed: ')+String(e.message||e).slice(0,120))}}
+async function xmSell(v,tk=XM.vo){if(!xmOn())return;if(!ACC&&!await connect(xlc))return;if(!await xlc())return;const a=a0(ACC),nm=cn(tk,v),V=tk===XM.vo;
+  try{const[o,g,ag]=await Promise.all([xq(tk,'0x6352211e'+W(v)),xq(tk,'0x081812fc'+W(v)),xq(tk,'0xe985e9c5'+W(a)+W(BID.sp))]);
+    if(a0('0x'+o.slice(26,66))!==a){toast(V?t('Connect the wallet that holds this voucher'):t('Connect the wallet that holds this NFT'));return}
+    await xmLoad();const b=xmBid(v,a,tk);if(!b){toast(t('This offer is gone. Refreshing.'));return}
+    const[bb,ba]=await Promise.all([xq(XM.wo,'0x70a08231'+W(b.off)),xq(XM.wo,'0xdd62ed3e'+W(b.off)+W(BID.sp))]);
+    if(BigInt(bb)<b.p||BigInt(ba)<b.p){bdRef(b.hash);toast(t('This offer is gone. Refreshing.'));setTimeout(xmLoad,1500);return}
+    const ap=BigInt('0x'+g.slice(26,66))===BigInt(BID.sp)||BigInt(ag)!==0n,rec=b.p-b.fee,now=Date.now()/1e3;
+    const rows=[[t('Offer from {0}',sh(b.off))+(b.k==='coll'?' · '+(V?t('any voucher'):t('any NFT')):''),f(bnb(b.p))+' WOKB'],b.fee?[t('OwlGate fee 0.75%'),'−'+f(bnb(b.fee),5)+' WOKB']:[t('Fee-free offer'),'0 WOKB'],[t('You receive'),f(bnb(rec))+' WOKB',1]];
+    const note=[ap?'':V?t('Step 1 approves this one voucher for Seaport, not your whole collection.'):t('Step 1 approves this one NFT for Seaport, not your whole collection.'),t('Offer expires in {0}',ago(b.end-now))].filter(Boolean).join('<br>');
+    if(!await confirmBox(nm+' · X Layer',rows,note))return;
+    if(!ap&&!await sellTx(tk,'0x095ea7b3'+W(BID.sp)+W(v),t('Approve {0} for Seaport (step 1 of 2)',nm),0n,XM.ex))return;
+    let data;if(b.k==='coll'){const ts=parseInt((await xr('eth_getBlockByNumber',['latest',false])).timestamp,16);data=xmMatchData(b.o,b.sig,a,v,ts-60,ts+3600,rnd(),tk)}else data=xmBasic(b.o,b.sig,16);
+    try{await xr('eth_call',[{from:a,to:BID.sp,data},'latest'])}catch(e){bdRef(b.hash);toast(t('Dry run failed, nothing sent: ')+String(e.message||e).slice(0,80),7000);return}
+    const tx=await sellTx(BID.sp,data,t('Accept {0} WOKB for {1}',f(bnb(b.p)),nm)+(ap?'':' '+t('(step 2 of 2)')),0n,XM.ex);if(!tx)return;
+    toast(t('Sold {0} · received {1} WOKB',nm,f(bnb(rec)))+' · '+tx,9000);await bdRef(b.hash);setTimeout(()=>{xlLoad();xmLoad()},4000)}
+  catch(e){toast(t('Failed: ')+String(e.message||e).slice(0,120))}}
+async function xmCancel(h){if(!ACC||!await xlc())return;const x=h?xmOpen().find(y=>y.hash===h):null;if(h&&!x)return;
+  const tx=await sellTx(BID.sp,h?bidCancelData(x.o):'0x5b34b966',h?t('Cancel order on {0}',xmName(x)):t('Cancel all your X Layer orders'),0n,XM.ex); // incrementCounter on X Layer: all X Layer orders signed so far become invalid
+  if(!tx)return;toast(t('Cancelled')+' · '+tx,7000);await Promise.all((h?[h]:xmOpen().map(y=>y.hash)).map(bdRef));xmLoad()}
+const xmSetK=k=>{XM.k=k;[...$('xmK').children].forEach(y=>y.classList.toggle('on',y.dataset.k===k));xmCalc()};
+const xmBusy=(b,p)=>{b.disabled=true;p.finally(()=>{b.disabled=false})};
+$('xlB').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.xb)xmBusy(b,xmBuy(b.dataset.xb));else if(b.dataset.xs)xmBusy(b,xmSell(b.dataset.xs));
+  else if(b.dataset.xp){const[k,v]=b.dataset.xp.split(':');xmSetT(false);xmSetK(k);$('xmId').value=v;$('xm').scrollIntoView({behavior:'smooth',block:'center'});$('xmPx').focus({preventScroll:true})}};
+$('pfXB').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.xs)xmBusy(b,xmSell(b.dataset.xs));else if(b.dataset.xb)xmBusy(b,xmBuy(b.dataset.xb));
+  else if(b.dataset.xp){const[k,v]=b.dataset.xp.split(':');view(false);goPath('xl');xmSetT(false);xmSetK(k);$('xmId').value=v;setTimeout(()=>{$('xm').scrollIntoView({behavior:'smooth',block:'center'});$('xmPx').focus({preventScroll:true})},50)}};
+$('xmK').onclick=e=>{const b=e.target.closest('button');if(b)xmSetK(b.dataset.k)};
+const xmSetT=tc=>{XM.tk=tc?XM.tc:XM.vo;[...$('xmT').children].forEach(y=>y.classList.toggle('on',(y.dataset.t==='tc')===!!tc));xmBest();xmCalc()};
+$('xmT').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.t==='tc'&&!xcOn()){toast(t('Data unavailable: ')+'TapeCode-Test1');return}xmSetT(b.dataset.t==='tc')};
+$('xmEx').onclick=e=>{const b=e.target.closest('button');if(!b)return;XM.ed=+b.dataset.d;[...$('xmEx').children].forEach(y=>y.classList.toggle('on',y===b))};
+$('xmPx').oninput=xmCalc;$('xmGo').onclick=()=>xmBusy($('xmGo'),xmPlace());$('xmAll').onclick=()=>xmCancel(null);
+$('xmM').onclick=e=>{const b=e.target.closest('[data-xc]');if(b)xmBusy(b,xmCancel(b.dataset.xc))};
+Object.assign(ZH,{"For AI agents":"AI 代理接口","Terms and privacy":"条款与隐私","Ask · OKB":"卖价 · OKB","Best offer":"最高出价","Your X Layer orders":"我的 X Layer 订单","Order":"订单","OKB":"OKB","Trade vouchers":"交易凭证","Voucher #":"凭证编号","Price · OKB":"价格 · OKB","Place order":"下单",
+  "Offer":"出价","Any voucher":"任意凭证","any voucher":"任意凭证","any":"任意","Sell now":"立即卖出","X Layer voucher":"X Layer 凭证","Floor · same power":"同算力地板价","Running a community or channel? Partner rate 40%: DM {0} on Telegram or {1}.":"运营社区或频道？合作伙伴返佣 40%：在 Telegram 私信 {0}，或在 {1} 联系我们。","Switch your wallet to X Layer to trade vouchers":"请把钱包切换到 X Layer 以交易凭证",
+  "not enough WOKB":"WOKB 不足","voucher moved":"凭证已转走","voucher not approved":"凭证未授权","voucher not available":"凭证不可用","Connect a wallet to see your orders.":"连接钱包以查看你的订单。","No orders yet.":"暂无订单。",
+  "Best offer on any voucher":"任意凭证最高出价","Buyer pays":"买家支付","free orders left: {0} of {1}":"剩余免费订单：{0}/{1}",
+  "Signing is free. First time: approve this voucher for Seaport (one tx), then sign. The voucher stays in your wallet until someone buys.":"签名免费。首次：先授权这张凭证给 Seaport（一笔交易），再签名。有人买入前，凭证一直在你的钱包里。",
+  "Signing is free. Up to 3 wallet steps the first time: wrap OKB to WOKB, approve the exact amount, sign.":"签名免费。首次最多 3 步：把 OKB 兑换成 WOKB、授权精确金额、签名。",
+  "List voucher":"挂单出售凭证","Enter a voucher id":"请输入凭证编号","Price: 0.01 to 500 OKB":"价格：0.01 到 500 OKB","Voucher not found":"找不到该凭证","This voucher is not in your wallet":"这张凭证不在你的钱包里","You own this voucher":"这张凭证是你的",
+  "Approve {0} for Seaport (this voucher only)":"授权 {0} 给 Seaport（仅这张凭证）","Not enough OKB: wrapping needs {0} OKB plus gas":"OKB 不足：兑换需要 {0} OKB 加手续费","Wrap {0} OKB to WOKB":"把 {0} OKB 兑换成 WOKB",
+  "Approve {0} WOKB for Seaport (exact amount, covers your open offers)":"授权 Seaport {0} WOKB（精确金额，覆盖你的所有有效出价）","Sign the order (free)":"签名订单（免费）","Fee-free order {0} of {1}":"免手续费订单 {0}/{1}","List {0}":"挂单 {0}",
+  "Any holder can accept it with one voucher. One voucher per offer.":"任何持有人都可以用一张凭证接受。每个出价只成交一张凭证。","Order rejected: {0}":"订单被拒：{0}","Listed {0} for {1} OKB":"已挂单 {0}，价格 {1} OKB","Buyers see it on OwlGate, in Telegram alerts and the agent API.":"买家可在 OwlGate、Telegram 提醒和 agent API 中看到。","Buyers see it on OwlGate and in Telegram alerts.":"买家可在 OwlGate 和 Telegram 提醒中看到。","Offer placed: {0} WOKB on {1}":"已出价：{0} WOKB 购买 {1}",
+  "This is your own listing":"这是你自己的挂单","Not enough OKB":"OKB 不足","Seller":"卖家","OwlGate fee 0.75% (paid by the seller)":"OwlGate 手续费 0.75%（由卖家支付）","Fee-free listing":"免手续费挂单","You pay":"你支付","Buy {0}":"买入 {0}",
+  "The voucher contract is upgradeable by TapeOut (UUPS proxy).":"凭证合约可由 TapeOut 升级（UUPS 代理）。","Buy {0} for {1} OKB":"以 {1} OKB 买入 {0}","Bought {0}":"已买入 {0}","Connect the wallet that holds this voucher":"请连接持有这张凭证的钱包",
+  "Step 1 approves this one voucher for Seaport, not your whole collection.":"第 1 步只授权这一张凭证给 Seaport，不是整个收藏。","Accept {0} WOKB for {1}":"接受 {0} WOKB 出售 {1}","Sold {0} · received {1} WOKB":"已售出 {0} · 收到 {1} WOKB",
+  "Cancel order on {0}":"取消 {0} 的订单","Cancel all your X Layer orders":"取消你的全部 X Layer 订单"});
+Object.assign(ZH,{"Verify your wallet for the bot trial":"为机器人试用验证钱包","Sign a message to prove you own this wallet. No transaction, no fee. Then paste the line into the bot.":"签名一条消息以证明你拥有此钱包。无交易、无手续费。然后把这一行粘贴到机器人。","This link has expired. Send /trial to the bot again.":"此链接已过期。请重新向机器人发送 /trial。","Sign with wallet":"用钱包签名","Copy":"复制","Copied":"已复制","Rig #{0} is no longer listed":"矿机 #{0} 已不在售","power":"算力","X Layer rigs":"X Layer 矿机","TapeOut Rig Bridge vouchers on X Layer":"TapeOut 矿机跨链桥在 X Layer 上的凭证","Vouchers":"凭证","Total power":"总算力","Voucher":"凭证","Rig on BNB":"BNB 上的矿机","Holder":"持有人","not mining":"未挖矿","No vouchers yet":"暂无凭证","Redeem fee ≈ {0} OKB":"赎回费 ≈ {0} OKB",
+  "Each voucher stands for one rig locked in the TapeOut Rig Bridge on BNB. The rig keeps mining on BNB and its BEM is sent to whoever holds the voucher on X Layer. Redeeming the voucher returns the rig. The voucher contract is upgradeable by TapeOut (UUPS proxy).":"每张凭证对应一台锁在 BNB 上 TapeOut 矿机跨链桥中的矿机。矿机继续在 BNB 上挖矿，BEM 发给 X Layer 上的凭证持有人。赎回凭证即可取回矿机。凭证合约可由 TapeOut 升级（UUPS 代理）。"});
+Object.assign(ZH,{"Offers":"出价","WBNB offers on any rig, settled on Seaport 1.6. Your WBNB stays in your wallet until a holder accepts.":"可对任意矿机出 WBNB 价，在 Seaport 1.6 结算。持有人接受前，WBNB 一直在你的钱包里。",
+  "Best offers":"最高出价","Best · WBNB":"最高 · WBNB","Your offers":"我的出价","Cancel all":"全部取消","Status":"状态","Make an offer":"出价","fee 0.75% at match":"成交时手续费 0.75%","Rig id":"矿机编号","Price · WBNB":"价格 · WBNB","Expires":"有效期",
+  "You pay if accepted":"被接受时你支付","Seller receives":"卖家收到","Make offer":"出价","Signing is free. Up to 3 wallet steps the first time: wrap BNB to WBNB, approve the exact amount, sign.":"签名免费。首次最多 3 步：把 BNB 兑换成 WBNB、授权精确金额、签名。",
+  "{0} rigs":"{0} 台","No open offers yet.":"还没有有效出价。","Connect a wallet to see your offers.":"连接钱包查看你的出价。","No offers yet.":"还没有出价。","open · {0} left":"有效 · 剩余 {0}","paused: {0}":"暂停：{0}",
+  "not enough WBNB":"WBNB 不足","approval too low":"授权额度不足","you own it":"你持有该矿机","rig not available":"矿机不可用","filled":"已成交","cancelled":"已取消","expired":"已过期",
+  "Enter a rig id":"请输入矿机编号","Price: 0.01 to 500 WBNB":"价格：0.01 到 500 WBNB","Rig not found":"找不到该矿机","You own this rig":"这台矿机是你的","Not enough BNB: wrapping needs {0} BNB plus gas":"BNB 不足：兑换需要 {0} BNB 加手续费",
+  "Wrap {0} BNB to WBNB":"把 {0} BNB 兑换成 WBNB","Approve {0} WBNB for Seaport (exact amount, covers your open offers)":"授权 Seaport {0} WBNB（精确金额，覆盖你的所有有效出价）","Sign the offer (free)":"签名出价（免费）",
+  "Offer on {0}":"出价 {0}","OwlGate fee 0.75%, paid from your offer":"OwlGate 手续费 0.75%，从你的出价中支付","Expires in":"有效期","Offer rejected: {0}":"出价被拒：{0}","Offer placed: {0} WBNB on {1}":"已出价：{0} WBNB 购买 {1}",
+  "Accept offer {0}":"接受出价 {0}","This offer is gone. Refreshing.":"该出价已失效，正在刷新。","Offer from {0}":"出价方 {0}","OwlGate fee 0.75%":"OwlGate 手续费 0.75%","You receive":"你收到","Fee-free offer {0} of {1}":"免手续费出价 第 {0}/{1} 笔","Fee-free offer":"免手续费出价","free":"免费",
+  "first {0} offers free, then 0.75%":"前 {0} 笔出价免费，之后 0.75%","free offers left: {0} of {1}":"剩余免费出价：{0}/{1}",
+  "This is your last fee-free offer. Next offers include the 0.75% fee.":"这是你最后一笔免手续费出价。之后的出价含 0.75% 手续费。",
+  "The 0.75% OwlGate fee is added to every offer automatically and shown before you sign.":"每笔出价自动加入 0.75% OwlGate 手续费，签名前会显示。","Step 1 approves this one rig for Seaport, not your whole collection.":"第 1 步只授权这一台矿机给 Seaport，不是整个收藏。","Your CMKT listing of this rig stops working after that approval.":"授权后，这台矿机在 CMKT 的挂单将失效。",
+  "Offer expires in {0}":"出价 {0} 后到期","Approve {0} for Seaport (step 1 of 2)":"授权 {0} 给 Seaport（第 1/2 步）","Dry run failed, nothing sent: ":"模拟执行失败，未发送：","Accept {0} WBNB for {1}":"接受 {0} WBNB 出售 {1}","(step 2 of 2)":"（第 2/2 步）",
+  "Sold {0} · received {1} WBNB":"已售出 {0} · 收到 {1} WBNB","Cancel offer on {0}":"取消对 {0} 的出价","Cancel all your offers":"取消你的全部出价"});
+bdLoad();setInterval(()=>{if(!document.hidden)bdLoad()},60000);
+// ---------- sell: list a rig on the TapeOut circuit market (CMKT). The rig stays in the wallet and keeps mining; CMKT needs approve(CMKT,id)
+// per rig and checks it at sale time (no escrow), so revoking it makes the buy revert. CMKT takes 1% from the seller; OwlGate adds nothing.
+const CMKT='0x6feebbebc07bcb90bd1ac8b0cf9baa4f0ff2b46f';let SELL=null,SELLV='';
+const mine=()=>PF&&ACC&&ACC.toLowerCase()===PF.a,myL=x=>RAWL&&RAWL.items.find(y=>y.src==='cmkt'&&y.act!==false&&y.se===PF.a&&y.cp===x.cp&&String(y.tid)===String(x.id));
+const sk=x=>x.cp+':'+x.id;
+function sellCell(x){if(!mine())return'';const l=myL(x),o=bidOn()&&BD.best[a0(sk(x))];return`<button class="buy${l?' kv':''}" data-s="${sk(x)}">${l?kv(t('Listed'),parseFloat(f(l.px)),'· '+t('Edit')):t('Sell')}</button>`+
+  (o?`<button class="buy kv" data-oa="${sk(x)}">${kv(t('Accept offer {0}','').trim(),f(o.px))}</button>`:'')}
+function sellRow(x,p){if(!mine()||SELL!==sk(x))return'';const l=myL(x);
+  return `<tr class="sr"><td colspan="10"><div class="sf"><input id="sPx" inputmode="decimal" placeholder="BNB" value="${SELLV}"><button class="go" id="sOk" data-k="${sk(x)}">${t(l?'Update price':'List')}</button>${l?`<button class="more" id="sDl" data-k="${sk(x)}">${t('Delist')}</button>`:''}<button class="more" id="sNo">${t('Cancel')}</button></div><p class="hint" id="sH"></p></td></tr>`}
+function sellHint(){const h=$('sH');if(!h||!SELL)return;const x=PF.j.items.find(y=>sk(y)===SELL),p=parseFloat(SELLV),r=x&&(fair(x)??(LST[x.cp]&&LST[x.cp][0]?LST[x.cp][0].px:null));
+  let m=(r!=null?t('Reference {0} BNB',f(r))+' · ':'')+t('Keep the approval until it sells; the rig stays in your wallet and keeps mining.');
+  if(p>0){m=t('You receive {0} BNB after the 1% CMKT fee',f(p*.99))+' · '+m;const c=sellCap(r);if(p>c)m='<span class="sw">'+t('Too high: max {0} BNB',f(c))+'</span> · '+m;else if(r&&(p>3*r||p<.2*r))m='<span class="sw">'+t('{0}x the reference price',(p/r).toFixed(2))+'</span> · '+m}
+  h.innerHTML=m}
+const sellCap=r=>Math.max(1,Math.min(500,r?20*r:500)); // D39: hard ceiling; on chain anything below 2^96 wei is accepted
+async function sellTx(to,data,what,value,ex='https://bscscan.com/tx/'){let h;try{toast(t('Confirm in wallet · ')+what,0);h=await ETH.request({method:'eth_sendTransaction',params:[{from:ACC,to,data,...(value?{value:'0x'+value.toString(16)}:{})}]})}
+  catch(e){toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return false}
+  const tx=`<a href="${ex}${h}" target="_blank" rel="noopener">${t("view tx")}</a>`;toast(t('Pending… ')+tx,0);const r=await receipt(h);
+  if(!r||r.status!=='0x1'){toast(t(r?'Failed: ':'Not confirmed yet · ')+tx,7000);return false}return tx}
+async function sellGo(k,del){const x=PF.j.items.find(y=>sk(y)===k);if(!x)return;
+  if(!await bsc())return;if(!mine()){toast(t('Connect the wallet that holds these rigs'));return}
+  const l=myL(x),nm=name(x.cp)+' #'+x.id;let tx;
+  if(del)tx=await sellTx(CMKT,'0x964bc33f'+W(l.lid),t('Delist')+' '+nm);
+  else{const p=parseFloat(SELLV),r=fair(x)??(LST[x.cp]&&LST[x.cp][0]?LST[x.cp][0].px:null);
+    if(!(p>0)||!/^\d*\.?\d{0,18}$/.test(SELLV.trim())){toast(t('Enter a price in BNB'));return}
+    if(p>sellCap(r)){toast(t('Too high: max {0} BNB',f(sellCap(r))));return}
+    const [i,d='']=SELLV.trim().split('.'),wei=BigInt(i||0)*10n**18n+BigInt((d+'0'.repeat(18)).slice(0,18));
+    if(l)tx=await sellTx(CMKT,'0x3d8886f1'+W(l.lid)+W(wei),t('Update price')+' '+nm+' · '+f(p)+' BNB');
+    else{const[g,ag]=await Promise.all([rpcRd(x.cp,'0x081812fc'+W(x.id)),rpcRd(x.cp,'0xe985e9c5'+W(ACC)+W(CMKT))]); // getApproved / isApprovedForAll
+      if(!(g&&BigInt('0x'+g.slice(26,66))===BigInt(CMKT))&&!(ag&&BigInt(ag)))if(!await sellTx(x.cp,'0x095ea7b3'+W(CMKT)+W(x.id),t('Approve CMKT for {0} (step 1 of 2)',nm)))return;
+      tx=await sellTx(CMKT,'0x5e60f358'+W(x.cp)+W(x.id)+W(wei),t('List {0} at {1} BNB',nm,f(p))+(l?'':' '+t('(step 2 of 2)')))}}
+  if(!tx)return;toast(t(del?'Delisted ':'Listed ')+nm+' · '+tx+(del?'':'. '+t('Buyers see it on OwlGate and in Telegram alerts.')),9000);SELL=null;SELLV='';
+  setTimeout(()=>j(API+'/listings').then(ls=>{RAWL=ls;ingest(CI,ls)}).catch(()=>{}),5000)} // the stream usually lands it first
+$('pfB').addEventListener('click',e=>{const b=e.target.closest('[data-s],[data-oa],#sOk,#sDl,#sNo');if(!b)return;
+  const er=e=>toast(t('Failed: ')+String(e&&e.message||e).slice(0,120),7000);
+  if(b.dataset.oa){b.disabled=true;bdAccept(b.dataset.oa).catch(er).finally(()=>{b.disabled=false});return}
+  if(b.id==='sNo'){SELL=null;pfRender();return}
+  if(b.dataset.s){if(SELL===b.dataset.s){SELL=null}else{SELL=b.dataset.s;const x=PF.j.items.find(y=>sk(y)===SELL),l=myL(x),r=fair(x);SELLV=l?String(l.px):r!=null?r.toFixed(4).replace(/\.?0+$/,''):''}pfRender();sellHint();const i=$('sPx');if(i)i.focus();return}
+  b.disabled=true;sellGo(b.dataset.k,b.id==='sDl').catch(er).finally(()=>{b.disabled=false})});
+$('pfB').addEventListener('input',e=>{if(e.target.id==='sPx'){SELLV=e.target.value;sellHint()}});
+// ---------- all listings: filter by CPU / max price, sort, buy any one ----------
+let lsN=10;
+const dtag=x=>{const d=deal(x);if(d==null)return'<span class="dz">—</span>';const r=ref(x),tt=t(r.k?'{0} sales of rigs above 10 power, median per power scaled to this rig: {1} BNB':'Median of {0} sales, same CPU and power: {1} BNB',r.n,f(r.v));return`<span class="${d>=10?'dl':'dz'}" title="${tt}">${d>=10?'−'+d.toFixed(0)+'%':d<=-10?'+'+(-d).toFixed(0)+'%':'≈'}</span>`};
+function lsRender(){const v=$('lCp').value,cps=Object.keys(LST).sort((a,b)=>LST[b].length-LST[a].length);
+  $('lCp').innerHTML='<option value="">'+t('All CPUs')+'</option>'+cps.map(cp=>`<option value="${cp}">${name(cp)} · ${LST[cp].length}</option>`).join('');$('lCp').value=LST[v]?v:'';
+  const cp=$('lCp').value,mx=parseFloat($('lMax').value),so=$('lSo').value,pw=pwr,dv=x=>{const d=deal(x);return d==null?-1e9:d};
+  const a=(cp?LST[cp]:Object.values(LST).flat()).filter(x=>!(mx>0)||x.px<=mx).sort(so==='d'?(p,q)=>dv(q)-dv(p)||p.px-q.px:so==='w'?(p,q)=>pw(q)-pw(p)||p.px-q.px:so==='u'?(p,q)=>p.px/(pw(p)+1)-q.px/(pw(q)+1):so==='y'?(p,q)=>(yld(q)||0)-(yld(p)||0)||p.px-q.px:(p,q)=>p.px-q.px);
+  $('lsB').innerHTML=a.length?a.slice(0,lsN).map(x=>`<tr><td>${name(x.cp)}</td><td><a href="https://bscscan.com/nft/${x.cp}/${x.tid}" target="_blank" rel="noopener">${cp?'':'<span class="lsc">'+name(x.cp)+' </span>'}#${x.tid}</a>${isLive(x)?'':'<br><span style="color:var(--mut);font-size:11px">'+t('Not mining')+'</span>'}</td><td class="n">${isMine(x.cp)?pw(x):'—'}</td><td class="n">${f(x.px)}</td><td class="n">${dtag(x)}</td><td class="n">${yTxt(x)}</td><td><button class="buy" data-l="${x.lid}">${t('Buy')}</button></td></tr>`).join(''):'<tr><td colspan="7" class="hint">'+t('No rigs match')+'</td></tr>';
+  $('lMore').hidden=a.length<=lsN}
+$('lCp').onchange=$('lSo').onchange=$('lMax').oninput=()=>{lsN=10;lsRender()};$('lMore').onclick=()=>{lsN+=50;lsRender()};
+const lsBuy=e=>{const b=e.target.closest('[data-l]');if(!b)return;const x=Object.values(LST).flat().find(y=>String(y.lid)===b.dataset.l);if(x){b.disabled=true;buyOne(x).finally(()=>{b.disabled=false})}};$('lsB').onclick=$('hDeal').onclick=lsBuy;$('hBuy').onclick=()=>{if(HB)buyOne(HB)};
+// claim straight on the TapeOut mining contract: claimMany(bytes32[] minerKeys). BEM is paid to the rig holder, no approval, no OwlGate fee
+async function pfClaim(){if(!PF)return;const it=PF.j.items.filter(x=>x.st===1&&x.pend>0);if(!it.length)return;
+  if(!ACC&&!await connect())return;if(!await bsc())return;
+  if(ACC.toLowerCase()!==PF.a){toast(t('Connect the wallet that holds these rigs'));return}
+  const b=$('pfC'),sum=it.reduce((v,x)=>v+x.pend,0);b.disabled=true;
+  try{const keys=[];for(let i=0;i<it.length;i+=10)keys.push(...await Promise.all(it.slice(i,i+10).map(x=>rpcRd(MINING,'0x10eafa00'+W(x.cp)+W(x.id))))); // minerKey(cp,id)
+    if(keys.some(k=>!k||k.length!==66))throw new Error('key read failed');
+    let h;try{toast(t('Confirm in wallet · ')+t('Claim {0} BEM',f(sum,4)),0);
+      h=await ETH.request({method:'eth_sendTransaction',params:[{from:ACC,to:MINING,data:'0x7ed51748'+W(32)+W(keys.length)+keys.map(k=>k.slice(2)).join('')}]})}
+    catch(e){toast(e.code===4001?t('Cancelled'):t('Failed: ')+String(e.message||e).slice(0,120));return}
+    const tx=`<a href="https://bscscan.com/tx/${h}" target="_blank" rel="noopener">${t("view tx")}</a>`;
+    toast(t('Pending… ')+tx,0);const rc=await receipt(h);
+    if(!rc||rc.status!=='0x1'){toast(t(rc?'Failed: ':'Not confirmed yet · ')+tx,7000);return}
+    toast(t('Claimed {0} BEM',f(sum,4))+' · '+tx,7000);setTimeout(()=>pfLoad(),4000)}
+  catch(e){toast(t('Failed: ')+e.message)}finally{b.disabled=false}}
+$('pfC').onclick=pfClaim;
+$('pfRC').onclick=()=>{const v='https://'+$('pfRL').textContent;try{navigator.clipboard.writeText(v)}catch(e){}$('pfRC').textContent=t('Copied')};
+$('pfGo').onclick=()=>pfLoad();$('pfA').onkeydown=e=>{if(e.key==='Enter')pfLoad()};
+$('pfMe').onclick=async()=>{if(!ACC&&!await connect())return;$('pfA').value=ACC;pfLoad()};
+if(SEC()==='pf')setTimeout(openPf,0);else if(SEC()==='tv'||SEC()==='of')setTimeout(()=>openTv(SEC()==='of'?'off':''),0);
+let TH='';try{TH=localStorage.getItem('og-theme')||''}catch(e){}if(!TH)TH=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+const setTh=()=>{document.documentElement.dataset.theme=TH;if(CI)chart()};setTh();$('thm').onclick=()=>{TH=TH==='light'?'dark':'light';try{localStorage.setItem('og-theme',TH)}catch(e){}setTh()};
+if(SWEEP)$('sHint').dataset.en='Cheapest first, one wallet confirmation for the whole sweep. Sold rigs are skipped and refunded.';
+(()=>{let r='n';try{const d=Math.floor(Date.now()/864e5),f=+localStorage.getItem('og-fs');if(!f)localStorage.setItem('og-fs',d);else{const g=d-f;r=g<1?'d0':g<2?'d1':g<8?'w':'m'}}catch(e){}ev('v','&r='+r)})();
+document.addEventListener('click',e=>{if(e.target.closest('a[href*="t.me/owlgate_bot"]'))ev('g')},true);
+applyLang();$('lang').onclick=()=>{LANG=LANG==='zh'?'en':'zh';try{localStorage.setItem('og-lang',LANG)}catch(e){}applyLang();wal();pfRender();xlKpi();if(XC.j)xcDraw();xmBest();if(CI){const v=$('sCp').value;renderMovers();loadFee();$('sCp').innerHTML=[...$('sCp').options].map(o=>{const cp=o.value;return `<option value="${cp}">${name(cp)} · ${t('{0} listed',LST[cp].length)}</option>`}).join('');$('sCp').value=v;sweep()}};
+$('brand').onclick=e=>{e.preventDefault();view(false);history.replaceState(null,'',BASE+location.search);scrollTo({top:0,behavior:'smooth'})} // logo = home: market view, top;
+</script></body></html>
